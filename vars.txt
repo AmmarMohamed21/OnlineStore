@@ -1,3 +1,2 @@
 
-$env:API_KEY='S9L47O6UEMC9UXC7'
 $env:FLASK_APP='application.py'

@@ -40,10 +40,10 @@ db = SQL("sqlite:///OnlineStore.db")
 @login_required
 def index():
     """Show portfolio of stocks"""
-    userid = session["user_id"]
-    rows=db.execute("SELECT * FROM history WHERE id= :userid", userid=userid)
-    usercash=db.execute("SELECT * FROM users WHERE id= :userid", userid=userid)
-    return render_template("index.html", rows=rows, usercash=usercash)
+    #userid = session["user_id"]
+    #rows=db.execute("SELECT * FROM history WHERE id= :userid", userid=userid)
+    #usercash=db.execute("SELECT * FROM users WHERE id= :userid", userid=userid)
+    return render_template("index.html")
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -167,14 +167,20 @@ def quote():
 def register():
     """Register user"""
     if request.method == "POST":
-        if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation"):
+        if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("fname") or not request.form.get("lname") or not request.form.get("address") or not request.form.get("phonenumber"):
             return apology("something is missing!")
         if not (request.form.get("password")==request.form.get("confirmation")):
             return apology("password doesn't match")
         username = request.form.get("username")
         password = request.form.get("password")
         hashed = generate_password_hash(password, method='sha256', salt_length=8)
-        rows = db.execute("INSERT INTO Customer (Username, Password) VALUES(:username, :hashed)", username=username, hashed=hashed)
+        fname = request.form.get("fname")
+        lname = request.form.get("lname")
+        address = request.form.get("address")
+        phonenumber = request.form.get("phonenumber")
+        if not phonenumber.isnumeric():
+            return apology("Phone Number is not valid")
+        rows = db.execute("INSERT INTO Customer (Username, Password, FirstName, LastName, Address, PhoneNumber) VALUES(:username, :hashed, :fname, :lname, :address, :phonenumber)", username=username, hashed=hashed, fname=fname, lname=lname, address=address, phonenumber=phonenumber)
         if not rows:
             return apology("Username already exists")
         return render_template("login.html", rows = rows)

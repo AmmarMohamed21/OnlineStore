@@ -33,7 +33,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///OnlineStore.db")
 
 
 @app.route("/")
@@ -112,15 +112,15 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
+        rows = db.execute("SELECT * FROM Customer WHERE username = :username",
                           username=request.form.get("username"))
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0]["CustomerID"]
 
         # Redirect user to home page
         return redirect("/")
@@ -174,7 +174,7 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
         hashed = generate_password_hash(password, method='sha256', salt_length=8)
-        rows = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hashed)", username=username, hashed=hashed)
+        rows = db.execute("INSERT INTO Customer (Username, Password) VALUES(:username, :hashed)", username=username, hashed=hashed)
         if not rows:
             return apology("Username already exists")
         return render_template("login.html", rows = rows)

@@ -2,6 +2,8 @@ nav .navbar-brand
 {
     /* size for brand */
     font-size: xx-large;
+    padding-left: 20px;
+    font-weight: bolder;
 }
 
 /* colors for brand */

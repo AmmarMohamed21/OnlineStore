@@ -102,6 +102,9 @@ def login():
     # Forget any user_id
     session.clear()
 
+    #load categories list
+    categories=GetCategories()
+
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
@@ -129,7 +132,7 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html")
+        return render_template("login.html", categories=categories)
 
 
 @app.route("/logout")
@@ -168,6 +171,10 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+
+    #load categories list
+    categories=GetCategories()
+
     if request.method == "POST":
         if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("fname") or not request.form.get("lname") or not request.form.get("address") or not request.form.get("phonenumber"):
             return apology("something is missing!")
@@ -188,7 +195,7 @@ def register():
         return render_template("login.html", rows = rows)
 
     else:
-        return render_template("register.html")
+        return render_template("register.html", categories=categories)
 
 
 

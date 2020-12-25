@@ -35,15 +35,17 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///OnlineStore.db")
 
-
+def GetCategories():
+    categories=db.execute("Select * from Categories")
+    return categories
 @app.route("/")
-@login_required
 def index():
     """Show portfolio of stocks"""
     #userid = session["user_id"]
     #rows=db.execute("SELECT * FROM history WHERE id= :userid", userid=userid)
     #usercash=db.execute("SELECT * FROM users WHERE id= :userid", userid=userid)
-    return render_template("index.html")
+    categories=GetCategories()
+    return render_template("index.html",categories=categories)
 
 
 @app.route("/buy", methods=["GET", "POST"])

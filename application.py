@@ -230,6 +230,62 @@ def sell():
     else:
         return render_template("sell.html")
 
+@app.route("/edituserinfo", methods=["GET", "POST"])
+@login_required
+def edituserinfo():
+    """Edit User Info"""
+    
+    #load categories list
+    categories=GetCategories()
+
+    #Get Current User Info
+    rows = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
+                         id=session["user_id"])
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        if not request.form.get("password"):
+            return apology("Please Enter your password", 403)
+
+        if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
+            return apology("Wrong password", 403)
+
+        if request.form.get("uname"):
+            query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("uname"))
+            if len(query) != 0:
+                return apology("Username Already Exists", 403)
+            query = db.execute("UPDATE Customer SET Username= :username WHERE CustomerID= :id",username=request.form.get("uname"), id=session["user_id"])
+            return redirect("/edituserinfo")
+
+        if request.form.get("fname") and request.form.get("lname"):
+            query = db.execute("UPDATE Customer SET FirstName = :fname, LastName = :lname WHERE CustomerID= :id",fname=request.form.get("fname"),lname=request.form.get("lname"), id=session["user_id"])
+            return redirect("/edituserinfo")
+
+        if request.form.get("newpassword") and request.form.get("confirmpassword"):
+            if not (request.form.get("newpassword")==request.form.get("confirmpassword")):
+                return apology("password doesn't match")
+            password = request.form.get("newpassword")
+            hashed = generate_password_hash(password, method='sha256', salt_length=8)
+            query = db.execute("UPDATE Customer SET Password= :password WHERE CustomerID= :id",password=hashed, id=session["user_id"])
+            return redirect("/edituserinfo")
+
+        if request.form.get("address"):
+            query = db.execute("UPDATE Customer SET Address = :address WHERE CustomerID= :id",address=request.form.get("address"), id=session["user_id"])
+            return redirect("/edituserinfo")
+        
+        if request.form.get("phone"):
+            if not request.form.get("phone").isnumeric():
+                return apology("Phone Number is not valid")
+            query = db.execute("UPDATE Customer SET PhoneNumber = :phone WHERE CustomerID= :id",phone=request.form.get("phone"), id=session["user_id"])
+            return redirect("/edituserinfo")
+        
+        return apology("Please fill the whole form")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("edituserinfo.html", categories=categories, row=rows[0])
+
 
 def errorhandler(e):
     """Handle error"""

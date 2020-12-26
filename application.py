@@ -38,6 +38,7 @@ db = SQL("sqlite:///OnlineStore.db")
 def GetCategories():
     categories=db.execute("Select * from Categories")
     return categories
+
 @app.route("/")
 def index():
     """Show portfolio of stocks"""
@@ -176,10 +177,16 @@ def register():
     categories=GetCategories()
 
     if request.method == "POST":
+
+        #check that all fields are given
         if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("fname") or not request.form.get("lname") or not request.form.get("address") or not request.form.get("phonenumber"):
             return apology("something is missing!")
+        
+        #check that passwords match
         if not (request.form.get("password")==request.form.get("confirmation")):
             return apology("password doesn't match")
+
+        #get the fields data
         username = request.form.get("username")
         password = request.form.get("password")
         hashed = generate_password_hash(password, method='sha256', salt_length=8)
@@ -187,11 +194,36 @@ def register():
         lname = request.form.get("lname")
         address = request.form.get("address")
         phonenumber = request.form.get("phonenumber")
+
+        #Check that username doesn't exist
+        query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("username"))
+        if len(query) != 0:
+            return apology("Username Already Exists", 403)
+
+        #check that phonenumber is digits
         if not phonenumber.isnumeric():
             return apology("Phone Number is not valid")
+
+        #insert the Customer into database
         rows = db.execute("INSERT INTO Customer (Username, Password, FirstName, LastName, Address, PhoneNumber) VALUES(:username, :hashed, :fname, :lname, :address, :phonenumber)", username=username, hashed=hashed, fname=fname, lname=lname, address=address, phonenumber=phonenumber)
-        if not rows:
-            return apology("Username already exists")
+
+        #Get The Generated CustomerID
+        query = db.execute("SELECT CustomerID from Customer WHERE Username= :username", username=username)
+        id = query[0]["CustomerID"]
+
+        #Check if the id is divisble by 10 to get 100 L.E. Voucher 
+        vouchervalue=0
+        if (id % 10 == 0):
+            vouchervalue=100
+        
+        #Get Unique Reigsteration Code from ID
+        id = str(id)
+        registerationcode = generate_password_hash(id, method='sha256', salt_length=6)
+        registerationcode = registerationcode[7:13]
+
+        #Update Customer Data
+        rows = db.execute("UPDATE Customer SET RegisterationCode= :code, VoucherValue= :value, CodeShares = 10 WHERE Username= :username", code=registerationcode, value=vouchervalue, username=username)
+
         return render_template("login.html", rows = rows)
 
     else:
@@ -245,12 +277,15 @@ def edituserinfo():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        #Check that the user entered his password
         if not request.form.get("password"):
             return apology("Please Enter your password", 403)
 
+        #Check that the entered password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
             return apology("Wrong password", 403)
 
+        #Check if he is changing his username
         if request.form.get("uname"):
             query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("uname"))
             if len(query) != 0:
@@ -258,10 +293,12 @@ def edituserinfo():
             query = db.execute("UPDATE Customer SET Username= :username WHERE CustomerID= :id",username=request.form.get("uname"), id=session["user_id"])
             return redirect("/edituserinfo")
 
+        #Check if he is changing his name
         if request.form.get("fname") and request.form.get("lname"):
             query = db.execute("UPDATE Customer SET FirstName = :fname, LastName = :lname WHERE CustomerID= :id",fname=request.form.get("fname"),lname=request.form.get("lname"), id=session["user_id"])
             return redirect("/edituserinfo")
 
+        #Check if he is changing his password
         if request.form.get("newpassword") and request.form.get("confirmpassword"):
             if not (request.form.get("newpassword")==request.form.get("confirmpassword")):
                 return apology("password doesn't match")
@@ -270,10 +307,12 @@ def edituserinfo():
             query = db.execute("UPDATE Customer SET Password= :password WHERE CustomerID= :id",password=hashed, id=session["user_id"])
             return redirect("/edituserinfo")
 
+        #Check if he is changing his address
         if request.form.get("address"):
             query = db.execute("UPDATE Customer SET Address = :address WHERE CustomerID= :id",address=request.form.get("address"), id=session["user_id"])
             return redirect("/edituserinfo")
         
+        #Check if he is changing his phonenumber
         if request.form.get("phone"):
             if not request.form.get("phone").isnumeric():
                 return apology("Phone Number is not valid")

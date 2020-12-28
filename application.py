@@ -224,6 +224,29 @@ def edituserinfo():
         return render_template("edituserinfo.html", categories=categories, row=rows[0])
 
 
+@app.route("/search",methods=["GET","POST"])
+def search():
+    
+    categories=GetCategories()
+
+    # # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        # Ensure search was submitted
+        if not request.form.get("search"):
+            return 'No Items to display' # TODO
+
+        # Query database for product 
+        pName=request.form.get("search")
+        Products = db.execute("SELECT * FROM Product WHERE [Product Name] LIKE '%{pName}%';")
+        # return 'You searched for '+ search
+        # Products={"Pruduct Name":"Product1","Price":1440}
+        # Redirect user to home page
+        return render_template("search.html",Products=Products,categories=categories)
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return redirect("/search")
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
@@ -234,7 +257,8 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
-#what a fancy function
+
+
 
 
 # @app.route("/check", methods=["GET"])

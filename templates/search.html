@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
+{% block main %}
+<h1>Search Results</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th> Product ID </th>
+            <th> Product Description </th>
+            <th> Price </th>
+            <th> Quantity  </th>
+            <th> In Stock </th>
+            <th> Rating </th>
+            <th> Image URL </th>
+            <th> Supplier ID </th>
+            <th> Category ID </th>
+        </tr>
+        </thead>
+    {% for prod in Products %}
+    <tr>
+        <td>{{  }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

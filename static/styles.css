@@ -47,3 +47,31 @@ main img
     /* constrain images on small screens */
     max-width: 100%;
 }
+
+
+/* ======= Style OF Profile Page ======== */
+
+main a.Orders
+{
+    text-decoration:none;
+}
+main a.EditProfile
+{
+    text-decoration:none;
+}
+main a.Transaction
+{
+    text-decoration:none;
+    border:10cm;
+    border-color: black;
+}
+
+
+main div.Cell3
+{
+    margin: 0px 0px 0px 100px;
+}
+main div.Row
+{
+    display:inline-flex;
+}

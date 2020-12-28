@@ -223,12 +223,11 @@ def edituserinfo():
     else:
         return render_template("edituserinfo.html", categories=categories, row=rows[0])
 
-@app.route("/Transactions", methods=["GET", "POST"])
+@app.route("/Profile", methods=["GET", "POST"])
 def Profile():
-
-
-
-    return render_template("Transactions.html") #, rows = rows)
+    categories=GetCategories()
+    
+    return render_template("Profile.html") #, rows = rows)
 
 
 @app.route("/search",methods=["GET","POST"])

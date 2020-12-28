@@ -223,6 +223,13 @@ def edituserinfo():
     else:
         return render_template("edituserinfo.html", categories=categories, row=rows[0])
 
+@app.route("/Profile", methods=["GET", "POST"])
+def Profile():
+
+
+
+    return render_template("Profile.html") #, rows = rows)
+
 
 def errorhandler(e):
     """Handle error"""

@@ -5,11 +5,15 @@ Search Results
 {% endblock %}
 
 {% block main %}
+{% if Products|length < 1 %}
+    <h1>No Results Found</h1>
+{% else %}
 <h1>Search Results</h1>
 <table class="table table-striped">
     <thead>
         <tr>
             <th> Product ID </th>
+            <th> Product Name</th>
             <th> Product Description </th>
             <th> Price </th>
             <th> Quantity  </th>
@@ -23,16 +27,17 @@ Search Results
     {% for prod in Products %}
     <tr>
         <td>{{prod.ProductID}}</td>
+        <td>{{prod.ProductName}}</td>
         <td>{{prod.ProductDescription}}</td>
         <td>{{prod.Price}}</td>
         <td>{{prod.Quantity}}</td>
         <td>{{prod.InStock}}</td>
         <td>{{prod.Rating}}</td>
-        <td>{{prod.ImageURL}}</td>
+        <td><img href="{{prod.ImageURL}}"></td>
         <td>{{prod.SupplierID}}</td>
-        <td>{{prod.CateogryID}}</td>
+        <td>{{prod.CategoryID}}</td>
     </tr>
     {% endfor %}
 </table>
-
+{% endif %}
 {% endblock %}

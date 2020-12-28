@@ -1,10 +1,57 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Profile Page
 {% endblock %}
 
-{% block main %}
+{% block main %}   
+<form action="/Profile" method="GET"></form>
+    <div class = "Row">
+        <div class = "Cell1">
 
+           <a href="/Orders" class="Orders"> 
+            <div class="Image1" >
+                    <img  width = "400" height = "250" alt="Your Orders" src="https://www.alfarescargo.com/wp-content/uploads/2018/10/Packing-Optimization-Select-Right-Box.png" class = "Image1"> <!-- Change Link -->
+            </div>
+            
+            <div>
+                <h2 class="Orders">
+                    Your Orders
+                </h2>
+            </div>
+                
+            <div> 
+                <span class="Options1">Track and Cancel</span> </div>
+            </div>
 
+        <div class = "Cell2" >
+            
+            <a href="/EditProfile" class="EditProfile">
+            <div class="Image2">
+                <img width = "300" height = "250" alt="EditProfile" src = "https://media.istockphoto.com/vectors/laptop-login-password-data-secure-lock-padlock-thin-line-flat-icon-vector-id912318930?k=6&m=912318930&s=170667a&w=0&h=eGx333YqVZKRBmqA6y5dPQtN5D0chbePljS7kAcRCxg="  class = "Image2"> <!-- Change Link -->
+            </div>
+            
+            <div>
+                <h2 class="Edit">Login & Security </h2>
+            </div>
+            
+            <div> <span class="Options2">Edit login, name, password, payment method and mobile number</span> </div>
+
+        </div>
+
+        <div class = "Cell3" display:inline>
+            
+            <a href="/Transactions" class="Transaction">
+            <div class="Image3">
+                <img width = "150" height = "250" alt="Trans" src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgc_tkazP6SEMgciIwD1QvvKq4lyUunl_f2g&usqp=CAU"  class = "Image3"> <!-- Change Link -->
+            </div>
+            
+            <div>
+                <h2 class="Transactions">Transactions</h2>
+            </div>
+            
+            <div> <span class="Options3">Track, Refund  and buy things again</span> </div>
+
+        </div>
+    </div>
 {% endblock %}

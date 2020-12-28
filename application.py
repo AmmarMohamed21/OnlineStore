@@ -244,7 +244,7 @@ def search():
 
         # Query database for product 
         pName=request.form.get("search")
-        Products = db.execute("SELECT * FROM Product WHERE [Product Name] LIKE '%{pName}%';")
+        Products = db.execute("SELECT * FROM Product WHERE [ProductName] LIKE '%{pName}%';")
         # return 'You searched for '+ search
         # Products={"Pruduct Name":"Product1","Price":1440}
         # Redirect user to home page

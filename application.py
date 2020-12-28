@@ -235,18 +235,22 @@ def search():
     
     categories=GetCategories()
 
+    # search is the id of the class of the form
+    # action="/search" added in layout form
+    # name=search in input (not sure if it matters)
+
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Ensure search was submitted
         if not request.form.get("search"):
-            return 'No Items to display' # TODO
-
-        # Query database for product 
-        pName=request.form.get("search")
-        Products = db.execute("SELECT * FROM Product WHERE [Product Name] LIKE '%{pName}%';")
-        # return 'You searched for '+ search
-        # Products={"Pruduct Name":"Product1","Price":1440}
-        # Redirect user to home page
+            Products=[]
+        else:
+            # Query database for product 
+            pName=request.form.get("search")
+            Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{pName}%';")
+            # return 'You searched for '+ search
+            # Redirect user to home page
+        
         return render_template("search.html",Products=Products,categories=categories)
 
     # User reached route via GET (as by clicking a link or via redirect)

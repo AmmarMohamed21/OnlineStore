@@ -1,27 +1,76 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Transactions
+    Transaction
 {% endblock %}
 
-{% block main %}
-    <form action="/Transactions" method="GET"></form>
-    <div class = "Row">
-        <div class = "Cell1">
+{% block main %}   
+<form action="/trans" method="GET"></form>
 
-           <a href="/Orders" class="Orders"> 
-            <div class="Image1" >
-                    <img  width = "400" height = "250" alt="Your Orders" src="https://www.alfarescargo.com/wp-content/uploads/2018/10/Packing-Optimization-Select-Right-Box.png" class = "Image1"> <!-- Change Link -->
-            </div>
-            
-            <div>
-                <h2 class="Orders">
-                    Your Orders
-                </h2>
-            </div>
-                
-            <div> 
-                <span class="Options1">Track and Cancel</span> </div>
-            </div>
-        </div>>
+{% for row in rows %}
+    <table class = "TransactionH">
+        <thead class = "Head">  
+            <tr class = "H1">
+                <th class = "Const"> Date: </th>
+                <th class = "Var"> 1/4/2000 </th>
+                <th class = "Const"> Transaction ID: </th>
+                <th class = "Var"> 123456789 </th>
+            </tr>
+            <tr class = "H2">
+                <th class = "Const"> Customer: </th>
+                <th class = "Var"> Ahmed Ayman Ahmed Ibrahim </th>
+                <th class = "Const"> Payment Method: </th>
+                <th class = "Var"> Cash </th>
+            </tr>
+            <tr class = "H3">
+                <th class = "Const"> Price: </th>
+                <th class = "Var"> 100$ </th>
+            </tr>
+        </thead>
+    </table>
+
+    <table class = "TransactionB">
+        <thead> 
+            <tr>
+                <th class = "Fix"> Product </th>
+                <th class = "Fix"> Quantity </th>
+                <th class = "Fix"> SubPrice </th>
+                <th class = "Fix"> Price </th>
+                <th class = "Fix"> Refund </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr class = "T1R1">
+                <td class = "T1R1D1"> Mobile </td>
+                <td class = "T1R1D2"> 4 </td>
+                <td class = "T1R1D3"> 100$ </td>
+                <td class = "T1R1D4"> 400$ </td>
+                <td class = "T1R1D5"> Refund </td>
+            </tr> 
+            <tr class = "T1R2">
+                <td class = "T1R2D1"> LabTop </td>
+                <td class = "T1R2D2"> 1 </td>
+                <td class = "T1R3D3"> 1000$ </td>
+                <td class = "T1R4D4"> 1000$ </td>
+                <td class = "T1R2D5"> Refund </td>
+            </tr>
+            <tr class = "T1R3">
+                <td class = "T1R3D1"> Book </td>
+                <td class = "T1R3D2"> 2 </td>
+                <td class = "T1R3D3"> 10$ </td>
+                <td class = "T1R3D4"> 20$ </td>
+                <td class = "T1R3D5"> Refund </td>
+            </tr>
+            <tr class = "T1R4">
+                <td class = "T1R4D1"> Car </td>
+                <td class = "T1R4D2"> 1 </td>
+                <td class = "T1R4D3"> 25000$ </td>
+                <td class = "T1R4D4"> 25000$ </td>
+                <td class = "T1R4D5"> Refund </td>
+            </tr>
+        </tbody>
+
+{% endfor %}
+    </table>
 {% endblock %}

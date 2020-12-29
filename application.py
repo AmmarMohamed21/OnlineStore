@@ -224,10 +224,16 @@ def edituserinfo():
         return render_template("edituserinfo.html", categories=categories, row=rows[0])
 
 @app.route("/Profile", methods=["GET", "POST"])
+@login_required
 def Profile():
     categories=GetCategories()
-    
-    return render_template("Profile.html") #, rows = rows)
+    return render_template("Profile.html",categories=categories) #, rows = rows)
+
+@app.route("/Transactions", methods=["GET", "POST"])
+@login_required
+def transactions():
+    categories=GetCategories()
+    return render_template("Transactions.html",categories=categories) #, rows = rows)
 
 
 @app.route("/search",methods=["GET","POST"])

@@ -75,3 +75,39 @@ main div.Row
 {
     display:inline-flex;
 }
+
+/* ===========  Style OF Transaction  =========== */
+main th.Const
+{
+    font-size: 25px;
+    color:grey;
+    padding-right:5px;
+
+}
+main th.Var
+{
+    font-size: 20px;
+    color:darkcyan;
+    padding-right:75px;
+    text-align: left;
+
+}
+main th.Fix
+{
+    font-size: 25px;
+    color:mediumseagreen;
+    padding-right:100px;
+    background-color:darkcyan;
+}
+main table.TransactionB
+{
+    border: 5px solid darkcyan;
+}
+
+main tbody
+{
+    font-weight: 500;
+    font-size: 25px;
+    color:darkslategray;
+    text-align: left;
+}

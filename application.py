@@ -232,10 +232,19 @@ def Profile():
 @app.route("/Transactions", methods=["GET", "POST"])
 @login_required
 def transactions():
+    
+        #load categories list
     categories=GetCategories()
-    return render_template("Transactions.html",categories=categories) #, rows = rows)
+    
+        #Get Current User Info
+    userid = session["user_id"]
+        # Get Transaction Info
+ 
+    rows = db.execute("SELECT * FROM Transactions WHERE CustomerID = :id",
+                         id=session["user_id"])
 
-
+    return render_template("Transactions.html",categories=categories, rows = rows)
+ 
 @app.route("/search",methods=["GET","POST"])
 def search():
     

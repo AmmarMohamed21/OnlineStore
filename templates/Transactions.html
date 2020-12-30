@@ -7,24 +7,26 @@
 {% block main %}   
 <form action="/Transactions" method="GET"></form>
 
-{% for row in rows %}
+
+{% for Cust in CustomerInfo %}
+{% for row in rows%}
     <table class = "TransactionH">
         <thead class = "Head">  
             <tr class = "H1">
                 <th class = "Const"> Date: </th>
-                <th class = "Var"> 1/4/2000 </th>
+                <th class = "Var"> {{row.TransactionDate}} </th>
                 <th class = "Const"> Transaction ID: </th>
-                <th class = "Var"> 123456789 </th>
+                <th class = "Var"> {{row.TransactionID}} </th>
             </tr>
             <tr class = "H2">
                 <th class = "Const"> Customer: </th>
-                <th class = "Var"> Ahmed Ayman Ahmed Ibrahim </th>
+                <th class = "Var"> {{CustomerInfo[0].FirstName}} </th> <!-- Error -->
                 <th class = "Const"> Payment Method: </th>
-                <th class = "Var"> Cash </th>
+                <th class = "Var"> {{row.PaymentMethod}} </th>
             </tr>
             <tr class = "H3">
                 <th class = "Const"> Price: </th>
-                <th class = "Var"> 100$ </th>
+                <th class = "Var"> {{row.Price}} </th>
             </tr>
         </thead>
     </table>
@@ -70,7 +72,7 @@
                 <td class = "T1R4D5"> Refund </td>
             </tr>
         </tbody>
-
-{% endfor %}
     </table>
+{% endfor %}
+{% endfor %}
 {% endblock %}

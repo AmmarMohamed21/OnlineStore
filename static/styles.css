@@ -65,17 +65,23 @@ main a.Transaction
     border:10cm;
     border-color: black;
 }
-
+main a.PromoCode
+{
+    text-decoration:none;
+}
 
 main div.Cell3
 {
     margin: 0px 0px 0px 100px;
 }
-main div.Row
+main div.Row1
 {
     display:inline-flex;
 }
-
+main div.Row2
+{
+    display:inline-flex;
+}
 /* ===========  Style OF Transaction  =========== */
 main th.Const
 {
@@ -109,5 +115,10 @@ main tbody
     font-weight: 500;
     font-size: 25px;
     color:darkslategray;
+    text-align: left;
+}
+main button
+{
+    background-color: #537fbe;
     text-align: left;
 }

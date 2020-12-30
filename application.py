@@ -241,10 +241,22 @@ def transactions():
     rows = db.execute("SELECT * FROM Transactions WHERE CustomerID = :id",
                          id=session["user_id"])
     CustomerInfo = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
-                         id=session["user_id"])
+                        id=session["user_id"])
     
-    return render_template("Transactions.html",categories=categories, CustomerInfo = CustomerInfo , rows = rows )
- 
+    TransConPro = 0
+    for i in rows:
+        TransConPro = db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
+                            id= rows[i]["TransactionID"])
+
+    Product = 0
+    for i in TransConPro:
+        Product = db.execute("SELECT * FROM Product WHERE ProductID = :id",
+                            id= TransConPro[i]["ProductID"])
+
+    return render_template("Transactions.html",categories=categories,
+    TransConPro = TransConPro,  Product = Product , CustomerInfo = CustomerInfo , rows = rows )
+
+      
 @app.route("/search",methods=["GET","POST"])
 def search():
     

@@ -42,15 +42,26 @@
 
         <tbody>
             {% for Trans in TransConPro %}
+                {% if row.TransactionID == Trans.TransactionID %}
                     <tr class = "T1R1">
                     <td> {{ Product[Trans].ProductName }} </td>
                     <td> {{ Trans.Quantity }} </td>
                     <td> {{ Product[Trans].Price }} </td>
                     <td> {{ Trans.Quantity }} * {{ Product[Trans].Price }} </td>
-                    <td> Refund </td> 
-                    </tr> 
+                    <td> <button class = "Refund"> Refund </button> </td> 
+                    </tr>
+                {% endif %} 
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td> <button class = "RefundAll"> Refund All </button> </td> 
+            </tr>
+        </tfoot>
     </table>
 <br><br><br><br><br><br>
 {% endfor %}

@@ -42,7 +42,6 @@
 
         <tbody>
             {% for Trans in TransConPro %}
-                {% if {{row.TransactionID}} = {{Trans.TransactionID}} %}
                     <tr class = "T1R1">
                     <td> {{ Product[Trans].ProductName }} </td>
                     <td> {{ Trans.Quantity }} </td>

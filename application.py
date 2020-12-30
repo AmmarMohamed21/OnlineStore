@@ -235,19 +235,15 @@ def transactions():
     
         #load categories list
     categories=GetCategories()
-    
-        #Get Current User Info
-    userid = session["user_id"]
-    TransID = request.form.get("TransactionID")
+
         # Get Transaction Info
  
     rows = db.execute("SELECT * FROM Transactions WHERE CustomerID = :id",
                          id=session["user_id"])
     CustomerInfo = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
                          id=session["user_id"])
-    CustomerInfo = db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
-                         id=TransID)
-    return render_template("Transactions.html",categories=categories, CustomerInfo = CustomerInfo , rows = rows , )
+    
+    return render_template("Transactions.html",categories=categories, CustomerInfo = CustomerInfo , rows = rows )
  
 @app.route("/search",methods=["GET","POST"])
 def search():

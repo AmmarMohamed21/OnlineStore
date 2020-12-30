@@ -7,8 +7,6 @@
 {% block main %}   
 <form action="/Transactions" method="GET"></form>
 
-
-{% for Cust in CustomerInfo %}
 {% for row in rows%}
     <table class = "TransactionH">
         <thead class = "Head">  
@@ -20,7 +18,7 @@
             </tr>
             <tr class = "H2">
                 <th class = "Const"> Customer: </th>
-                <th class = "Var"> {{CustomerInfo[0].FirstName}} </th> <!-- Error -->
+                <th class = "Var"> {{CustomerInfo[0].FirstName}} {{CustomerInfo[0].LastName}} </th> <!-- Error -->
                 <th class = "Const"> Payment Method: </th>
                 <th class = "Var"> {{row.PaymentMethod}} </th>
             </tr>
@@ -30,7 +28,7 @@
             </tr>
         </thead>
     </table>
-
+    <br>
     <table class = "TransactionB">
         <thead> 
             <tr>
@@ -43,36 +41,18 @@
         </thead>
 
         <tbody>
-            <tr class = "T1R1">
-                <td class = "T1R1D1"> Mobile </td>
-                <td class = "T1R1D2"> 4 </td>
-                <td class = "T1R1D3"> 100$ </td>
-                <td class = "T1R1D4"> 400$ </td>
-                <td class = "T1R1D5"> Refund </td>
-            </tr> 
-            <tr class = "T1R2">
-                <td class = "T1R2D1"> LabTop </td>
-                <td class = "T1R2D2"> 1 </td>
-                <td class = "T1R3D3"> 1000$ </td>
-                <td class = "T1R4D4"> 1000$ </td>
-                <td class = "T1R2D5"> Refund </td>
-            </tr>
-            <tr class = "T1R3">
-                <td class = "T1R3D1"> Book </td>
-                <td class = "T1R3D2"> 2 </td>
-                <td class = "T1R3D3"> 10$ </td>
-                <td class = "T1R3D4"> 20$ </td>
-                <td class = "T1R3D5"> Refund </td>
-            </tr>
-            <tr class = "T1R4">
-                <td class = "T1R4D1"> Car </td>
-                <td class = "T1R4D2"> 1 </td>
-                <td class = "T1R4D3"> 25000$ </td>
-                <td class = "T1R4D4"> 25000$ </td>
-                <td class = "T1R4D5"> Refund </td>
-            </tr>
+            {% for Trans in TransConPro %}
+                {% if {{row.TransactionID}} = {{Trans.TransactionID}} %}
+                    <tr class = "T1R1">
+                    <td> {{ Product[Trans].ProductName }} </td>
+                    <td> {{ Trans.Quantity }} </td>
+                    <td> {{ Product[Trans].Price }} </td>
+                    <td> {{ Trans.Quantity }} * {{ Product[Trans].Price }} </td>
+                    <td> Refund </td> 
+                    </tr> 
+            {% endfor %}
         </tbody>
     </table>
-{% endfor %}
+<br><br><br><br><br><br>
 {% endfor %}
 {% endblock %}

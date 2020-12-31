@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit User Info
+{% endblock %}
+
+{% block main %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+    <p style="font-size:x-large; font-weight: bold;" class="text-info">Share your Registration Code with up to 10 friends and get 50 L.E. voucher value for each!</p> 
+    <div class="border border-primary shadow p-2 mb-2 bg-white rounded" style="width:fit-content; margin:auto; padding-top:10px; padding-bottom:10px;font-size:xx-large; font-weight: bolder;"> {{row.RegisterationCode}} </div>
+    <div> {{row.CodeShares}} shares remaining</div>
+</div>
+
+
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+    <div style="font-size:x-large; font-weight: bold; padding-bottom: 20px;">
+        Add Promo Code to add to your Voucher!
+    </div>
+    <form action="/PromoCode" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="code" placeholder="Promo Code" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Enter</button>
+    </form>
+</div>
+
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+    <div style="font-size:x-large; font-weight: bold; padding-bottom: 20px;">
+        Your Current Voucher Value: <p class="border border-primary text-info shadow p-2 mb-2 rounded " style="width:fit-content; margin:auto; padding-top:10px; padding-bottom:10px;""> {{row.VoucherValue}} L.E. </p>
+    </div>
+</div>
+{% endblock %}

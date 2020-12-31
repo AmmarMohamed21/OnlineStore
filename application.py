@@ -291,6 +291,50 @@ def errorhandler(e):
     return apology(e.name, e.code)
 
 
+@app.route("/PromoCode", methods=["GET", "POST"])
+@login_required
+def PromoCode():
+    """Edit User Info"""
+    
+    #load categories list
+    categories=GetCategories()
+
+    #Get Current User Info
+    rows = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
+                         id=session["user_id"])
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        if not request.form.get("code"): #Check it's not empty
+             return apology("Please enter Promo Code", 403)
+
+        #Check that the user hasn't entered a promo code before
+        if rows[0]["PromoCode"] is not None:
+            return apology("You have entered a Promo Code before", 403)
+
+        promo = request.form.get("code")
+        #Check the entered code isn't his code
+        if rows[0]["RegisterationCode"] == promo :
+            return apology("Promo Code isn't valid", 403)
+        
+        #Check if the promo code exists
+        query = db.execute("SELECT * FROM Customer WHERE RegisterationCode= :code", code=promo)
+        if len(query) != 1:
+            return apology("Promo Code isn't valid", 403)
+        
+        #Check the number of shares isn't zero
+        shares=query[0]["CodeShares"]
+        if shares == 0:
+            return apology("Promo Code isn't valid", 403)
+        
+        query = db.execute("UPDATE Customer SET CodeShares=CodeShares-1, VoucherValue = VoucherValue + 50 WHERE RegisterationCode= :code",code=promo)
+        query = db.execute("UPDATE Customer SET PromoCode= :code, VoucherValue = VoucherValue + 100 WHERE CustomerID= :id",code=promo, id=session["user_id"])
+        return redirect("/PromoCode")
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("PromoCode.html", categories=categories, row=rows[0])
+
+
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)

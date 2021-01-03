@@ -243,15 +243,16 @@ def Transactions():
     CustomerInfo = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
                         id=session["user_id"])
     
-    TransConPros = 0
+    TransConPros = []
     for row in rows:
-        TransConPros = db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
-        id= rows[row]["TransactionID"])
+        TransConPros.append(db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
+        id= row["TransactionID"]))
 
-    Product = 0
+    Product = []
     for TransConPro in TransConPros:
-        Product = db.execute("SELECT * FROM Product WHERE ProductID = :id",
-        id= TransConPro[TransConPro]["ProductID"])
+        for row in TransConPro:
+            Product.append(db.execute("SELECT * FROM Product WHERE ProductID = :id",
+            id= row["ProductID"]))
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
     rows = rows , TransConPros = TransConPros , Product = Product )

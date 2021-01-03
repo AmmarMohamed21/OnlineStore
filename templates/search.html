@@ -31,28 +31,29 @@ Search Results
     <table class="table table-striped">
         <thead>
             <tr>
-                <th> Product ID </th>
+                
+                <th> Image</th>
                 <th> Product Name</th>
                 <th> Product Description </th>
                 <th> Price </th>
+                <th> Rating </th>
+                <th> Product ID </th>
                 <th> Quantity </th>
                 <th> In Stock </th>
-                <th> Rating </th>
-                <th> Image</th>
                 <th> Supplier ID </th>
                 <th> Category ID </th>
             </tr>
         </thead>
         {% for prod in Products %}
         <tr>
-            <td>{{prod.ProductID}}</td>
+            <td><img src="{{prod.ImageURL}}" style="max-width:300px; max-height:200px;" ></td>
             <td>{{prod.ProductName}}</td>
             <td>{{prod.ProductDescription}}</td>
             <td>{{prod.Price}}</td>
+            <td>{{prod.Rating}}</td>
+            <td>{{prod.ProductID}}</td>
             <td>{{prod.Quantity}}</td>
             <td>{{prod.InStock}}</td>
-            <td>{{prod.Rating}}</td>
-            <td><img src="{{prod.ImageURL}}"></td>
             <td>{{prod.SupplierID}}</td>
             <td>{{prod.CategoryID}}</td>
         </tr>

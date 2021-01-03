@@ -12,6 +12,7 @@ Search Results
     <form class="d-flex" method="POST" action="{{ url_for('search') }}" style="padding-right: 20px;">
         <div class="form-group">
             <div class="input-group">
+                <input type="hidden" name="search_for" value="{{ search_for }}">
                 <span class="input-group-addon" style="padding-right:20px; padding-top: 10px;">Sort By</span>
                 <select name="sortby" aria-labelledby="dropdownMenuButton">
                     <option value="Name(A-Z)">Name(A-Z)</option>
@@ -20,8 +21,6 @@ Search Results
                     <option value="Price(High-Low)">Price(High-Low)</option>
                     <option value="Rating (5-1)">Rating (5-1)</option>
                     <option value="Rating (1-5)">Rating (1-5)</option>
-                    <option value="Date (new first)">Date (new first)</option>
-                    <option value="Date (old first)">Date (old first)</option>
                 </select>
                 <div style="padding-left: 20px;">
                     <button type="submit" class="btn btn-secondary">Search</button>

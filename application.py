@@ -268,21 +268,35 @@ def search():
 
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        if not request.form.get("search") and not request.form.get("sortby"):
-            return 'nothing sir'
-        elif not request.form.get("search"):
-            return request.form.get("sortby")
+        if  request.form.get("sortby"):
+            sorting_way=request.form.get("sortby")
+            search_for=request.form.get("search_for")
+            order_by=""
+            if sorting_way=="Name(A-Z)":
+                order_by="ProductName"    
+            elif sorting_way=="Name(Z-A)":
+                order_by="ProductName desc"
+            elif sorting_way=="Price(Low-High)":
+                order_by="Price"
+            elif sorting_way=="Price(High-Low)":
+                order_by="Price DESC"
+            elif sorting_way=="Rating (5-1)":
+                order_by="Rating DESC"    
+            elif sorting_way=="Rating (1-5)":
+                order_by="Rating"
+            Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{search_for}%' order by {order_by};")
         # Ensure search was submitted
-        if not request.form.get("search"):
+        elif not request.form.get("search"):
             Products=[]
         else:
             # Query database for product 
             pName=request.form.get("search")
+            search_for=pName
             Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{pName}%';")
             # return 'You searched for '+ search
             # Redirect user to home page
         
-        return render_template("search.html",Products=Products,categories=categories)
+        return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:

@@ -246,16 +246,16 @@ def Transactions():
     TransConPro = 0
     for i in rows:
         TransConPro = db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
-                            id= rows[i]["TransactionID"])
+        id= rows[i]["TransactionID"])
 
     Product = 0
     for i in TransConPro:
         Product = db.execute("SELECT * FROM Product WHERE ProductID = :id",
-                            id= TransConPro[i]["ProductID"])
+        id= TransConPro[i]["ProductID"])
 
-    return render_template("Transactions.html" ,categories=categories,
-    TransConPro = TransConPro,  Product = Product , CustomerInfo = CustomerInfo , rows = rows )
-
+    return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
+    rows = rows, TransConPro = TransConPro , Product = Product )
+        
       
 @app.route("/search",methods=["GET","POST"])
 def search():

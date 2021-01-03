@@ -253,7 +253,7 @@ def Transactions():
         Product = db.execute("SELECT * FROM Product WHERE ProductID = :id",
                             id= TransConPro[i]["ProductID"])
 
-    return render_template("Transactions.html",categories=categories,
+    return render_template("Transactions.html" ,categories=categories,
     TransConPro = TransConPro,  Product = Product , CustomerInfo = CustomerInfo , rows = rows )
 
       

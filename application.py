@@ -266,20 +266,23 @@ def search():
     # search is the id of the class of the form
     # action="/search" added in layout form
     # name=search in input (not sure if it matters)
-
+    search_for=""
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         if  request.form.get("sortby"):
             sorting_way=request.form.get("sortby")
             search_for=request.form.get("search_for")
             order_by=""
-            if sorting_way=="Price(Low-High)":
-                order_by="Price"
-            elif sorting_way=="Price(High-Low)":
-                order_by="Price DESC"
-            elif sorting_way=="Rating (5-1)":
-                order_by="Rating DESC"    
-            Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{search_for}%' order by {order_by};")
+            if sorting_way and search_for:
+                if sorting_way=="Price(Low-High)":
+                    order_by="Price"
+                elif sorting_way=="Price(High-Low)":
+                    order_by="Price DESC"
+                elif sorting_way=="Rating (5-1)":
+                    order_by="Rating DESC" 
+                Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by {order_by};")
+            else:
+                Products=[]
         # Ensure search was submitted
         elif not request.form.get("search"):
             Products=[]
@@ -287,7 +290,7 @@ def search():
             # Query database for product 
             pName=request.form.get("search")
             search_for=pName
-            Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{pName}%';")
+            Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{pName}%' or ProductDescription LIKE '%{pName}%');")
             # return 'You searched for '+ search
             # Redirect user to home page
         

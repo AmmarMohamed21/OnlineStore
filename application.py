@@ -231,7 +231,7 @@ def Profile():
 
 @app.route("/Transactions", methods=["GET", "POST"])
 @login_required
-def transactions():
+def Transactions():
     
         #load categories list
     categories=GetCategories()

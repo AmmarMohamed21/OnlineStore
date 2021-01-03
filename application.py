@@ -268,6 +268,10 @@ def search():
 
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+        if not request.form.get("search") and not request.form.get("sortby"):
+            return 'nothing sir'
+        elif not request.form.get("search"):
+            return request.form.get("sortby")
         # Ensure search was submitted
         if not request.form.get("search"):
             Products=[]

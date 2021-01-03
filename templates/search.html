@@ -5,39 +5,109 @@ Search Results
 {% endblock %}
 
 {% block main %}
-{% if Products|length < 1 %}
-    <h1>No Results Found</h1>
-{% else %}
-<h1>Search Results</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th> Product ID </th>
-            <th> Product Name</th>
-            <th> Product Description </th>
-            <th> Price </th>
-            <th> Quantity  </th>
-            <th> In Stock </th>
-            <th> Rating </th>
-            <th> Image</th>
-            <th> Supplier ID </th>
-            <th> Category ID </th>
-        </tr>
+{% if Products|length < 1 %} <h1>No Results Found</h1>
+    {% else %}
+<!-- 
+    <form class="d-flex" method="POST" action="{{ url_for('search') }}" style="padding-right: 20px;">
+        <div class="form-group">
+          <div class="input-group">
+              <span class="input-group-addon">Sort By</span>
+                  <select name="sortby" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <option value="Name(A-Z)">Name(A-Z)</option>
+                    <option value="Name(Z-A)">Name(Z-A)</option>
+                    <option value="Price(Low-High)">Price(Low-High)</option>
+                    <option value="Price(High-Low)">Price(High-Low)</option>
+                    <option value="Rating (5-1)">Rating (5-1)</option>
+                    <option value="Rating (1-5)">Rating (1-5)</option>
+                    <option value="Date (new first)">Date (new first)</option>
+                    <option value="Date (old first)">Date (old first)</option>
+                  </select>
+                  <br>
+                  <button type="submit" class="btn btn-secondary">search</button>
+          </div>
+        </div>
+      </form>       
+    </div> -->
+    <form class="d-flex" method="POST" action="{{ url_for('search') }}" style="padding-right: 20px;">
+        <div class="dropdown">
+          <div class="input-group">
+              <span class="input-group-addon">Sort By</span>
+                  <select name="sortby" aria-labelledby="dropdownMenuButton">
+                    <option value="Name(A-Z)">Name(A-Z)</option>
+                    <option value="Name(Z-A)">Name(Z-A)</option>
+                    <option value="Price(Low-High)">Price(Low-High)</option>
+                    <option value="Price(High-Low)">Price(High-Low)</option>
+                    <option value="Rating (5-1)">Rating (5-1)</option>
+                    <option value="Rating (1-5)">Rating (1-5)</option>
+                    <option value="Date (new first)">Date (new first)</option>
+                    <option value="Date (old first)">Date (old first)</option>
+                  </select>
+                  <button type="submit" class="btn btn-secondary">search</button>
+          </div>
+        </div>
+      </form>
+
+
+    <!-- <form class="d-flex" action="/search" method="POST" style="padding-right: 20px;">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                
+                <li><input name="sortby" type="submit" value="Name(A-Z)"></li>
+                <li><input name="sortby" type="submit" value="Name(A-Z)"></li>
+                <li><input name="sortby" type="submit" value="Name(Z-A)"></li>
+                <li><input name="sortby" type="submit" value="Price(Low-High)"></li>
+                <li><input name="sortby" type="submit" value="Price(High-Low)"></li>
+                <li><input name="sortby" type="submit" value="Rating (5-1)"></li>
+                <li><input name="sortby" type="submit" value="Rating (1-5)"></li>
+                <li><input name="sortby" type="submit" value="Date (new first)"></li>
+                <li><input name="sortby" type="submit" value="Date (Old first)"></li>
+            </ul>
+                <!-- <li><input name="sortby" type="submit" value="Name(A-Z)"><a class="dropdown-item" href="#" >Name (A-Z)</a></li>
+                <li><input name="sortby" type="submit" value="Name(A-Z)"><a class="dropdown-item" href="#" >Name (A-Z)</a></li>
+                <li><input name="sortby" type="submit" value="Name(Z-A)"><a class="dropdown-item" href="#" >Name (Z-A)</a></li>
+                <li><input name="sortby" type="submit" value="Price(Low-High)"><a class="dropdown-item" href="#" >Price (Low-High)</a></li>
+                <li><input name="sortby" type="submit" value="Price(High-Low)"><a class="dropdown-item" href="#" >Price (High-Low)</a></li>
+                <li><input name="sortby" type="submit" value="Rating (5-1)"><a class="dropdown-item" href="#" >Rating (5-1)</a></li>
+                <li><input name="sortby" type="submit" value="Rating (1-5)"><a class="dropdown-item" href="#" >Rating (1-5)</a></li>
+                <li><input name="sortby" type="submit" value="Date (new first)"><a class="dropdown-item" href="#" >Date (new first)</a></li>
+                <li><input name="sortby" type="submit" value="Date (Old first)"><a class="dropdown-item" href="#">Date (Old first)</a></li>
+            </ul> 
+        </div>
+    </form>-->
+    <h1>Search Results</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th> Product ID </th>
+                <th> Product Name</th>
+                <th> Product Description </th>
+                <th> Price </th>
+                <th> Quantity </th>
+                <th> In Stock </th>
+                <th> Rating </th>
+                <th> Image</th>
+                <th> Supplier ID </th>
+                <th> Category ID </th>
+            </tr>
         </thead>
-    {% for prod in Products %}
-    <tr>
-        <td>{{prod.ProductID}}</td>
-        <td>{{prod.ProductName}}</td>
-        <td>{{prod.ProductDescription}}</td>
-        <td>{{prod.Price}}</td>
-        <td>{{prod.Quantity}}</td>
-        <td>{{prod.InStock}}</td>
-        <td>{{prod.Rating}}</td>
-        <td><img src="{{prod.ImageURL}}"></td>
-        <td>{{prod.SupplierID}}</td>
-        <td>{{prod.CategoryID}}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-{% endblock %}
+        {% for prod in Products %}
+        <tr>
+            <td>{{prod.ProductID}}</td>
+            <td>{{prod.ProductName}}</td>
+            <td>{{prod.ProductDescription}}</td>
+            <td>{{prod.Price}}</td>
+            <td>{{prod.Quantity}}</td>
+            <td>{{prod.InStock}}</td>
+            <td>{{prod.Rating}}</td>
+            <td><img src="{{prod.ImageURL}}"></td>
+            <td>{{prod.SupplierID}}</td>
+            <td>{{prod.CategoryID}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% endblock %}

@@ -273,18 +273,12 @@ def search():
             sorting_way=request.form.get("sortby")
             search_for=request.form.get("search_for")
             order_by=""
-            if sorting_way=="Name(A-Z)":
-                order_by="ProductName"    
-            elif sorting_way=="Name(Z-A)":
-                order_by="ProductName desc"
-            elif sorting_way=="Price(Low-High)":
+            if sorting_way=="Price(Low-High)":
                 order_by="Price"
             elif sorting_way=="Price(High-Low)":
                 order_by="Price DESC"
             elif sorting_way=="Rating (5-1)":
                 order_by="Rating DESC"    
-            elif sorting_way=="Rating (1-5)":
-                order_by="Rating"
             Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{search_for}%' order by {order_by};")
         # Ensure search was submitted
         elif not request.form.get("search"):

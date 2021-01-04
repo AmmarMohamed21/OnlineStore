@@ -265,7 +265,7 @@ def Transactions():
         ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
-        ProPrice = int((request.form.get("ProductPrice")))
+        ProPrice =  request.form.get("ProductPrice")
         Trans_Date = request.form.get("Transaction_Date")
 
         if RefQua > ProQua:
@@ -277,10 +277,10 @@ def Transactions():
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
-        RID = TransID*1000 + ProQua *100 + ProID*10 + ProPrice , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-        TransID*1000 + RefQua *100 + ProID*10 + ProPrice , PID = ProID , Qua = RefQua)
+        TransID*1000 + ProQua *100 + ProID*10 + RefQua , PID = ProID , Qua = RefQua)
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

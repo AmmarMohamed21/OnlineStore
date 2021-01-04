@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Product
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-3">
+        <img src="{{Product[0].ImageURL}}">
+    </div>
+    <div class="col-6">
+        <h1>
+            {{Product[0].ProductName}}
+        </h1>
+        <h2>
+            
+            {%if Product[0].PrductDescription%}
+            Product Description
+            {{Product[0].ProductDescription}}
+            {%endif%}
+        </h2>
+    </div>
+    <div class="col-3">
+        <h4>Price: {{Product[0].Price}} EGP</h4>
+        {% if Product[0].Rating%}
+        <h4>Rating: {{Product[0].Rating}}</h4>
+        {%endif%}
+        {%if Product[0].Quantity%}
+        In Stock
+        {%endif%}
+    </div>
+
+ {% endblock %}

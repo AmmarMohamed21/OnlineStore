@@ -231,7 +231,7 @@ def Profile():
 
 @app.route("/Transactions", methods=["GET", "POST"])
 @login_required
-def transactions():
+def Transactions():
     
         #load categories list
     categories=GetCategories()
@@ -243,19 +243,20 @@ def transactions():
     CustomerInfo = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
                         id=session["user_id"])
     
-    TransConPro = 0
-    for i in rows:
-        TransConPro = db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
-                            id= rows[i]["TransactionID"])
+    TransConPros = []
+    for row in rows:
+        TransConPros.append(db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
+        id= row["TransactionID"]))
 
-    Product = 0
-    for i in TransConPro:
-        Product = db.execute("SELECT * FROM Product WHERE ProductID = :id",
-                            id= TransConPro[i]["ProductID"])
+    Product = []
+    for TransConPro in TransConPros:
+        for row in TransConPro:
+            Product.append(db.execute("SELECT * FROM Product WHERE ProductID = :id",
+            id= row["ProductID"]))
 
-    return render_template("Transactions.html",categories=categories,
-    TransConPro = TransConPro,  Product = Product , CustomerInfo = CustomerInfo , rows = rows )
-
+    return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
+    rows = rows , TransConPros = TransConPros , Product = Product )
+        
       
 @app.route("/search",methods=["GET","POST"])
 def search():
@@ -265,24 +266,58 @@ def search():
     # search is the id of the class of the form
     # action="/search" added in layout form
     # name=search in input (not sure if it matters)
-
+    search_for=""
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # Ensure search was submitted
-        if not request.form.get("search"):
-            Products=[]
+        sorting_way=request.form.get("sortby")
+        search_for=request.form.get("search_for")
+    else:
+        sorting_way=request.args.get("sortby")
+        search_for=request.args.get("search_for")
+    if  sorting_way:
+        order_by=""
+        if sorting_way and search_for:
+            if sorting_way=="Date (new first)":
+                Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,CategoryID "+
+                                    f"FROM Product as P,Imports AS I"+
+                                    f" WHERE P.ProductID=I.ProductID AND ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by I.DateImported;")
+            else:
+                if sorting_way=="Price(Low-High)":
+                    order_by="Price"
+                elif sorting_way=="Price(High-Low)":
+                    order_by="Price DESC"
+                elif sorting_way=="Rating (5-1)":
+                    order_by="Rating DESC" 
+                Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by {order_by};")
         else:
-            # Query database for product 
-            pName=request.form.get("search")
-            Products = db.execute(f"SELECT * FROM Product WHERE [ProductName] LIKE '%{pName}%';")
-            # return 'You searched for '+ search
-            # Redirect user to home page
-        
-        return render_template("search.html",Products=Products,categories=categories)
+            Products=[]
+    # Ensure search was submitted
+    elif not request.form.get("search"):
+        Products=[]
+    else:
+        # Query database for product 
+        pName=request.form.get("search")
+        search_for=pName
+        Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{pName}%' or ProductDescription LIKE '%{pName}%');")
+        # return 'You searched for '+ search
+        # Redirect user to home page
+    
+    return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
 
     # User reached route via GET (as by clicking a link or via redirect)
+    
+
+    
+@app.route("/product")
+def product():
+    categories=GetCategories()
+    if request.args.get("prodid"):
+        prod_id=request.args.get("prodid")
+        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
+        return render_template("product.html",categories=categories,Product=Product)
     else:
-        return redirect("/search")
+        return redirect("/product")
+
 
 def errorhandler(e):
     """Handle error"""

@@ -5,6 +5,7 @@ import random
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from flask_session import Session
+# from flask_login import current_user
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -57,7 +58,6 @@ def login():
 
     # Forget any user_id
     session.clear()
-
     #load categories list
     categories=GetCategories()
 
@@ -356,10 +356,21 @@ def search():
 @app.route("/product")
 def product():
     categories=GetCategories()
+    added_to_cart=request.args.get("addedtocart")
+    you_have_to_login="" 
+    ok=0
+    if added_to_cart:
+        if not session:
+            you_have_to_login="Login to add to cart"
+        else:
+            prod_id=request.args.get("prodid")
+            if prod_id:
+                cust_id=session["user_id"]
+                ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},1) ;")
     if request.args.get("prodid"):
         prod_id=request.args.get("prodid")
         Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
-        return render_template("product.html",categories=categories,Product=Product)
+        return render_template("product.html",categories=categories,Product=Product,you_have_to_login=you_have_to_login,ok=ok)
     else:
         return redirect("/product")
 

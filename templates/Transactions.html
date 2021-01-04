@@ -41,27 +41,33 @@
         </thead>
 
         <tbody>
-            {% for Trans in TransConPro %}
-                {% if row.TransactionID == Trans.TransactionID %}
-                    <tr class = "T1R1">
-                    <td> {{ Product[Trans].ProductName }} </td>
-                    <td> {{ Trans.Quantity }} </td>
-                    <td> {{ Product[Trans].Price }} </td>
-                    <td> {{ Trans.Quantity }} * {{ Product[Trans].Price }} </td>
-                    <td> <button class = "Refund"> Refund </button> </td> 
-                    </tr>
-                {% endif %} 
+            {% for Trans in TransConPros %}
+                {% for Tran in Trans %}
+                    {% for Pro in Product %}    
+                        {% if row.TransactionID == Tran.TransactionID and Pro[0].ProductID == Tran.ProductID %}
+                            <tr class = "T1R1">
+                            <td> {{ Pro[0].ProductName }} </td>
+                            <td> {{ Tran.Quantity }} </td>
+                            <td> {{ Pro[0].Price }} </td>
+                            <td> {{ Tran.Quantity * Pro[0].Price }} </td>
+                            
+                            <td>
+                                    <form action="/Transactions" method="post">
+                                        <input type="hidden" name="ProductID" value="{{ Pro[0].ProductID }}"/>
+                                        <input type="hidden" name="TransactionID" value="{{ Tran.TransactionID }}"/>
+                                        <input type="hidden" name="ProductPrice" value="{{ Pro[0].Price }}"/>
+
+                                        <input type="number" name="Refund_Quantity" min="1" placeholder="0" style="width: 50px" required />
+                                        <button class="btn btn-sm btn-danger" type="submit">Refund</button>
+                                    </form>            
+                            </td> 
+                            
+                        </tr>
+                        {% endif %} 
+                    {% endfor %}
+                {% endfor %}
             {% endfor %}
         </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td> <button class = "RefundAll"> Refund All </button> </td> 
-            </tr>
-        </tfoot>
     </table>
 <br><br><br><br><br><br>
 {% endfor %}

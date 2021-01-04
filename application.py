@@ -280,7 +280,7 @@ def Transactions():
         RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-        TransID*1000 + ProQua *100 + ProID*10 + RefQua , PID = ProID , Qua = RefQua)
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua , PID = ProID , Qua = RefQua)
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

@@ -389,7 +389,18 @@ def PromoCode():
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
+# this function is for rendering the home page
+@app.route("/home", methods=["GET","POST"])
+def home():
+    categories = GetCategories()
+    return render_template("home.html", categories = categories)
 
+# this function is for cart
+@app.route("/cart", methods=["GET", "POST"])
+def cart():
+    
+    productsCustomer = db.execute("select * from Product where ProductID in (select ProductID from Customer_Cart where CustomerID = :id)", id=session["user_id"])
+    return render_template("Cart.html", products = productsCustomer)
 
 
 # @app.route("/check", methods=["GET"])

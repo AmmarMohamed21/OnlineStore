@@ -1,5 +1,6 @@
 import os
 import datetime
+import random
 
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
@@ -281,7 +282,7 @@ def Transactions():
         ProPrice =  request.form.get("ProductPrice")
         Trans_Date = request.form.get("Transaction_Date")
 
-        ProQua = ProQua - RefQua
+        Number = random.randint(1,100)
 
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
@@ -292,10 +293,10 @@ def Transactions():
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
-        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua , PID = ProID , Qua = RefQua)
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

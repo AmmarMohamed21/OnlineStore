@@ -37,9 +37,9 @@ Product
         <p><a href="/product?addedtocart=1&prodid={{Product[0].ProductID}}" class="btn btn-primary" role="button">
             Add to Cart
         </a></p>
-        {%if you_have_to_login%}
+        {%if message%}
         <div>
-            <span style="color:red">You have to login to add to cart</span>
+            <span style="color:red">{{message}}</span>
         </div>
         {%endif%}
         {%endif%}

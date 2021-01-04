@@ -357,20 +357,29 @@ def search():
 def product():
     categories=GetCategories()
     added_to_cart=request.args.get("addedtocart")
-    you_have_to_login="" 
+    message="" 
     ok=0
     if added_to_cart:
         if not session:
-            you_have_to_login="Login to add to cart"
+            message="Login to add to cart"
         else:
             prod_id=request.args.get("prodid")
+            value=1
             if prod_id:
                 cust_id=session["user_id"]
-                ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},1) ;")
+                availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ;")
+                if int(value)<=int(availability[0]['Quantity']):
+                    Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id};")
+                    if Quantity:
+                        ok=db.execute(f"UPDATE Customer_Cart SET Quantity=Quantity+{value} WHERE ProductID={prod_id} and CustomerID={cust_id};")
+                    else:
+                        ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value}) ;")
+                else:
+                    message="Not enough in stock, It is about to finish"
     if request.args.get("prodid"):
         prod_id=request.args.get("prodid")
-        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
-        return render_template("product.html",categories=categories,Product=Product,you_have_to_login=you_have_to_login,ok=ok)
+        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
+        return render_template("product.html",categories=categories,Product=Product,message=message,ok=ok)
     else:
         return redirect("/product")
 

@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block main %}   
-<form action="/Transactions" method="GET"></form>
 
 {% for row in rows%}
     <table class = "TransactionH">
@@ -52,13 +51,14 @@
                             <td> {{ Tran.Quantity * Pro[0].Price }} </td>
                             
                             <td>
-                                    <form action="/Transactions" method="post">Product_Quantity
+                                    <form action="/Transactions" method="post">
                                         <input type="hidden" name="ProductID" value="{{ Pro[0].ProductID }}"/>
                                         <input type="hidden" name="TransactionID" value="{{ Tran.TransactionID }}"/>
                                         <input type="hidden" name="ProductPrice" value="{{ Pro[0].Price }}"/>
+                                        <input type="hidden" name="Product_Quantity" value="{{ Tran.Quantity }}"/>                                        
+                                        <input type="hidden" name="Transaction_Date" value="{{ Tran.TransactionDate }}"/>                                        
+
                                         
-
-
                                         <input type="number" name="Refund_Quantity" min="1" placeholder="0" style="width: 50px" required />
                                         <button class="btn btn-sm btn-danger" type="submit">Refund</button>
                                     </form>            
@@ -72,5 +72,68 @@
         </tbody>
     </table>
 <br><br><br><br><br><br>
+{% endfor %}
+
+
+
+
+
+{% for Refund in Refunds%}
+    {% for Ref in Refund%}
+        {% for Refund_Prod in Refund_Product %}
+            {% for Refund_Pro in Refund_Prod %}
+                {% if Refund_Pro.RefundID == Ref.RefundID%}
+                
+                <table class = "RefundH">
+                    <thead class = "Head">  
+                        <tr class = "H1">
+                            <th class = "Const"> Date: </th>
+                            <th class = "Var"> {{Ref.DateRefunded}} </th>
+                            <th class = "Const"> Refund ID: </th>
+                            <th class = "Var"> {{Ref.RefundID}} </th>
+                        </tr>
+                        <tr class = "H2">
+                            <th class = "Const"> Customer: </th>
+                            <th class = "Var"> {{CustomerInfo[0].FirstName}} {{CustomerInfo[0].LastName}} </th> <!-- Error -->
+                            <th class = "Const"> Price: </th>
+                            <th class = "Var"> {{Ref.Price}} </th>
+                        </tr>
+                    </thead>
+                </table>
+
+            
+    <br>
+    <table class = "TransactionB">
+        <thead> 
+            <tr>
+                <th class = "Fix"> Refunded Product </th>
+                <th class = "Fix"> Quantity </th>
+                <th class = "Fix"> SubPrice </th>
+            </tr>
+        </thead>
+
+        <tbody>
+             {% for Refund_Prod in Refund_Product %}
+                 {% for Refund_Pro in Refund_Prod %}
+                    {% for Pro in Product %}
+                        {% if Refund_Pro.RefundID == Ref.RefundID and Pro[0].ProductID == Refund_Pro.ProductID  %}
+                            <tr class = "T1R1">
+                                <td> {{ Pro[0].ProductName }} </td>
+                                <td> {{ Refund_Pro.Quantity }} </td>
+                                <td> {{ Pro[0].Price }} </td>
+                            </tr>
+                        {% endif %} 
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+<br><br><br><br><br><br>
+                {% endif %}
+            {%endfor%}
+        {%endfor%}
+    {%endfor%}
 {% endfor %}
 {% endblock %}

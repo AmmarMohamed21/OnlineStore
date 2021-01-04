@@ -1,4 +1,6 @@
 import os
+import datetime
+import random
 
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
@@ -257,6 +259,19 @@ def Transactions():
             Product.append(db.execute("SELECT * FROM Product WHERE ProductID = :id",
             id= row["ProductID"]))
 
+    # Get Refund
+    Refunds = [] 
+    for row in rows:
+        Refunds.append(db.execute("SELECT * FROM Refunds WHERE TransactionID = :id",
+        id= row["TransactionID"]))
+    
+    # Get Refund Products
+    Refund_Product = []
+    for Refund in Refunds:
+        for Ref in Refund:
+            Refund_Product.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
+            id= Ref["RefundID"]))
+        
     # IF User SubMit 
     if request.method == "POST":
 
@@ -264,15 +279,30 @@ def Transactions():
         ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
-        ProPrice = request.form.get("ProductPrice")
+        ProPrice =  request.form.get("ProductPrice")
+        Trans_Date = request.form.get("Transaction_Date")
+
+        Number = random.randint(1,100)
 
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
 
+#############################################################################################################
+        #  if  datetime.datetime.now().date - Trans_Date > 14:###############################################
+        #      return apology(" Refund Date Out 14 Days ", 403)##############################################
+        
+
+        db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
+
+        db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
+
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
-    rows = rows , TransConPros = TransConPros , Product = Product )
+    rows = rows , TransConPros = TransConPros , Product = Product , Refunds = Refunds , Refund_Product =Refund_Product)
       
+     
 @app.route("/search",methods=["GET","POST"])
 def search():
     
@@ -317,7 +347,7 @@ def search():
         # return 'You searched for '+ search
         # Redirect user to home page
     
-    return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
+    return render_template("search2.html",Products=Products,categories=categories,search_for=search_for)
 
     # User reached route via GET (as by clicking a link or via redirect)
     
@@ -332,7 +362,6 @@ def product():
         return render_template("product.html",categories=categories,Product=Product)
     else:
         return redirect("/product")
-
 
 def errorhandler(e):
     """Handle error"""
@@ -390,12 +419,6 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 
-# this function is for cart
-@app.route("/cart", methods=["GET", "POST"])
-def cart():
-    
-    productsCustomer = db.execute("select * from Product where ProductID in (select ProductID from Customer_Cart where CustomerID = :id)", id=session["user_id"])
-    return render_template("Cart.html", products = productsCustomer)
 
 
 # @app.route("/check", methods=["GET"])

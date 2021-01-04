@@ -206,8 +206,14 @@ the styles of the cart page
 {
     margin: 10px 10px 0;
     width: 90%;
-    height: auto;
+    height: 80%;
     border-radius: 20px;
+}
+.cart-item > h1
+{
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
 }
 .cart-item > button
 {

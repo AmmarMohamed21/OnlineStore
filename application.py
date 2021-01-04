@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
@@ -265,10 +266,13 @@ def Transactions():
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
         ProPrice = request.form.get("ProductPrice")
-            
+        Trans_Date = request.form.get("Transaction_Date")
+
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
 
+        if  datetime.date.date() - Trans_Date > 14:
+             return apology(" Refund Date Out 14 Days ", 403)
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

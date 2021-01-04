@@ -281,6 +281,8 @@ def Transactions():
         ProPrice =  request.form.get("ProductPrice")
         Trans_Date = request.form.get("Transaction_Date")
 
+        ProQua = ProQua - RefQua
+
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
 

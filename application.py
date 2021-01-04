@@ -267,7 +267,7 @@ def Transactions():
         ProPrice = request.form.get("ProductPrice")
 
         if RefQua > ProQua:
-            return render_template("login.html", rows = rows)
+            return render_template("login.html")
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

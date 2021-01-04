@@ -273,8 +273,11 @@ def Transactions():
 
         #  if  datetime.datetime.now().date - Trans_Date > 14:
         #      return apology(" Refund Date Out 14 Days ", 403)
+        
+        db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
+        RID = TransID*1000 + ProID , ProPeice = ProPrice , Date = '4/1/2020' , TransID = TransID )
 
-
+        
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

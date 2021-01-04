@@ -10,31 +10,32 @@ Search Results
 
     <h1>Search Results</h1>
     <form class="d-flex" method="POST" action="{{ url_for('search') }}" style="padding-right: 20px;">
-        <div class="col-md">  
+        <div class="col-md">
         </div>
         <div class="col-md-3">
-            
-        <div class="form-group">
-            <div class="input-group">
-                <input type="hidden" name="search_for" value="{{ search_for }}">
-                <select name="sortby" aria-labelledby="dropdownMenuButton">
-                    <option value="" disabled selected>Sort By</option>
-                    <option value="Price(Low-High)" >Price(Low-High)</option>
-                    <option value="Price(High-Low)">Price(High-Low)</option>
-                    <option value="Rating (5-1)">Rating (5-1)</option>
-                    <option value="Date (new first)">Date (new first)</option>
-                </select>
-                <div style="padding-left: 20px;">
-                    <button type="submit" class="btn btn-secondary">Search</button>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="hidden" name="search_for" value="{{ search_for }}">
+                    <select name="sortby" aria-labelledby="dropdownMenuButton">
+                        <option value="" disabled selected>Sort By</option>
+                        <option value="Price(Low-High)">Price(Low-High)</option>
+                        <option value="Price(High-Low)">Price(High-Low)</option>
+                        <option value="Rating (5-1)">Rating (5-1)</option>
+                        <option value="Date (new first)">Date (new first)</option>
+                    </select>
+                    <div style="padding-left: 20px;">
+                        <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
-                
+
                 <th> Image</th>
                 <th> Product Name</th>
                 <th> Product Description </th>
@@ -49,8 +50,12 @@ Search Results
         </thead>
         {% for prod in Products %}
         <tr>
-            <td><img src="{{prod.ImageURL}}" style="max-width:300px; max-height:200px;" ></td>
-            <td>{{prod.ProductName}}</td>
+            <td><img src="{{prod.ImageURL}}" style="max-width:300px; max-height:200px;"></td>
+            <td>
+                    <a href="/product?prodid={{prod.ProductID}} ">
+                        {{prod.ProductName}}
+                    </a>
+            </td>
             <td>{{prod.ProductDescription}}</td>
             <td>{{prod.Price}}</td>
             <td>{{prod.Rating}}</td>

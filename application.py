@@ -305,6 +305,19 @@ def search():
     else:
         return redirect("/search")
 
+
+    
+@app.route("/product")
+def product():
+    categories=GetCategories()
+    if request.args.get("prodid"):
+        prod_id=request.args.get("prodid")
+        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
+        return render_template("product.html",categories=categories,Product=Product)
+    else:
+        return redirect("/product")
+
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):

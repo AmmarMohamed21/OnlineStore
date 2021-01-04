@@ -264,7 +264,7 @@ def Transactions():
         ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
-        ProPrice = int(request.form.get("ProductPrice"))
+        ProPrice = request.form.get("ProductPrice")
 
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)

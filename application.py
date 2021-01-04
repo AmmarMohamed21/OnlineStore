@@ -236,27 +236,38 @@ def Transactions():
         #load categories list
     categories=GetCategories()
 
-        # Get Transaction Info
- 
+    # Get Transaction Info
     rows = db.execute("SELECT * FROM Transactions WHERE CustomerID = :id",
                          id=session["user_id"])
+
+    # Get Customer Info
     CustomerInfo = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
                         id=session["user_id"])
     
+    # Get Tables OF Transactions Contain Product
     TransConPros = []
     for row in rows:
         TransConPros.append(db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
         id= row["TransactionID"]))
 
+    # Get All Products IN Transactions
     Product = []
     for TransConPro in TransConPros:
         for row in TransConPro:
             Product.append(db.execute("SELECT * FROM Product WHERE ProductID = :id",
             id= row["ProductID"]))
 
+    # IF User SubMit 
+    if request.method == "POST":
+
+        RefQua = int(request.form.get("Refund_Quantity"))
+        ProID = int(request.form.get("ProductID"))
+        TransID = int(request.form.get("TransactionID"))
+        ProPrice = int(request.form.get("ProductPrice"))
+
+
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
     rows = rows , TransConPros = TransConPros , Product = Product )
-        
       
 @app.route("/search",methods=["GET","POST"])
 def search():
@@ -269,43 +280,42 @@ def search():
     search_for=""
     # # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        sorting_way=request.form.get("sortby")
-        search_for=request.form.get("search_for")
-    else:
-        sorting_way=request.args.get("sortby")
-        search_for=request.args.get("search_for")
-    if  sorting_way:
-        order_by=""
-        if sorting_way and search_for:
-            if sorting_way=="Date (new first)":
-                Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,CategoryID "+
-                                    f"FROM Product as P,Imports AS I"+
-                                    f" WHERE P.ProductID=I.ProductID AND ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by I.DateImported;")
+        if  request.form.get("sortby"):
+            sorting_way=request.form.get("sortby")
+            search_for=request.form.get("search_for")
+            order_by=""
+            if sorting_way and search_for:
+                if sorting_way=="Date (new first)":
+                    Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,CategoryID "+
+                                        f"FROM Product as P,Imports AS I"+
+                                        f" WHERE P.ProductID=I.ProductID AND ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by I.DateImported;")
+                else:
+                    if sorting_way=="Price(Low-High)":
+                        order_by="Price"
+                    elif sorting_way=="Price(High-Low)":
+                        order_by="Price DESC"
+                    elif sorting_way=="Rating (5-1)":
+                        order_by="Rating DESC" 
+                    Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by {order_by};")
             else:
-                if sorting_way=="Price(Low-High)":
-                    order_by="Price"
-                elif sorting_way=="Price(High-Low)":
-                    order_by="Price DESC"
-                elif sorting_way=="Rating (5-1)":
-                    order_by="Rating DESC" 
-                Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by {order_by};")
-        else:
+                Products=[]
+        # Ensure search was submitted
+        elif not request.form.get("search"):
             Products=[]
-    # Ensure search was submitted
-    elif not request.form.get("search"):
-        Products=[]
-    else:
-        # Query database for product 
-        pName=request.form.get("search")
-        search_for=pName
-        Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{pName}%' or ProductDescription LIKE '%{pName}%');")
-        # return 'You searched for '+ search
-        # Redirect user to home page
-    
-    return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
+        else:
+            # Query database for product 
+            pName=request.form.get("search")
+            search_for=pName
+            Products = db.execute(f"SELECT * FROM Product WHERE ([ProductName] LIKE '%{pName}%' or ProductDescription LIKE '%{pName}%');")
+            # return 'You searched for '+ search
+            # Redirect user to home page
+        
+        return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
 
     # User reached route via GET (as by clicking a link or via redirect)
-    
+    else:
+        return redirect("/search")
+
 
     
 @app.route("/product")
@@ -374,18 +384,7 @@ def PromoCode():
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-# this function is for rendering the home page
-@app.route("/home", methods=["GET","POST"])
-def home():
-    categories = GetCategories()
-    return render_template("home.html", categories = categories)
 
-# this function is for cart
-@app.route("/cart", methods=["GET", "POST"])
-def cart():
-    
-    productsCustomer = db.execute("select * from Product where ProductID in (select ProductID from Customer_Cart where CustomerID = :id)", id=session["user_id"])
-    return render_template("Cart.html", products = productsCustomer)
 
 
 # @app.route("/check", methods=["GET"])

@@ -267,9 +267,10 @@ def Transactions():
     # Get Refund Products
     Refund_Product = []
     for Refund in Refunds:
-        Refunds.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
-        id= Refund["TransactionID"]))
-    
+        for Ref in Refund:
+            Refund_Product.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
+            id= Ref["TransactionID"]))
+        
     # IF User SubMit 
     if request.method == "POST":
 

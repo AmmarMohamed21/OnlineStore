@@ -261,9 +261,13 @@ def Transactions():
     if request.method == "POST":
 
         RefQua = int(request.form.get("Refund_Quantity"))
+        ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
         ProPrice = int(request.form.get("ProductPrice"))
+
+        if RefQua > ProQua:
+            return apology(" Refund Quantity > Product Quantity ", 403)
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

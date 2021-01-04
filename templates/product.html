@@ -29,8 +29,20 @@ Product
         {%if Product[0].Quantity%}
         In Stock
         {%endif%}
-        <p><a href="#" class="btn btn-primary" role="button">Add to Cart</a></p>
-
+        {%if ok%}
+        <div>
+            <button disabled>Added Successfully</button>
+        </div>
+        {%else%}
+        <p><a href="/product?addedtocart=1&prodid={{Product[0].ProductID}}" class="btn btn-primary" role="button">
+            Add to Cart
+        </a></p>
+        {%if you_have_to_login%}
+        <div>
+            <span style="color:red">You have to login to add to cart</span>
+        </div>
+        {%endif%}
+        {%endif%}
     </div>
 
  {% endblock %}

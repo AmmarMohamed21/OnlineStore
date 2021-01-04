@@ -296,7 +296,7 @@ def Transactions():
 
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
-    rows = rows , TransConPros = TransConPros , Product = Product )
+    rows = rows , TransConPros = TransConPros , Product = Product , Refunds = Refunds , Refund_Product =Refund_Product)
       
      
 @app.route("/search",methods=["GET","POST"])

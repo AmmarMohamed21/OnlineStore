@@ -9,28 +9,22 @@ Search Results
     {% else %}
 
     <h1>Search Results</h1>
-    <form class="d-flex" method="POST" action="{{ url_for('search') }}" style="padding-right: 20px;">
+    <div class="row">
         <div class="col-md">
         </div>
         <div class="col-md-3">
-
-            <div class="form-group">
-                <div class="input-group">
-                    <input type="hidden" name="search_for" value="{{ search_for }}">
-                    <select name="sortby" aria-labelledby="dropdownMenuButton">
-                        <option value="" disabled selected>Sort By</option>
-                        <option value="Price(Low-High)">Price(Low-High)</option>
-                        <option value="Price(High-Low)">Price(High-Low)</option>
-                        <option value="Rating (5-1)">Rating (5-1)</option>
-                        <option value="Date (new first)">Date (new first)</option>
-                    </select>
-                    <div style="padding-left: 20px;">
-                        <button type="submit" class="btn btn-secondary">Search</button>
-                    </div>
-                </div>
-            </div>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(Low-High)">Price(Low-High)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(High-Low)">Price(High-Low)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Rating (5-1)">Rating (5-1)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Date (new first)">Date (new first)</a></li>
+            </ul>
         </div>
-    </form>
+    </div>
 
     <table class="table table-striped">
         <thead>
@@ -52,9 +46,9 @@ Search Results
         <tr>
             <td><img src="{{prod.ImageURL}}" style="max-width:300px; max-height:200px;"></td>
             <td>
-                    <a href="/product?prodid={{prod.ProductID}} ">
-                        {{prod.ProductName}}
-                    </a>
+                <a href="/product?prodid={{prod.ProductID}} ">
+                    {{prod.ProductName}}
+                </a>
             </td>
             <td>{{prod.ProductDescription}}</td>
             <td>{{prod.Price}}</td>

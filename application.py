@@ -271,9 +271,11 @@ def Transactions():
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
 
-        if  datetime.datetime.now().date - Trans_Date > 14:
-             return apology(" Refund Date Out 14 Days ", 403)
+        # if  datetime.datetime.now().date - Trans_Date > 14:
+        #      return apology(" Refund Date Out 14 Days ", 403)
 
+        
+            
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
     rows = rows , TransConPros = TransConPros , Product = Product )

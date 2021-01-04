@@ -389,11 +389,6 @@ def PromoCode():
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
-# this function is for rendering the home page
-@app.route("/home", methods=["GET","POST"])
-def home():
-    categories = GetCategories()
-    return render_template("home.html", categories = categories)
 
 # this function is for cart
 @app.route("/cart", methods=["GET", "POST"])

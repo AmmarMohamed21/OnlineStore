@@ -271,7 +271,7 @@ def Transactions():
         if RefQua > ProQua:
             return apology(" Refund Quantity > Product Quantity ", 403)
 
-        if  datetime.datetime.now() - Trans_Date > 14:
+        if  datetime.datetime.now().date - Trans_Date > 14:
              return apology(" Refund Date Out 14 Days ", 403)
 
 

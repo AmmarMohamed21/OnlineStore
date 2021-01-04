@@ -38,8 +38,10 @@ Search Results
                                 {{prod.ProductName}}
                             </a>
                         </h3>
+                        {%if prod.ProductDescription%}
                         <p>{{prod.ProductDescription}}</p>
-                        <span>EGP {{prod.Price}}</span>
+                        {%endif%}
+                        <span>EGP <h5>{{prod.Price}}</h5></span>
                         <p><a href="#" class="btn btn-primary" role="button">Add to Cart</a></p>
                     </div>
                 </div>

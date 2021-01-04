@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}
+    Cart
+{% endblock %}
+{% block main %}
+<form action="/cart" method="GET"></form>
+<div class="page">
+    <main class="cart">
+        {% for product in products %}
+        <div class="cart-item">
+            <h1>{{product.ProductName}}</h1>
+            <img src={{product.ImageURL}}>
+            <button type="button" class="btn btn-primary">Edit</button>
+            <button type="button" class="btn btn-danger">Remove</button>
+        </div>
+        {% endfor %}
+    </main>
+    <aside class="side-menu">
+        <div>total</div>
+        <button type="button" class="btn btn-primary btn-lg btn-block">purchase</button>
+    </aside>
+</div>
+{% endblock %}

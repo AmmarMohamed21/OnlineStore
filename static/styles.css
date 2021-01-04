@@ -1,3 +1,11 @@
+body
+{
+    perspective: 1000px;
+    transform-style: preserve-3d;
+   
+    
+    
+}
 nav .navbar-brand
 {
     /* size for brand */
@@ -121,4 +129,96 @@ main button
 {
     background-color: #537fbe;
     text-align: left;
+}
+
+/* home page styles */
+/* flash sale */
+.slider
+{
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+/* categories list*/
+.cat-list
+{
+    
+    margin: 10px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    
+    
+    
+}
+.cat-list-items
+{
+    
+    background-color: white;
+    box-shadow: 0px 0px 5px gray;
+    border-radius: 20px;
+    border: 2px black;
+    margin: 10px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+.cat-list-items > h1
+{
+    margin: 5%;
+    font-size: 18px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.cat-list-items > img
+{
+    width: 90%;
+    height: 80%;
+    border-radius: 20px;
+}
+.cat-list-items:hover
+{
+    transform: scale(1.05,1.05)
+}
+/*
+the styles of the cart page
+*/
+.page
+{
+    display: flex;
+    
+    
+}
+.cart
+{
+    flex:left;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    box-shadow: 0px 0px 5px gray;
+    border-radius: 20px;
+    
+}
+.cart-item
+{
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px gray;
+    margin: 10px;
+}
+.cart-item > img
+{
+    margin: 10px 10px 0;
+    width: 90%;
+    height: auto;
+    border-radius: 20px;
+}
+.cart-item > button
+{
+    margin: 10px;
+}
+.side-menu
+{
+    margin-left: 10px;
+    flex: right;
+    width: 40%;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0px 0px 5px gray;
 }

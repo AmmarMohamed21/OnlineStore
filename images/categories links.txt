@@ -1,0 +1,8 @@
+fashion --> https://i.pinimg.com/originals/77/38/54/773854c17c415cd6eb1ccfefd78b898a.jpg
+sports --> https://media.socastsrm.com/wordpress/wp-content/blogs.dir/2626/files/2020/06/Sports-1.jpg
+software --> https://www.fingent.com/wp-content/uploads/2015/12/custom-software-development-01.png
+handmade --> https://images-na.ssl-images-amazon.com/images/I/51idIpDP48L._AC_.jpg
+games --> https://techcrunch.com/wp-content/uploads/2020/06/igor-karimov-M1nZU61xTK4-unsplash.jpg
+books --> https://assets.readitforward.com/wp-content/uploads/2019/11/RIF-Q4-Books-We-Cant-Wait-To-Read-2020-RJD-1200x90011-12.jpg
+food --> https://d2ebzu6go672f3.cloudfront.net/media/content/images/cr/8c38e37d-e8b9-48dd-a9a8-65083a6115e5.jpg
+electronics --> https://www.afcinternationalllc.com/wp-content/uploads/2016/07/AFC-Importing-Electronics-1-7-7-16-300x300.jpg

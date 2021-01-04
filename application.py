@@ -268,7 +268,7 @@ def Transactions():
     Refund_Product = []
     for Refund in Refunds:
         for Ref in Refund:
-            Refund_Product.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
+            Refund_Product.append(db.execute("SELECT * FROM RefundProducts WHERE TransactionID = :id",
             id= Ref["TransactionID"]))
         
     # IF User SubMit 

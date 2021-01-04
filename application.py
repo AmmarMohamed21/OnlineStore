@@ -258,6 +258,18 @@ def Transactions():
             Product.append(db.execute("SELECT * FROM Product WHERE ProductID = :id",
             id= row["ProductID"]))
 
+    # Get Refund
+    Refunds = [] 
+    for row in rows:
+        Refunds.append(db.execute("SELECT * FROM Refunds WHERE TransactionID = :id",
+        id= row["TransactionID"]))
+    
+    # Get Refund Products
+    Refund_Product = []
+    for Refund in Refunds:
+        Refunds.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
+        id= Refund["TransactionID"]))
+    
     # IF User SubMit 
     if request.method == "POST":
 

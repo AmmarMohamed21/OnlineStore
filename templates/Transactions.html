@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block main %}   
-<form action="/Transactions" method="GET"></form>
 
 {% for row in rows%}
     <table class = "TransactionH">
@@ -66,6 +65,58 @@
                             </td> 
                             
                         </tr>
+                        {% endif %} 
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+<br><br><br><br><br><br>
+{% endfor %}
+
+
+
+
+
+{% for Refund in Refunds%}
+    <table class = "RefundH">
+        <thead class = "Head">  
+            <tr class = "H1">
+                <th class = "Const"> Date: </th>
+                <th class = "Var"> {{Refund.DateRefund}} </th>
+                <th class = "Const"> Refund ID: </th>
+                <th class = "Var"> {{Refund.RefundID}} </th>
+            </tr>
+            <tr class = "H2">
+                <th class = "Const"> Customer: </th>
+                <th class = "Var"> {{CustomerInfo[0].FirstName}} {{CustomerInfo[0].LastName}} </th> <!-- Error -->
+                <th class = "Const"> Price: </th>
+                <th class = "Var"> {{Refund.Price}} </th>
+            </tr>
+        </thead>
+    </table>
+    <br>
+    <table class = "TransactionB">
+        <thead> 
+            <tr>
+                <th class = "Fix"> Product </th>
+                <th class = "Fix"> Quantity </th>
+                <th class = "Fix"> SubPrice </th>
+                <th class = "Fix"> Price </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for Refund in Refunds %}
+                {% for Ref in Refund %}
+                    {% for Refund_Product in Refund_Pro %}    
+                        {% if Refund.RefundID == Ref.RefundID and Refund_Pro[0].ProductID == Ref.ProductID %}
+                            <tr class = "T1R1">
+                            <td> {{ Refund_Pro[0].ProductName }} </td>
+                            <td> {{ Ref.Quantity }} </td>
+                            <td> {{ Refund_Pro[0].Price }} </td>
+                            <td> {{ Ref.Quantity * Refund_Pro[0].Price }} </td>
+                            
                         {% endif %} 
                     {% endfor %}
                 {% endfor %}

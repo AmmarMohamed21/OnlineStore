@@ -52,7 +52,7 @@
                             <td> {{ Tran.Quantity * Pro[0].Price }} </td>
                             
                             <td>
-                                    <form action="/Transactions" method="post">Product_Quantity
+                                    <form action="/Transactions" method="post">
                                         <input type="hidden" name="ProductID" value="{{ Pro[0].ProductID }}"/>
                                         <input type="hidden" name="TransactionID" value="{{ Tran.TransactionID }}"/>
                                         <input type="hidden" name="ProductPrice" value="{{ Pro[0].Price }}"/>

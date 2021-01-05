@@ -287,7 +287,7 @@ def Transactions():
         Refund_Quantity = db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
         ProdID = ProID , TransaID = TransID )######################################
 
-        if RefQua > (ProQua - Refund_Quantity[0] ):
+        if RefQua > (ProQua - Refund_Quantity[0][0] ):
             return apology(" Refund Quantity > Product Quantity ", 403)
 
 #############################################################################################################

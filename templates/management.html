@@ -5,46 +5,119 @@ Management
 {% endblock %}
 
 {% block main %}
+
+<script>
+    function CollapseManagement(elemid)
+    {
+        
+        if (elemid != "CategoryEdit")
+        {
+            document.getElementById("CategoryEdit").className="collapse hide";
+        }
+        if (elemid != "CategoryInsert")
+        {
+            document.getElementById("CategoryInsert").className="collapse hide";
+        }
+        if (elemid != "CategoryDelete")
+        {
+            document.getElementById("CategoryDelete").className="collapse hide";
+        }
+
+        if (elemid != "SuppliersEdit")
+        {
+            document.getElementById("SuppliersEdit").className="collapse hide";
+        }
+        if (elemid != "SuppliersInsert")
+        {
+            document.getElementById("SuppliersInsert").className="collapse hide";
+        }
+        if (elemid != "SuppliersDelete")
+        {
+            document.getElementById("SuppliersDelete").className="collapse hide";
+        }
+
+        if (elemid != "ImportsEdit")
+        {
+            document.getElementById("ImportsEdit").className="collapse hide";
+        }
+        if (elemid != "ImportsInsert")
+        {
+            document.getElementById("ImportsInsert").className="collapse hide";
+        }
+        if (elemid != "ImportsDelete")
+        {
+            document.getElementById("ImportsDelete").className="collapse hide";
+        }
+
+        if (elemid != "ProductsEdit")
+        {
+            document.getElementById("ProductsEdit").className="collapse hide";
+        }
+        if (elemid != "ProductsInsert")
+        {
+            document.getElementById("ProductsInsert").className="collapse hide";
+        }
+        if (elemid != "ProductsDelete")
+        {
+            document.getElementById("ProductsDelete").className="collapse hide";
+        }
+
+        if (elemid != "SaleEdit")
+        {
+            document.getElementById("SaleEdit").className="collapse hide";
+        }
+        if (elemid != "SaleInsert")
+        {
+            document.getElementById("SaleInsert").className="collapse hide";
+        }
+        if (elemid != "SaleDelete")
+        {
+            document.getElementById("SaleDelete").className="collapse hide";
+        }
+       
+    }
+</script>
+
 <div class="container px-4 shadow-lg p-3 mb-5 bg-white rounded">
     <div class="row gx-5">
         <div class="col ">
             <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Categories</div>
             <div class="mb-3">
-                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;"> Edit </button>
-                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"> Insert </button>
-                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"> Delete </button>
+                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#CategoryEdit" aria-expanded="false" aria-controls="CategoryEdit" onclick=CollapseManagement("CategoryEdit")> Edit </button>
+                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#CategoryInsert" aria-expanded="false" aria-controls="CategoryInsert" onclick=CollapseManagement("CategoryInsert")> Insert </button>
+                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#CategoryDelete" aria-expanded="false" aria-controls="CategoryDelete" onclick=CollapseManagement("CategoryDelete")> Delete </button>
             </div>
         </div>
         <div class="col ">
             <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Suppliers</div>
             <div class="mb-3">
-                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;"> Edit </button>
-                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"> Insert </button>
-                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"> Delete </button>
+                <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SuppliersEdit" aria-expanded="false" aria-controls="SuppliersEdit" onclick=CollapseManagement("SuppliersEdit")> Edit </button>
+                <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SuppliersInsert" aria-expanded="false" aria-controls="SuppliersInsert" onclick=CollapseManagement("SuppliersInsert")> Insert </button>
+                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SuppliersDelete" aria-expanded="false" aria-controls="SuppliersDelete" onclick=CollapseManagement("SuppliersDelete")> Delete </button>
             </div>
         </div>
         <div class="col ">
             <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Imports</div>
             <div class="mb-3">
-                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;"> Edit </button>
-                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"> Insert </button>
-                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"> Delete </button>
+                <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ImportsEdit" aria-expanded="false" aria-controls="ImportsEdit" onclick=CollapseManagement("ImportsEdit")> Edit </button>
+                <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ImportsInsert" aria-expanded="false" aria-controls="ImportsInsert" onclick=CollapseManagement("ImportsInsert")> Insert </button>
+                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ImportsDelete" aria-expanded="false" aria-controls="ImportsDelete" onclick=CollapseManagement("ImportsDelete")> Delete </button>
             </div>
         </div>
         <div class="col ">
             <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Products</div>
             <div class="mb-3">
-                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;"> Edit </button>
-                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"> Insert </button>
-                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"> Delete </button>
+                <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ProductsEdit" aria-expanded="false" aria-controls="ProductsEdit" onclick=CollapseManagement("ProductsEdit")> Edit </button>
+                <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ProductsInsert" aria-expanded="false" aria-controls="ProductsInsert" onclick=CollapseManagement("ProductsInsert")> Insert </button>
+                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#ProductsDelete" aria-expanded="false" aria-controls="ProductsDelete" onclick=CollapseManagement("ProductsDelete")> Delete </button>
             </div>
         </div>
         <div class="col ">
             <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Sale</div>
             <div class="mb-3">
-                 <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;"> Edit </button>
-                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"> Insert </button>
-                 <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"> Delete </button>
+                <button type="button" class="btn-success rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SaleEdit" aria-expanded="false" aria-controls="SaleEdit" onclick=CollapseManagement("SaleEdit")> Edit </button>
+                <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SaleInsert" aria-expanded="false" aria-controls="SaleInsert" onclick=CollapseManagement("SaleInsert")> Insert </button>
+                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;" data-bs-toggle="collapse" data-bs-target="#SaleDelete" aria-expanded="false" aria-controls="SaleDelete" onclick=CollapseManagement("SaleDelete")> Delete </button>
             </div>
         </div>
     </div>
@@ -52,6 +125,97 @@ Management
 
 
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
+
+    <div class="collapse multi-collapse" id="CategoryEdit">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="CategoryInsert">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="CategoryDelete">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SuppliersEdit">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SuppliersInsert">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SuppliersDelete">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ImportsEdit">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ImportsInsert">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ImportsDelete">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ProductsEdit">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ProductsInsert">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ProductsDelete">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SaleEdit">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SaleInsert">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="SaleDelete">
+        <form action="/management" method="post">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
 
 </div>
 

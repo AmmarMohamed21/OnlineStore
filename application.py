@@ -434,6 +434,23 @@ def PromoCode():
         return render_template("PromoCode.html", categories=categories, row=rows[0])
 
 
+
+#Manage The Store 
+@app.route("/management", methods=["GET", "POST"])
+def Management():
+    """Edit User Info"""
+    
+    #load categories list
+    categories=GetCategories()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        return render_template("management.html", categories=categories)
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("management.html", categories=categories)
+
+
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)

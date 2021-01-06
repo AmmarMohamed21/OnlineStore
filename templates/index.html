@@ -33,7 +33,9 @@
     {% for category in categories%}
     <div class="cat-list-items">
       <h1>{{category.CategoryName}}</h1>
-      <img src={{category.url}} alt="images">
+      <a href="/category?categoryid={{category['CategoryID']}}">
+        <img src={{category.url}}  alt="images">
+      </a>
     </div>
     {% endfor %}
 </div>

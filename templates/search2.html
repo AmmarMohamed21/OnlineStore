@@ -18,32 +18,40 @@ Search Results
                 Sort By
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(Low-High)">Price(Low-High)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(High-Low)">Price(High-Low)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Rating (5-1)">Rating (5-1)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Date (new first)">Date (new first)</a></li>
+                <li><a class="dropdown-item"
+                        href="/search?search_for={{search_for}}&sortby=Price(Low-High)">Price(Low-High)</a></li>
+                <li><a class="dropdown-item"
+                        href="/search?search_for={{search_for}}&sortby=Price(High-Low)">Price(High-Low)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Rating (5-1)">Rating
+                        (5-1)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Date (new first)">Date (new
+                        first)</a></li>
             </ul>
         </div>
     </div>
-
+    <br>
     <div class="container">
         <div class="row">
             {% for prod in Products %}
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                <div class="thumbnail">
-                    <a href="/product?prodid={{prod.ProductID}} ">
-                        <img src="{{prod.ImageURL}}" alt="..." width="300px" height="300px" style="max-width:auto; max-height:auto;">
-                    </a>                   
-                     <div class="caption">
-                        <h3>
-                            <a href="/product?prodid={{prod.ProductID}} ">
-                                {{prod.ProductName}}
-                            </a>
-                        </h3>
-                        {%if prod.ProductDescription%}
-                        <p>{{prod.ProductDescription}}</p>
-                        {%endif%}
-                        <span>EGP <h5>{{prod.Price}}</h5></span>
+                <div class="cat-list-items">
+                    <div class="thumbnail">
+                        <a href="/product?prodid={{prod.ProductID}} ">
+                            <img src="{{prod.ImageURL}}" alt="..." width="300px" height="300px"
+                                style="max-width:auto; max-height:auto;">
+                        </a>
+                        <div class="caption">
+                            <h3>
+                                <a href="/product?prodid={{prod.ProductID}} ">
+                                    {{prod.ProductName}}
+                                </a>
+                            </h3>
+                            {%if prod.ProductDescription%}
+                            <p>{{prod.ProductDescription}}</p>
+                            {%endif%}
+                            <span>EGP <h5>{{prod.Price}}</h5></span>
+                        </div>
+
                     </div>
                 </div>
             </div>

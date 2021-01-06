@@ -228,3 +228,6 @@ the styles of the cart page
     background-color: white;
     box-shadow: 0px 0px 5px gray;
 }
+.checked {
+    color: orange;
+  }

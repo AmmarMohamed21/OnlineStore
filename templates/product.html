@@ -7,31 +7,37 @@ Product
 {% block main %}
 <div class="row">
     <!-- <div class="col-3"></div> -->
-    <div class="col-lg-3">
+    <div class="col-lg-4">
         <img src="{{Product[0].ImageURL}}">
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
         <h4>
             <br><br>
-            {{Product[0].ProductName}}
+            <div style="padding-right: 200px;">
+                {{Product[0].ProductName}}
+            </div>
         </h4>
         <h6>
 
-            {%if Product[0].PrductDescription%}
-            Product Description
-            {{Product[0].ProductDescription}}
+            {%if Product[0].ProductDescription%}
+            <div class="text"style="padding-top:100px;padding-right: 100px;">
+                Product Description:
+                <h5>{{Product[0].ProductDescription}}</h5>
+            </div>
             {%endif%}
         </h6>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-4">
 
         <br><br><br>
-        <h4>Price: {{Product[0].Price}} EGP</h4>
-        {% if Product[0].Rating%}
-        <h4>Rating: {{Product[0].Rating}}</h4>
-        {%endif%}
+        <h4> {{Product[0].Price}} EGP</h4>
+        <br>
         {%if Product[0].Quantity%}
-        In Stock
+        <div style="color:green;">
+            In Stock
+        </div>
+        <br>
+        <br>
         {%endif%}
         {%if ok1%}
         <div>
@@ -52,8 +58,6 @@ Product
             </div>
             {%endif%}
             <br>
-            <br>
-            <br>
 
             {%if ok2%}
             <div>
@@ -72,7 +76,23 @@ Product
             </div>
         </div>
         {%endif%}
-
+        <br>
+        <br>
+        <div>
+            {%if not Product[0].Rating%}
+            {%for i in range(5)%}
+            <span class="fa fa-star"></span>
+            {%endfor%}
+            <span class="fa fa-star"></span>
+            {%else%}
+            {%for i in range(Product[0].Rating|int)%}
+            <span class="fa fa-star checked"></span>
+            {%endfor%}
+            {%for i in range(5-(Product[0].Rating|int))%}
+            <span class="fa fa-star"></span>
+            {%endfor%}
+            {%endif%}
+        </div>
         <!-- {%if ok%}
         <div>
             <button disabled>Added Successfully</button>

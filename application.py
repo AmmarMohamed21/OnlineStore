@@ -313,12 +313,8 @@ def Transactions():
 def search():
     
     categories=GetCategories()
-
-    # search is the id of the class of the form
-    # action="/search" added in layout form
-    # name=search in input (not sure if it matters)
     search_for=""
-    # # User reached route via POST (as by submitting a form via POST)
+    # # User reached route via POST (as by submitting a form via POST)        
     if request.method == "POST":
         sorting_way=request.form.get("sortby")
         search_for=request.form.get("search_for")
@@ -364,6 +360,10 @@ def product():
     categories=GetCategories()
     prod_id=request.args.get("prodid")
     Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
+    sale=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={prod_id}")
+    new_price=''
+    if sale and Product:
+        new_price=(1-float(sale[0]['SalePercentage']))*float(Product[0]['Price'])
     if request.method=='POST':
         added_to_cart=request.form.get("ProductID-addtocart")
         added_to_wishlist=request.form.get("ProductID-addtowishlist")
@@ -399,12 +399,12 @@ def product():
                     ok2=db.execute(f"INSERT INTO Customer_Wishlist VALUES ({cust_id},{prod_id})")
                 else:
                     message2="Already in the wishlist"
-        return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2)
+        return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price)
     else:
         if request.args.get("prodid"):
             prod_id=request.args.get("prodid")
             Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
-            return render_template("product.html",categories=categories,Product=Product)
+            return render_template("product.html",categories=categories,Product=Product,sale=sale,new_price=new_price)
         else:
             redirect('/')
 

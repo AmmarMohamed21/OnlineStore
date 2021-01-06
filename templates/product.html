@@ -20,7 +20,7 @@ Product
         <h6>
 
             {%if Product[0].ProductDescription%}
-            <div class="text"style="padding-top:100px;">
+            <div class="text"style="padding-top:50px;">
                 Product Description:
                 <h5>{{Product[0].ProductDescription}}</h5>
             </div>
@@ -30,7 +30,17 @@ Product
     <div class="col-lg-4">
 
         <br><br><br>
+        {%if not sale%}
         <h4> {{Product[0].Price}} EGP</h4>
+        {%else%}
+        <del> {{Product[0].Price}} EGP</del>
+        <h4 style="color: darkcyan;">
+            {{new_price}} EGP
+        </h4>
+        <h5 style="color:red;">
+            SALE {{sale[0]['SalePercentage']|float * 100}} %
+        </h5>
+        {%endif%}
         <br>
         {%if Product[0].Quantity%}
         <div style="color:green;">
@@ -48,7 +58,7 @@ Product
             <div>
                 <form action="/product?prodid={{ Product[0].ProductID}}" method="post">
                     <input type="hidden" name="ProductID-addtocart" value="{{ Product[0].ProductID}}" />
-                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px" required />
+                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px; margin-top: 5px;" required />
                     <button class="btn btn-sm btn-primary" type="submit">Add to Cart</button>
                     {%if message1%}
                     <br>
@@ -83,7 +93,6 @@ Product
             {%for i in range(5)%}
             <span class="fa fa-star"></span>
             {%endfor%}
-            <span class="fa fa-star"></span>
             {%else%}
             {%for i in range(Product[0].Rating|int)%}
             <span class="fa fa-star checked"></span>

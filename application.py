@@ -359,35 +359,81 @@ def search():
     
 
     
-@app.route("/product")
+@app.route("/product",methods=['POST','GET'])
 def product():
     categories=GetCategories()
-    added_to_cart=request.args.get("addedtocart")
-    message="" 
-    ok=0
-    if added_to_cart:
-        if not session:
-            message="Login to add to cart"
-        else:
-            prod_id=request.args.get("prodid")
-            value=1
-            if prod_id:
+    prod_id=request.args.get("prodid")
+    Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
+    if request.method=='POST':
+        added_to_cart=request.form.get("ProductID-addtocart")
+        added_to_wishlist=request.form.get("ProductID-addtowishlist")
+        message1=""
+        message2=""
+        ok1=""
+        ok2=""
+        if added_to_cart:
+            if not session:
+                message1="Please Login to add to cart"
+            else:
+                prod_id=added_to_cart
+                value=int(request.form.get("quantity"))
                 cust_id=session["user_id"]
-                availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ;")
+                availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ")
                 if int(value)<=int(availability[0]['Quantity']):
-                    Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id};")
+                    Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id}")
                     if Quantity:
-                        ok=db.execute(f"UPDATE Customer_Cart SET Quantity=Quantity+{value} WHERE ProductID={prod_id} and CustomerID={cust_id};")
+                        ok1=db.execute(f"UPDATE Customer_Cart SET Quantity={value} WHERE ProductID={prod_id} and CustomerID={cust_id}")
                     else:
-                        ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value}) ;")
+                        ok1=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value})")
                 else:
-                    message="Not enough in stock, It is about to finish"
-    if request.args.get("prodid"):
-        prod_id=request.args.get("prodid")
-        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
-        return render_template("product.html",categories=categories,Product=Product,message=message,ok=ok)
+                    message1=f"Only {int(availability[0]['Quantity'])} in stock"
+        if added_to_wishlist:
+            prod_id=''
+            if not session:
+                message2="Please Login to add to wishlist"
+            else:
+                prod_id=added_to_wishlist
+                cust_id=session["user_id"]
+                num=db.execute(f"SELECT * FROM Customer_Wishlist WHERE ProductID={prod_id} and CustomerID={cust_id}")
+                if not num:
+                    ok2=db.execute(f"INSERT INTO Customer_Wishlist VALUES ({cust_id},{prod_id})")
+                else:
+                    message2="Already in the wishlist"
+        return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2)
     else:
-        return redirect("/product")
+        if request.args.get("prodid"):
+            prod_id=request.args.get("prodid")
+            Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
+            return render_template("product.html",categories=categories,Product=Product)
+        else:
+            redirect('/')
+
+    # added_to_cart=request.args.get("addedtocart")
+    # message="" 
+    # ok=0
+    # if added_to_cart:
+    #     if not session:
+    #         message="Login to add to cart"
+    #     else:
+    #         prod_id=request.args.get("prodid")
+    #         value=1
+    #         if prod_id:
+    #             cust_id=session["user_id"]
+    #             availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ;")
+    #             if int(value)<=int(availability[0]['Quantity']):
+    #                 Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id};")
+    #                 if Quantity:
+    #                     ok=db.execute(f"UPDATE Customer_Cart SET Quantity=Quantity+{value} WHERE ProductID={prod_id} and CustomerID={cust_id};")
+    #                 else:
+    #                     ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value}) ;")
+    #             else:
+    #                 message="Not enough in stock, It is about to finish"
+    # if request.args.get("prodid"):
+    #     prod_id=request.args.get("prodid")
+    #     Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
+    #     return render_template("product.html",categories=categories,Product=Product,message=message,ok=ok)
+    # else:
+    #     return redirect("/product")
 
 def errorhandler(e):
     """Handle error"""

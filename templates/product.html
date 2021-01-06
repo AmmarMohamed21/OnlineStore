@@ -6,22 +6,26 @@ Product
 
 {% block main %}
 <div class="row">
-    <div class="col-3">
+    <!-- <div class="col-3"></div> -->
+    <div class="col-lg-3">
         <img src="{{Product[0].ImageURL}}">
     </div>
-    <div class="col-6">
-        <h1>
+    <div class="col-lg-3">
+        <h4>
+            <br><br>
             {{Product[0].ProductName}}
-        </h1>
-        <h2>
-            
+        </h4>
+        <h6>
+
             {%if Product[0].PrductDescription%}
             Product Description
             {{Product[0].ProductDescription}}
             {%endif%}
-        </h2>
+        </h6>
     </div>
-    <div class="col-3">
+    <div class="col-lg-3">
+
+        <br><br><br>
         <h4>Price: {{Product[0].Price}} EGP</h4>
         {% if Product[0].Rating%}
         <h4>Rating: {{Product[0].Rating}}</h4>
@@ -29,7 +33,47 @@ Product
         {%if Product[0].Quantity%}
         In Stock
         {%endif%}
-        {%if ok%}
+        {%if ok1%}
+        <div>
+            <button disabled>Added to cart</button>
+        </div>
+        {%else%}
+        <div>
+            <div>
+                <form action="/product?prodid={{ Product[0].ProductID}}" method="post">
+                    <input type="hidden" name="ProductID-addtocart" value="{{ Product[0].ProductID}}" />
+                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px" required />
+                    <button class="btn btn-sm btn-primary" type="submit">Add to Cart</button>
+                    {%if message1%}
+                    <br>
+                    <span style="color:red">{{message1}}</span>
+                    {%endif%}
+                </form>
+            </div>
+            {%endif%}
+            <br>
+            <br>
+            <br>
+
+            {%if ok2%}
+            <div>
+                <button disabled>Added to wishlist</button>
+            </div>
+            {%else%}
+            <div>
+                <form action="/product?prodid={{ Product[0].ProductID}}" method="post">
+                    <input type="hidden" name="ProductID-addtowishlist" value="{{ Product[0].ProductID}}" />
+                    <button class="btn btn-sm btn-primary" type="submit">Add to Wishlist</button>
+                    {%if message2%}
+                    <br>
+                    <span style="color:red">{{message2}}</span>
+                    {%endif%}
+                </form>
+            </div>
+        </div>
+        {%endif%}
+
+        <!-- {%if ok%}
         <div>
             <button disabled>Added Successfully</button>
         </div>
@@ -42,7 +86,7 @@ Product
             <span style="color:red">{{message}}</span>
         </div>
         {%endif%}
-        {%endif%}
+        {%endif%} -->
     </div>
 
- {% endblock %}
+    {% endblock %}

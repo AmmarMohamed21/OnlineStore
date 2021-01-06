@@ -435,6 +435,21 @@ def product():
     # else:
     #     return redirect("/product")
 
+@app.route("/category",methods=["GET","POST"])
+def category():
+    categories=GetCategories()
+    cat_id=request.args.get("categoryid")
+    if cat_id:
+        Category=db.execute(f"Select * from Categories WHERE [CategoryID]={cat_id}")
+        Products=db.execute(f"SELECT DISTINCT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,P.CategoryID "+
+        f"FROM Product as P,Categories AS C"+
+        f" WHERE P.CategoryID={cat_id} ;")
+        return  render_template("category.html",categories=categories,Products=Products,Category=Category)
+    else:
+        return redirect('/')
+
+
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):

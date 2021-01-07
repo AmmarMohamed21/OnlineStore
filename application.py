@@ -519,8 +519,12 @@ def Management():
             return apology("Please Enter Management password", 403)
 
         #Check that the entered password is correct
-        if  request.form.get("password") is not  ManagementPassword:
+        if  request.form.get("password") !=  ManagementPassword:
             return apology("Wrong password", 403)
+        
+        #Check If Insert Category
+        if request.form.get("CatNameInsert") and request.form.get("CatURLInsert"):
+            query = db.execute(f"INSERT INTO Categories (CategoryName,url) VALUES ({request.form.get("CatNameInsert")},{request.form.get("CatURLInsert")})")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("management.html", categories=categories)

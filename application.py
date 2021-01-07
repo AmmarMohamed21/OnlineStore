@@ -9,7 +9,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-
+from datetime import date
 from helpers import apology, login_required, lookup, usd
 
 # Configure application
@@ -606,6 +606,85 @@ def Management():
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
+
+# this function is for cart
+@app.route("/cart", methods=["GET", "POST"])
+def cart():
+
+    if(request.method == "POST"):
+        if "remove" in request.form:
+            productId = int(request.form.get("productId"))
+            db.execute("delete from Customer_Cart where ProductID = :id and CustomerID = :customer", id = productId, customer = session["user_id"])
+        elif "edit" in request.form:
+            productId = int(request.form.get("productId"))
+            quantity = int(request.form.get("editQuantity"))
+            db.execute("update Customer_Cart set Quantity = :q where CustomerID = :id and ProductID = :pid", q = quantity, id = session['user_id'], pid = productId)
+        elif "confirmPayment" in request.form:
+            totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+            count = totalPrice[0]["sum(Price * C.Quantity)"]
+            productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+            # get the local date
+            today = date.today().strftime("%d/%m/%y")
+
+            # get the payment method
+            paymentMethod = request.form.get("btnradio")
+            # query to put the products within cart into transaction
+            db.execute("insert into Transactions(TransactionDate, IsDelivered, Price, PaymentMethod, CustomerID) values(:date, false, :price, :paymentmethod, :id)", date = today, price = count, paymentmethod = paymentMethod, id = session['user_id'])
+            # get the the transaction id 
+            transactionId = db.execute("select max(TransactionID) from Transactions")[0]["max(TransactionID)"]
+            # this loop for insert every product into transaction_contains_product
+            for i in productsCustomer:
+                db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
+            # delete the items in the cart
+            db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
+
+
+    
+    
+
+    
+    productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+    productsQuantity = db.execute("select Quantity from Customer_Cart where CustomerID = :id", id=session["user_id"])
+    productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
+    totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+    count = totalPrice[0]["sum(Price * C.Quantity)"]
+    productsCount = productsCount[0]["count(ProductID)"]
+
+    return render_template("Cart.html", products = productsCustomer, productsQuantity = productsQuantity, count = productsCount, totalPrice = count)
+
+@app.route("/wishlist", methods = ["GET", "POST"])
+def wishlist():
+
+    # confirm the post requests
+    if(request.method == "POST"):
+        #if the clicked button is remove
+        if "remove" in request.form:
+            productId = int(request.form.get("productId"))
+            db.execute("delete from Customer_Wishlist where CustomerID = :id and ProductID = :pId", id = session['user_id'], pId = productId)
+        # if the clicked button is add to cart
+        elif "addToCart" in request.form:
+            # add the item to cart
+            productId = int(request.form.get("productId"))
+            db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = productId, id = session['user_id'])
+            # then delete it from the wish list
+            db.execute("delete from Customer_Wishlist where CustomerID = :id and ProductID = :pId", id = session['user_id'], pId = productId)
+        # if the clicked button is add all to cart
+        elif "allToCart" in request.form:
+            # get all products in the wish list
+            productsInWishlist = db.execute("select ProductID from Customer_Wishlist where CustomerID = :id", id = session['user_id'])
+            # loop for every product to insert it into cart
+            for i in productsInWishlist:
+                db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = i["ProductID"], id = session['user_id'])
+            # delete the products from the wish list
+            db.execute("delete from Customer_Wishlist where CustomerID = :id", id = session['user_id'])
+
+    # get the products in the wishlist of the customer
+    productsCustomer = db.execute("select * from Product as P, Customer_Wishlist as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+
+    # get the count of the items in the wishlist
+    productsCount = db.execute("select count(ProductID) from Customer_Wishlist where CustomerID = :id", id=session["user_id"])
+    productsCount = productsCount[0]["count(ProductID)"]
+    return render_template("/wishlist.html", products = productsCustomer, count = productsCount)
 
 
 

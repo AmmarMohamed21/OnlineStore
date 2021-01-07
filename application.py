@@ -509,7 +509,11 @@ def Management():
     
     #load categories list
     categories=GetCategories()
+    
+    #Get Suppliers Data
     suppliers = db.execute("SELECT * FROM Suppliers order by SupplierName")
+    suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
+
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -539,15 +543,63 @@ def Management():
         #Delete Category
         if request.form.get("selectCategoryDelete"):
             query = db.execute("DELETE FROM Categories WHERE CategoryName = :selectedcat",selectedcat=request.form.get("selectCategoryDelete"))
+            return redirect("/management")
         
+        #Insert Supplier 
+        if request.form.get("SupplierNameInsert"):
+            query=db.execute("INSERT INTO Suppliers (SupplierName) VALUES(:name)",name=request.form.get("SupplierNameInsert"))
+            return redirect("/management")
+        
+        #Insert Supplier Location
+        if request.form.get("selectSupplierInsert") and request.form.get("SupplierLocInsert"):
+            supname=request.form.get("selectSupplierInsert")
+            suploc=request.form.get("SupplierLocInsert")
+            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
+            if len(query) != 1:
+                return apology("Something Missing", 403)
+            supid=query[0]["SupplierID"]
+            query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc,:supid)",supid=supid,suploc=suploc)
+            return redirect("/management")
 
+        #Update Supplier Name
+        if request.form.get("selectSupplierEdit") and request.form.get("SupplierNameEdit"):
+            query = db.execute("UPDATE Suppliers SET SupplierName = :name WHERE SupplierName = :oldname", name=request.form.get("SupplierNameEdit"),oldname=request.form.get("selectSupplierEdit"))
+            return redirect("/management")
+        
+        #Update Supplier Location
+        if request.form.get("selectSupLocEdit") and request.form.get("SupLocEdit"):
+            text=request.form.get("selectSupLocEdit").split(", ")
+            supname=text[0]
+            suploc=text[1]
+            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
+            if len(query) != 1:
+                return apology("Something Missing", 403)
+            supid=query[0]["SupplierID"]
+            query=db.execute("UPDATE Supplier_Location SET SupplierLocation= :newsuploc WHERE SupplierID= :supid and SupplierLocation= :suploc",suploc=suploc,supid=supid,newsuploc=request.form.get("SupLocEdit"))
+            return redirect("/management")
 
+        #Delete Supplier
+        if request.form.get("selectSupplierDelete"):
+            query= db.execute("DELETE FROM Suppliers WHERE SupplierName= :supname", supname=request.form.get("selectSupplierDelete"))
+            return redirect("/management")
+        
+        #Delete Supplier Location
+        if request.form.get("selectSupLocDelete"):
+            text=request.form.get("selectSupLocDelete").split(", ")
+            supname=text[0]
+            suploc=text[1]
+            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
+            if len(query) != 1:
+                return apology("Something Missing", 403)
+            supid=query[0]["SupplierID"]
+            query=db.execute("DELETE FROM Supplier_Location WHERE SupplierID= :supid and SupplierLocation= :suploc",supid=supid,suploc=suploc)
+            return redirect("/management")
 
-        #POST WAS SUCCESFUL    
-        return redirect("/management")
+        #POST WAS UNSUCCESFUL    
+        return apology("Something Missing", 403)
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations)
 
 
 # Listen for errors

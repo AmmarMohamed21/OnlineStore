@@ -510,9 +510,17 @@ def Management():
     #load categories list
     categories=GetCategories()
 
+    #Define Password
+    ManagementPassword="ronaldinho"
+
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        return render_template("management.html", categories=categories)
+        if not request.form.get("password"):
+            return apology("Please Enter Management password", 403)
+
+        #Check that the entered password is correct
+        if  request.form.get("password") is not  ManagementPassword:
+            return apology("Wrong password", 403)
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("management.html", categories=categories)

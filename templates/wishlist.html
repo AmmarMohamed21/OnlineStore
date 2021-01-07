@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}
+WishList
+{% endblock %}
+
+{% block main %}
+<form action="/wishlist" method="GET"></form>
+<div class="page">
+    {% if count %}
+    <main class="cart">
+       
+            {% for product in products %}
+            <form action="/wishlist" method="POST">
+                <div class="cart-item">
+                    <div class="front">
+                        <div class="descriptionShow">
+                            <div>
+                                {{product.ProductDescription}}
+                            </div>    
+                        </div>
+                        <h1>{{product.ProductName}}</h1>
+                        <div class="image">
+                            <img src={{product.ImageURL}}>
+                        </div>
+                        <div class="buttons">
+                            <input type="hidden" name="productId" value={{product.ProductID}}>
+                            <button type="submit" class="btn btn-primary" name="remove">Remove</button>
+                            <button type="submit" class="btn btn-danger" name="addToCart">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
+        
+    </main>
+    {% else %}
+    <div class="empty">No Items in the wishlist</div>
+    {% endif %}
+    <form action="/wishlist" method="POST">
+        <aside class="side-menu">
+            <header>WishList</header>
+            <div>
+                <div>
+                    <span>Items</span>
+                    <span>{{count}}</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" type="submit" name="allToCart">All to Cart</button>
+        </aside>
+    </form>
+</div>
+{% endblock %}

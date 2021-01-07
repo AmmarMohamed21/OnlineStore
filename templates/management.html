@@ -209,6 +209,39 @@ Management
     <div class="collapse multi-collapse" id="SuppliersEdit">
         <form action="/management" method="post">
             <div class="mb-3">
+                <select class="form-control" name="selectSupplierEdit">
+                    <option disabled selected value> Select Supplier </option>
+                    {% for supplier in suppliers %}
+                    <option>{{supplier.SupplierName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="SupplierNameEdit" placeholder="New Supplier Name" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="password" placeholder="Management Password" type="password">
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+
+        <form class="mt-5" action="/management" method="post">
+            <div class="mb-3">
+                <select class="form-control" name="selectSupLocEdit">
+                    <option disabled selected value> Select Location of Supplier </option>
+                    {% for location in suplocations %}
+                    <option>{{location.SupplierName}}, {{location.SupplierLocation}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="SupLocEdit" placeholder="New Location" type="text">
+            </div>
+
+            <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
@@ -216,7 +249,28 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="SuppliersInsert">
-        <form action="/management" method="post">
+        <form  action="/management" method="post">
+            <div class="mb-3">
+                <input class="form-control" name="SupplierNameInsert" placeholder="Supplier Name" type="text">
+            </div>
+            <div class="mb-3">
+                <input class="form-control" name="password" placeholder="Management Password" type="password">
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+        
+        <form class="mt-5" action="/management" method="post">
+            <div class="mb-3">
+                <select class="form-control" name="selectSupplierInsert">
+                    <option disabled selected value> Select Supplier </option>
+                    {% for supplier in suppliers %}
+                    <option>{{supplier.SupplierName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <input class="form-control" name="SupplierLocInsert" placeholder="Location" type="text">
+            </div>
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -239,6 +293,23 @@ Management
             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+
+        <form class="mt-5" action="/management" method="post">
+            <div class="mb-3">
+                <select class="form-control" name="selectSupLocDelete">
+                    <option disabled selected value> Select Location of Supplier </option>
+                    {% for location in suplocations %}
+                    <option>{{location.SupplierName}}, {{location.SupplierLocation}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="password" placeholder="Management Password" type="password">
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+
     </div>
 
     <div class="collapse multi-collapse" id="ImportsEdit">

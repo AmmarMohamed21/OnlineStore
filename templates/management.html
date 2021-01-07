@@ -128,6 +128,24 @@ Management
 
     <div class="collapse multi-collapse" id="CategoryEdit">
         <form action="/management" method="post">
+            
+            <div class="mb-3">
+            <select class="form-control" name="selectCategoryEdit">
+                <option disabled selected value> Select Category </option>
+                {% for category in categories %}
+                    <option>{{category.CategoryName}}</option>
+                 {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="CatNameEdit" placeholder="New Category Name" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="CatURLEdit" placeholder="New Category Image URL" type="text">
+            </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -137,6 +155,15 @@ Management
 
     <div class="collapse multi-collapse" id="CategoryInsert">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <input class="form-control" name="CatNameInsert" placeholder="Category Name" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="CatURLInsert" placeholder="Category Image URL" type="text">
+            </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -146,6 +173,16 @@ Management
 
     <div class="collapse multi-collapse" id="CategoryDelete">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <select class="form-control" name="selectCategoryDelete">
+                    <option disabled selected value> Select Category </option>
+                    {% for category in categories %}
+                        <option>{{category.CategoryName}}</option>
+                     {% endfor %}
+                  </select>
+                </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>

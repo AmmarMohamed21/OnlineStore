@@ -3,21 +3,119 @@
     Cart
 {% endblock %}
 {% block main %}
+
+<script>
+function rotateme(element)
+{
+    element.parentElement.parentElement.parentElement.classList.add("cart-item-rotate");
+}
+function reverseRotate(element)
+{
+    element.parentElement.parentElement.parentElement.classList.remove("cart-item-rotate");
+}
+function showPayment()
+{
+    $(".payment").slideToggle();
+
+}
+function showCredit()
+{
+    $(".creditCard").slideDown();
+}
+function hideCredit()
+{
+    $(".creditCard").slideUp();
+}
+</script>
+
+<!-- javascript file for animation -->
+
 <form action="/cart" method="GET"></form>
 <div class="page">
+    {% if count %}
     <main class="cart">
-        {% for product in products %}
-        <div class="cart-item">
-            <h1>{{product.ProductName}}</h1>
-            <img src={{product.ImageURL}}>
-            <button type="button" class="btn btn-primary">Edit</button>
-            <button type="button" class="btn btn-danger">Remove</button>
-        </div>
-        {% endfor %}
+       
+            {% for product in products %}
+            <form action="/cart" method="POST">
+                <div class="cart-item">
+                    <div class="front">
+                        <div class="descriptionShow">
+                            <div>
+                                {{product.ProductDescription}}
+                            </div>    
+                        </div>
+                        <h1>{{product.ProductName}}</h1>
+                        <div class="image">
+                            <img src={{product.ImageURL}}>
+                        </div>
+                        <div class="buttons">
+                            <input type="hidden" name="productId" value={{product.ProductID}}>
+                            <button type="button" class="btn btn-primary" onclick="rotateme(this)">Edit</button>
+                            <button type="submit" class="btn btn-danger" name="remove">Remove</button>
+                        </div>
+                    </div>
+                    <div class="back">
+                        <header>
+                            Quantity
+                        </header>
+                        <label for="example-number-input" class="col-2 col-form-label">Edit Quantity</label>
+                        <div class="col-10">
+                            <input class="form-control" type="number" value={{product.Quantity}} id="example-number-input" min = "1" name="editQuantity">
+                        </div>
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <button class="btn btn-danger" type="submit" name="edit">Edit</button>
+                            <button class="btn btn-danger" type="button" onclick="reverseRotate(this)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
+        
     </main>
+    {% else %}
+    <div class="empty">No Items in the Cart</div>
+    {% endif %}
     <aside class="side-menu">
-        <div>total</div>
-        <button type="button" class="btn btn-primary btn-lg btn-block">purchase</button>
+        <header>Cart</header>
+        <div>
+            <div>
+                <span>Total</span>
+                <span>{{totalPrice}}</span>
+            </div>
+            <div class="clear-float"></div>
+            <div>
+                <span>Items</span>
+                <span>{{count}}</span>
+            </div>
+            
+        </div>
+        
+            <button type="button" class="btn btn-primary btn-lg btn-block" type="submit" onclick="showPayment()">purchase</button>
+        
     </aside>
+    <form action="/cart" method="POST">
+        <div class="payment" style="display: none;">
+            <header>Payment</header>
+            <div class="radioButtons">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked value="Cash">
+                    <label class="btn btn-outline-primary" for="btnradio1" onclick="hideCredit()">Cash</label>
+                
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="Credit">
+                    <label class="btn btn-outline-primary" for="btnradio2" onclick="showCredit()">Credit Card</label>
+                </div>
+            </div>
+            <div class="creditCard" style="display: none;">
+                <input type="text" class="form-control" placeholder="City" aria-label="City">          
+                <input type="text" class="form-control" placeholder="State" aria-label="State">
+                <input type="text" class="form-control" placeholder="Zip" aria-label="Zip">
+                <input type="text" class="form-control" placeholder="Credit number" aria-label="Zip">
+            </div>
+            <div class="paymentButtons">
+                <button type="submit" class="btn btn-danger" name="confirmPayment">Confirm</button>
+                <button type="reset" class="btn btn-danger">Reset</button>
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock %}

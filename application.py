@@ -39,7 +39,7 @@ Session(app)
 db = SQL("sqlite:///OnlineStore.db")
 
 def GetCategories():
-    categories=db.execute("Select * from Categories")
+    categories=db.execute("Select * from Categories order by CategoryName")
     return categories
 
 @app.route("/")
@@ -509,7 +509,7 @@ def Management():
     
     #load categories list
     categories=GetCategories()
-
+    suppliers = db.execute("SELECT * FROM Suppliers order by SupplierName")
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -524,10 +524,30 @@ def Management():
         
         #Check If Insert Category
         if request.form.get("CatNameInsert") and request.form.get("CatURLInsert"):
-            query = db.execute(f"INSERT INTO Categories (CategoryName,url) VALUES ({request.form.get("CatNameInsert")},{request.form.get("CatURLInsert")})")
+            query = db.execute("INSERT INTO Categories (CategoryName,url) VALUES (:catname,:caturl)",catname=request.form.get("CatNameInsert"),caturl=request.form.get("CatURLInsert"))
+            return redirect("/management")
+
+        #Update Category
+        if request.form.get("selectCategoryEdit"):
+            selectedCat = request.form.get("selectCategoryEdit")
+            if request.form.get("CatURLEdit"):
+                query = db.execute("UPDATE Categories SET url = :url WHERE CategoryName = :selectedCat",selectedCat=selectedCat,url=request.form.get("CatURLEdit")) 
+            if request.form.get("CatNameEdit"):
+                query = db.execute("UPDATE Categories SET CategoryName = :catname WHERE CategoryName = :selectedCat",selectedCat=selectedCat,catname=request.form.get("CatNameEdit"))
+            return redirect("/management")
+        
+        #Delete Category
+        if request.form.get("selectCategoryDelete"):
+            query = db.execute("DELETE FROM Categories WHERE CategoryName = :selectedcat",selectedcat=request.form.get("selectCategoryDelete"))
+        
+
+
+
+        #POST WAS SUCCESFUL    
+        return redirect("/management")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories)
+        return render_template("management.html", categories=categories,suppliers=suppliers)
 
 
 # Listen for errors

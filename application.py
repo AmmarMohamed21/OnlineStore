@@ -502,6 +502,7 @@ def Management():
     #Get Suppliers Data
     suppliers = db.execute("SELECT * FROM Suppliers order by SupplierName")
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
+    products = db.execute("SELECT * FROM Product order by ProductName")
 
     #Define Password
     ManagementPassword="ronaldinho"
@@ -549,10 +550,7 @@ def Management():
         if request.form.get("selectSupplierInsert") and request.form.get("SupplierLocInsert"):
             supname=request.form.get("selectSupplierInsert")
             suploc=request.form.get("SupplierLocInsert")
-            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
-            if len(query) != 1:
-                return apology("Something Missing")
-            supid=query[0]["SupplierID"]
+            supid = GetSupID(supname)
             query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc,:supid)",supid=supid,suploc=suploc)
             return redirect("/management")
 
@@ -566,10 +564,7 @@ def Management():
             text=request.form.get("selectSupLocEdit").split(", ")
             supname=text[0]
             suploc=text[1]
-            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
-            if len(query) != 1:
-                return apology("Something Missing")
-            supid=query[0]["SupplierID"]
+            supid = GetSupID(supname)
             query=db.execute("UPDATE Supplier_Location SET SupplierLocation= :newsuploc WHERE SupplierID= :supid and SupplierLocation= :suploc",suploc=suploc,supid=supid,newsuploc=request.form.get("SupLocEdit"))
             return redirect("/management")
 
@@ -578,27 +573,70 @@ def Management():
             query= db.execute("DELETE FROM Suppliers WHERE SupplierName= :supname", supname=request.form.get("selectSupplierDelete"))
             return redirect("/management")
 
-        #Insert Product
-        #if CheckAllProductInsert():
-
         
         #Delete Supplier Location
         if request.form.get("selectSupLocDelete"):
             text=request.form.get("selectSupLocDelete").split(", ")
             supname=text[0]
             suploc=text[1]
-            query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
-            if len(query) != 1:
-                return apology("Something Missing")
-            supid=query[0]["SupplierID"]
+            supid = GetSupID(supname)
             query=db.execute("DELETE FROM Supplier_Location WHERE SupplierID= :supid and SupplierLocation= :suploc",supid=supid,suploc=suploc)
             return redirect("/management")
+
+        
+        #Insert Product
+        if CheckAllProductInsert():
+            name = request.form.get("ProdNameInsert")
+            desc = request.form.get("ProdDescInsert")
+            price = request.form.get("ProdPriceInsert")
+            url = request.form.get("ProdURLInsert")
+            if not CheckIMAGEURL(url):
+                return apology("URL has to be ending with .jpg or .png")
+            supname = request.form.get("ProdSupInsert") 
+            supid = GetSupID(supname)
+            catname = request.form.get("ProdCatInsert")
+            catid = GetCatID(catname)
+            quantity = 0
+            query = db.execute("INSERT INTO Product (ProductName,ProductDescription,Price,Quantity,ImageURL,SupplierID,CategoryID) VALUES (:name,:desc,:price,:quantity,:url,:supid,:catid)",name=name,desc=desc,price=price,quantity=quantity,url=url,supid=supid,catid=catid)
+            return redirect("/management")
+
+        #Edit Product 
+        if request.form.get("SelectProdEdit"):
+            prodname = request.form.get("SelectProdEdit")
+            if request.form.get("ProdDescEdit"):
+                query=db.execute("UPDATE Product SET ProductDescription= :desc WHERE ProductName= :prodname", desc=request.form.get("ProdDescEdit"), prodname=prodname)
+            if request.form.get("ProdURLEdit"):
+                url = request.form.get("ProdURLEdit")
+                if not CheckIMAGEURL(url):
+                    return apology("URL has to be ending with .jpg or .png")
+                query=db.execute("UPDATE Product SET ImageURL= :url WHERE ProductName= :prodname", url=url, prodname=prodname)
+            if request.form.get("ProdPriceEdit"):
+                query=db.execute("UPDATE Product SET Price= :price WHERE ProductName= :prodname", price=request.form.get("ProdPriceEdit"), prodname=prodname)
+            if request.form.get("ProdQuantityEdit"):
+                query=db.execute("UPDATE Product SET Quantity= :quan WHERE ProductName= :prodname", quan=request.form.get("ProdQuantityEdit"), prodname=prodname)
+            if request.form.get("ProdSupEdit"):
+                supname=request.form.get("ProdSupEdit")
+                supid=GetSupID(supname)
+                query=db.execute("UPDATE Product SET SupplierID= :supid WHERE ProductName= :prodname", supid=supid, prodname=prodname)
+            if request.form.get("ProdCatEdit"):
+                catname=request.form.get("ProdCatEdit")
+                catid=GetCatID(catname)
+                query=db.execute("UPDATE Product SET CategoryID= :catid WHERE ProductName= :prodname", catid=catid, prodname=prodname)
+            if request.form.get("ProdNameEdit"):
+                query=db.execute("UPDATE Product SET ProductName= :name WHERE ProductName= :prodname", name=request.form.get("ProdNameEdit"), prodname=prodname)
+            return redirect("/management")
+
+        #Delete Product
+        if request.form.get("SelectProdDelete"):
+            query=db.execute("DELETE FROM Product WHERE ProductName= :name", name=request.form.get("SelectProdDelete"))
+            return redirect("/management")
+     
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products)
 
 
 # Listen for errors
@@ -685,7 +723,24 @@ def wishlist():
     productsCount = productsCount[0]["count(ProductID)"]
     return render_template("/wishlist.html", products = productsCustomer, count = productsCount)
 
+def CheckAllProductInsert():
+    if request.form.get("ProdNameInsert") and request.form.get("ProdDescInsert") and request.form.get("ProdPriceInsert") and request.form.get("ProdURLInsert") and request.form.get("ProdCatInsert") and request.form.get("ProdSupInsert"):
+        return True 
+    return False
 
+def GetSupID (supname):
+    query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
+    if len(query) != 1:
+        return apology("Somthing Missing")
+    supid=query[0]["SupplierID"]
+    return supid
+
+def GetCatID (catname):
+    query=db.execute("SELECT * FROM Categories WHERE CategoryName= :catname",catname=catname)
+    if len(query) != 1:
+        return apology("Somthing Missing")
+    catid=query[0]["CategoryID"]
+    return catid
 
 # @app.route("/check", methods=["GET"])
 # def check():

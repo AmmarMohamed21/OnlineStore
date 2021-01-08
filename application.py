@@ -681,6 +681,19 @@ def Management():
         if request.form.get("SelectProdDelete"):
             query=db.execute("DELETE FROM Product WHERE ProductName= :name", name=request.form.get("SelectProdDelete"))
             return redirect("/management")
+
+        #ADD Import
+        if request.form.get("ImportSupInsert") and request.form.get("ImportProdInsert") and request.form.get("ImportPriceInsert") and request.form.get("ImportQuanInsert") and request.form.get("ImportDateInsert"):
+            supname=request.form.get("ImportSupInsert")
+            prodname=request.form.get("ImportProdInsert")
+            supid=GetSupID(supname)
+            prodid=GetProdID(prodname)
+            price = request.form.get("ImportPriceInsert")
+            quantity = request.form.get("ImportQuanInsert")
+            date = request.form.get("ImportDateInsert")
+            query = db.execute("INSERT INTO Imports VALUES(:date, :supid, :prodid, :quantity, :price)",date=date,supid=supid,prodid=prodid,quantity=quantity,price=price)
+            query = db.execute("UPDATE Product SET Quantity=Quantity+:quantity WHERE ProductID=:prodid",quantity=quantity,prodid=prodid)
+            return redirect("/management")
      
 
         #POST WAS UNSUCCESFUL    
@@ -792,6 +805,13 @@ def GetCatID (catname):
         return apology("Somthing Missing")
     catid=query[0]["CategoryID"]
     return catid
+
+def GetProdID (prodname):
+    query=db.execute("SELECT * FROM Product WHERE ProductName= :prodname",prodname=prodname)
+    if len(query) != 1:
+        return apology("Somthing Missing")
+    prodid=query[0]["ProductID"]
+    return prodid
 
 # @app.route("/check", methods=["GET"])
 # def check():

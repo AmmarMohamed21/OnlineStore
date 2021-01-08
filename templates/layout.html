@@ -43,9 +43,9 @@
             </ul>
                
                     
-            <ul class="navbar-nav ml-auto mt-2" style="position: Absolute; right: 20px;" id= "search">
-                <form class="d-flex" action="/search" method="POST" style="padding-right: 20px;">
-                    <input class="form-control me-2" name="search" type="search" placeholder="Search Products" aria-label="Search">
+            <ul class="navbar-nav ml-auto mt-2" style="position: Absolute; right: 20px;">
+                <form class="d-flex" action="/search" method="get" style="padding-right: 20px;">
+                    <input class="form-control me-2" name="search_for" type="search" placeholder="Search Products" aria-label="Search">
                     <button class="btn btn-outline-primary" type="submit">Search</button>
                   </form>
                 {% if session.user_id %}

@@ -13,53 +13,48 @@ Search Results
         <div class="col-md">
         </div>
         <div class="col-md-3">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="sortDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Sort By
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(Low-High)">Price(Low-High)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Price(High-Low)">Price(High-Low)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Rating (5-1)">Rating (5-1)</a></li>
-                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Date (new first)">Date (new first)</a></li>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdownMenuLink">
+                <li><a class="dropdown-item"
+                        href="/search?search_for={{search_for}}&sortby=Price(Low-High)">Price(Low-High)</a></li>
+                <li><a class="dropdown-item"
+                        href="/search?search_for={{search_for}}&sortby=Price(High-Low)">Price(High-Low)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Rating (5-1)">Rating
+                        (5-1)</a></li>
+                <li><a class="dropdown-item" href="/search?search_for={{search_for}}&sortby=Date (new first)">Date (new
+                        first)</a></li>
             </ul>
         </div>
     </div>
+    <br>
+    <div class="container">
+        <div class="row">
+            {% for prod in Products %}
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <div class="cat-list-items">
+                    <div class="thumbnail">
+                        <a href="/product?prodid={{prod.ProductID}} ">
+                            <img src="{{prod.ImageURL}}" alt="..." width="300px" height="300px"
+                                style="max-width:auto; max-height:auto;">
+                        </a>
+                        <div class="caption">
+                            <h3>
+                                <a href="/product?prodid={{prod.ProductID}} ">
+                                    {{prod.ProductName}}
+                                </a>
+                            </h3>
+                            
+                            <span>EGP <h5>{{prod.Price}}</h5></span>
+                        </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-
-                <th> Image</th>
-                <th> Product Name</th>
-                <th> Product Description </th>
-                <th> Price </th>
-                <th> Rating </th>
-                <th> Product ID </th>
-                <th> Quantity </th>
-                <th> In Stock </th>
-                <th> Supplier ID </th>
-                <th> Category ID </th>
-            </tr>
-        </thead>
-        {% for prod in Products %}
-        <tr>
-            <td><img src="{{prod.ImageURL}}" style="max-width:300px; max-height:200px;"></td>
-            <td>
-                <a href="/product?prodid={{prod.ProductID}} ">
-                    {{prod.ProductName}}
-                </a>
-            </td>
-            <td>{{prod.ProductDescription}}</td>
-            <td>{{prod.Price}}</td>
-            <td>{{prod.Rating}}</td>
-            <td>{{prod.ProductID}}</td>
-            <td>{{prod.Quantity}}</td>
-            <td>{{prod.InStock}}</td>
-            <td>{{prod.SupplierID}}</td>
-            <td>{{prod.CategoryID}}</td>
-        </tr>
-        {% endfor %}
-    </table>
+                    </div>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
     {% endif %}
     {% endblock %}

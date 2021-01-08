@@ -58,9 +58,13 @@ Management
         if (elemid != "SaleDelete") {
             document.getElementById("SaleDelete").className = "collapse hide";
         }
-
+        date = new Date();
+        date = date.toLocaleDateString();
+        document.getElementById("ImportDateInsert").value=date;
     }
 </script>
+
+
 
 <div class="container px-4 shadow-lg p-3 mb-5 bg-white rounded">
     <div class="row gx-5">
@@ -323,6 +327,35 @@ Management
 
     <div class="collapse multi-collapse" id="ImportsInsert">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <select class="form-control" name="ImportSupInsert">
+                    <option disabled selected value> Select Supplier </option>
+                    {% for supplier in suppliers %}
+                    <option>{{supplier.SupplierName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <select class="form-control" name="ImportProdInsert">
+                    <option disabled selected value> Select Product </option>
+                    {% for product in products %}
+                    <option>{{product.ProductName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <input class="form-control" name="ImportPriceInsert" placeholder="Product Price" type="number" step="0.01" min="0">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ImportQuanInsert" placeholder="Product Quantity" type="number" step="1" min="0">
+            </div>
+
+            <input type="hidden" id = "ImportDateInsert" name = "ImportDateInsert">
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>

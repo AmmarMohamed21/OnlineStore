@@ -12,12 +12,12 @@
 </main>
 <div class= "cat-list">
     {% for category in categories%}
+    <a style="text-decoration: none;"  href="/category?categoryid={{category['CategoryID']}}">
     <div class="cat-list-items">
-      <h1>{{category.CategoryName}}</h1>
-      <a href="/category?categoryid={{category['CategoryID']}}">
+      <h1 style="color:black">{{category.CategoryName}}</h1>
         <img src={{category.url}}  alt="images">
-      </a>
     </div>
+  </a>
     {% endfor %}
 </div>
 

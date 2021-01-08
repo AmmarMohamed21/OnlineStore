@@ -56,7 +56,7 @@ Product
         {%else%}
         <div>
             <div>
-                <form action="/product?prodid={{ Product[0].ProductID}}" method="post">
+                <form action="/product" method="post">
                     <input type="hidden" name="ProductID-addtocart" value="{{ Product[0].ProductID}}" />
                     <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px; margin-top: 5px;" required />
                     <button class="btn btn-sm btn-primary" type="submit">Add to Cart</button>
@@ -102,20 +102,23 @@ Product
             {%endfor%}
             {%endif%}
         </div>
-        <!-- {%if ok%}
         <div>
-            <button disabled>Added Successfully</button>
+            <div class="stars">
+                <form action="/product" method="GET">
+                    <input type="hidden" value="{{ Product[0].ProductID}}" name="prodid">
+                  <input class="star star-5" id="star-5" type="radio" onclick="javascript:submit()" value="5" name="star"/>
+                  <label class="star star-5" for="star-5"></label>
+                  <input class="star star-4" id="star-4" type="radio" onclick="javascript:submit()" value="4" name="star"/>
+                  <label class="star star-4" for="star-4"></label>
+                  <input class="star star-3" id="star-3" type="radio" onclick="javascript:submit()"  value="3" name="star"/>
+                  <label class="star star-3" for="star-3"></label>
+                  <input class="star star-2" id="star-2" type="radio" onclick="javascript:submit()"  value="2" name="star"/>
+                  <label class="star star-2" for="star-2"></label>
+                  <input class="star star-1" id="star-1" type="radio" onclick="javascript:submit()"  value="1" name="star"/>
+                  <label class="star star-1" for="star-1"></label>
+                </form>
+              </div>
         </div>
-        {%else%}
-        <p><a href="/product?addedtocart=1&prodid={{Product[0].ProductID}}" class="btn btn-primary" role="button">
-            Add to Cart
-        </a></p>
-        {%if message%}
-        <div>
-            <span style="color:red">{{message}}</span>
-        </div>
-        {%endif%}
-        {%endif%} -->
     </div>
 
     {% endblock %}

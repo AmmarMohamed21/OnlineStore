@@ -10,7 +10,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, CheckIMAGEURL
 
 # Configure application
 app = Flask(__name__)
@@ -66,11 +66,11 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username", 403)
+            return apology("must provide username")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password", 403)
+            return apology("must provide password")
 
         # Query database for username
         rows = db.execute("SELECT * FROM Customer WHERE username = :username",
@@ -78,7 +78,7 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
-            return apology("invalid username and/or password", 403)
+            return apology("invalid username and/or password")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["CustomerID"]
@@ -130,7 +130,7 @@ def register():
         #Check that username doesn't exist
         query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("username"))
         if len(query) != 0:
-            return apology("Username Already Exists", 403)
+            return apology("Username Already Exists")
 
         #check that phonenumber is digits
         if not phonenumber.isnumeric():
@@ -179,17 +179,17 @@ def edituserinfo():
 
         #Check that the user entered his password
         if not request.form.get("password"):
-            return apology("Please Enter your password", 403)
+            return apology("Please Enter your password")
 
         #Check that the entered password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
-            return apology("Wrong password", 403)
+            return apology("Wrong password")
 
         #Check if he is changing his username
         if request.form.get("uname"):
             query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("uname"))
             if len(query) != 0:
-                return apology("Username Already Exists", 403)
+                return apology("Username Already Exists")
             query = db.execute("UPDATE Customer SET Username= :username WHERE CustomerID= :id",username=request.form.get("uname"), id=session["user_id"])
             return redirect("/edituserinfo")
 
@@ -291,7 +291,7 @@ def Transactions():
             for Refund_Qua in Refund_Quan:
                 if Refund_Qua[0] is int: 
                     if RefQua > (ProQua - int(Refund_Qua[0])) :
-                        return apology(" Refund Quantity > Product Quantity ", 403)
+                        return apology(" Refund Quantity > Product Quantity ")
 
 #############################################################################################################
         #  if  datetime.datetime.now().date - Trans_Date > 14:###############################################
@@ -443,7 +443,7 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return apology(e.name, e.code)
+    return apology(e.name)
 
 
 @app.route("/PromoCode", methods=["GET", "POST"])
@@ -461,26 +461,26 @@ def PromoCode():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         if not request.form.get("code"): #Check it's not empty
-             return apology("Please enter Promo Code", 403)
+             return apology("Please enter Promo Code")
 
         #Check that the user hasn't entered a promo code before
         if rows[0]["PromoCode"] is not None:
-            return apology("You have entered a Promo Code before", 403)
+            return apology("You have entered a Promo Code before")
 
         promo = request.form.get("code")
         #Check the entered code isn't his code
         if rows[0]["RegisterationCode"] == promo :
-            return apology("Promo Code isn't valid", 403)
+            return apology("Promo Code isn't valid")
         
         #Check if the promo code exists
         query = db.execute("SELECT * FROM Customer WHERE RegisterationCode= :code", code=promo)
         if len(query) != 1:
-            return apology("Promo Code isn't valid", 403)
+            return apology("Promo Code isn't valid")
         
         #Check the number of shares isn't zero
         shares=query[0]["CodeShares"]
         if shares == 0:
-            return apology("Promo Code isn't valid", 403)
+            return apology("Promo Code isn't valid")
         
         query = db.execute("UPDATE Customer SET CodeShares=CodeShares-1, VoucherValue = VoucherValue + 50 WHERE RegisterationCode= :code",code=promo)
         query = db.execute("UPDATE Customer SET PromoCode= :code, VoucherValue = VoucherValue + 100 WHERE CustomerID= :id",code=promo, id=session["user_id"])
@@ -509,14 +509,17 @@ def Management():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         if not request.form.get("password"):
-            return apology("Please Enter Management password", 403)
+            return apology("Please Enter Management password")
 
         #Check that the entered password is correct
         if  request.form.get("password") !=  ManagementPassword:
-            return apology("Wrong password", 403)
+            return apology("Wrong password")
         
         #Check If Insert Category
         if request.form.get("CatNameInsert") and request.form.get("CatURLInsert"):
+            url=request.form.get("CatURLInsert")
+            if not CheckIMAGEURL(url):
+                return apology("URL has to be ending with .jpg or .png")
             query = db.execute("INSERT INTO Categories (CategoryName,url) VALUES (:catname,:caturl)",catname=request.form.get("CatNameInsert"),caturl=request.form.get("CatURLInsert"))
             return redirect("/management")
 
@@ -524,6 +527,9 @@ def Management():
         if request.form.get("selectCategoryEdit"):
             selectedCat = request.form.get("selectCategoryEdit")
             if request.form.get("CatURLEdit"):
+                url=request.form.get("CatURLEdit")
+                if not CheckIMAGEURL(url):
+                    return apology("URL has to be ending with .jpg or .png")
                 query = db.execute("UPDATE Categories SET url = :url WHERE CategoryName = :selectedCat",selectedCat=selectedCat,url=request.form.get("CatURLEdit")) 
             if request.form.get("CatNameEdit"):
                 query = db.execute("UPDATE Categories SET CategoryName = :catname WHERE CategoryName = :selectedCat",selectedCat=selectedCat,catname=request.form.get("CatNameEdit"))
@@ -545,7 +551,7 @@ def Management():
             suploc=request.form.get("SupplierLocInsert")
             query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
             if len(query) != 1:
-                return apology("Something Missing", 403)
+                return apology("Something Missing")
             supid=query[0]["SupplierID"]
             query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc,:supid)",supid=supid,suploc=suploc)
             return redirect("/management")
@@ -562,7 +568,7 @@ def Management():
             suploc=text[1]
             query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
             if len(query) != 1:
-                return apology("Something Missing", 403)
+                return apology("Something Missing")
             supid=query[0]["SupplierID"]
             query=db.execute("UPDATE Supplier_Location SET SupplierLocation= :newsuploc WHERE SupplierID= :supid and SupplierLocation= :suploc",suploc=suploc,supid=supid,newsuploc=request.form.get("SupLocEdit"))
             return redirect("/management")
@@ -571,6 +577,10 @@ def Management():
         if request.form.get("selectSupplierDelete"):
             query= db.execute("DELETE FROM Suppliers WHERE SupplierName= :supname", supname=request.form.get("selectSupplierDelete"))
             return redirect("/management")
+
+        #Insert Product
+        #if CheckAllProductInsert():
+
         
         #Delete Supplier Location
         if request.form.get("selectSupLocDelete"):
@@ -579,13 +589,13 @@ def Management():
             suploc=text[1]
             query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
             if len(query) != 1:
-                return apology("Something Missing", 403)
+                return apology("Something Missing")
             supid=query[0]["SupplierID"]
             query=db.execute("DELETE FROM Supplier_Location WHERE SupplierID= :supid and SupplierLocation= :suploc",supid=supid,suploc=suploc)
             return redirect("/management")
 
         #POST WAS UNSUCCESFUL    
-        return apology("Something Missing", 403)
+        return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations)

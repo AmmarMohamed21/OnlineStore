@@ -38,7 +38,7 @@ Product
             {{new_price}} EGP
         </h4>
         <h5 style="color:red;">
-            SALE {{sale[0]['SalePercentage']|float * 100}} %
+            SALE {{sale[0]['SalePercentage']}} %
         </h5>
         {%endif%}
         <br>
@@ -89,18 +89,27 @@ Product
         <br>
         <br>
         <div>
-            {%if not Product[0].Rating%}
+            Total Rating:
+            {%if not current_rating%}
             {%for i in range(5)%}
             <span class="fa fa-star"></span>
             {%endfor%}
+            0 ratings
             {%else%}
-            {%for i in range(Product[0].Rating|int)%}
+            {%for i in range(current_rating|int)%}
             <span class="fa fa-star checked"></span>
             {%endfor%}
-            {%for i in range(5-(Product[0].Rating|int))%}
+            {%for i in range(5-(current_rating|int))%}
             <span class="fa fa-star"></span>
             {%endfor%}
+            {{current_rating}} 
+            <br>
+            {{number_of_rates}} rates
             {%endif%}
+        </div>
+        {%if session.user_id%}
+        <div>
+            Your rating:
         </div>
         <div>
             <div class="stars">
@@ -119,6 +128,7 @@ Product
                 </form>
               </div>
         </div>
+        {%endif%}
     </div>
 
     {% endblock %}

@@ -354,25 +354,26 @@ def product():
     new_price=None
     added_to_cart=request.form.get("ProductID-addtocart")
     added_to_wishlist=request.form.get("ProductID-addtowishlist")
-    message1='login to continue'
+    message1=None
     message2=None
     ok1=None
     ok2=None
     cust_id=None
     current_rating=None
-    new_rating=None
+    current_user_rating=None
+    new_user_rating=None
     #put values in parameters - new rating, added_to_cart, added_to_wishlist
     if session:
         cust_id=session["user_id"]
-        current_rating=db.execute(f"SELECT Rating FROM Customer_Rates_Products WHERE CustomerID={cust_id} AND ProductID={prod_id}")
-        new_rating=request.args.get("star")
-        if new_rating:
-            if current_rating:
-                db.execute(f"UPDATE Customer_Rates_Products SET Rating={new_rating} WHERE  CustomerID={cust_id} AND ProductID={prod_id}")
-                current_rating=new_rating
+        current_user_rating=db.execute(f"SELECT Rating FROM Customer_Rates_Products WHERE CustomerID={cust_id} AND ProductID={prod_id}")
+        new_user_rating=request.args.get("star")
+        if new_user_rating:
+            if current_user_rating:
+                db.execute(f"UPDATE Customer_Rates_Products SET Rating={new_user_rating} WHERE  CustomerID={cust_id} AND ProductID={prod_id}")
+                current_user_rating=new_user_rating
             else:
-                db.execute(f"INSERT INTO Customer_Rates_Products VALUES({prod_id},{cust_id},{new_rating})")
-                current_rating=new_rating
+                db.execute(f"INSERT INTO Customer_Rates_Products VALUES({prod_id},{cust_id},{new_user_rating})")
+                current_user_rating=new_user_rating
         if added_to_cart:
             value=int(request.form.get("quantity"))
             availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ")
@@ -391,9 +392,12 @@ def product():
             else:
                 message2="Already in the wishlist"
     if sale:
-        new_price=(1-float(sale[0]['SalePercentage']))*float(Product[0]['Price'])
-    
-    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_rating=current_rating)
+        new_price=(100-float(sale[0]['SalePercentage']))/100*float(Product[0]['Price'])
+    current_rating=db.execute(f"SELECT AVG(Rating) FROM Customer_Rates_Products WHERE ProductID={prod_id}")
+    current_rating=current_rating[0]['AVG(Rating)']
+    number_of_rates=db.execute(f"SELECT COUNT(Rating) FROM Customer_Rates_Products WHERE ProductID={prod_id}")
+    number_of_rates=number_of_rates[0]['COUNT(Rating)']
+    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,new_user_rating=new_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
 
     # categories=GetCategories()
     # prod_id=request.args.get("prodid")

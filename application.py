@@ -554,7 +554,7 @@ def Management():
     suppliers = db.execute("SELECT * FROM Suppliers order by SupplierName")
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
     products = db.execute("SELECT * FROM Product order by ProductName")
-
+    imports = db.execute("SELECT* FROM Product as P, Suppliers as S, Imports as I WHERE I.SupplierID = S.SupplierID and I.ProductID=P.ProductID order by S.SupplierName, P.ProductName, I.DateImported DESC")
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -688,19 +688,69 @@ def Management():
             prodname=request.form.get("ImportProdInsert")
             supid=GetSupID(supname)
             prodid=GetProdID(prodname)
+            query = db.execute("SELECT SupplierID FROM Product WHERE ProductID=:prodid",prodid=prodid)
+            if len(query) != 1:
+                return apology("Something Went Wrong")
+            realsupid = query[0]["SupplierID"]
+            if realsupid != supid:  #Preventing from Inserting if the supplier is different
+                return apology("This Product has a different Supplier")
             price = request.form.get("ImportPriceInsert")
             quantity = request.form.get("ImportQuanInsert")
             date = request.form.get("ImportDateInsert")
             query = db.execute("INSERT INTO Imports VALUES(:date, :supid, :prodid, :quantity, :price)",date=date,supid=supid,prodid=prodid,quantity=quantity,price=price)
             query = db.execute("UPDATE Product SET Quantity=Quantity+:quantity WHERE ProductID=:prodid",quantity=quantity,prodid=prodid)
             return redirect("/management")
-     
+        
+        #Delete Imports
+        if request.form.get("ImportDelete"):
+            text=request.form.get("ImportDelete").split(", ")
+            supname=text[0]
+            prodname=text[1]
+            date=text[2]
+            supid=GetSupID(supname)
+            prodid=GetProdID(prodname)
+            query=db.execute("SELECT Quantity FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
+            if len(query) != 1:
+                return apology("Something Wrong")
+            quantity=query[0]["Quantity"]
+            query=db.execute("SELECT Quantity FROM Product WHERE ProductID= :prodid",prodid=prodid)
+            oldquantity=query[0]["Quantity"]
+            newquantity = oldquantity - quantity
+            if newquantity<0:
+                return apology("You can't delete this Import, not enough products")
+            query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
+            query = db.execute("DELETE FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
+            return redirect("/management")
 
+        #Edit Import
+        if request.form.get("ImportsEdit"):
+            text=request.form.get("ImportsEdit").split(", ")
+            supname=text[0]
+            prodname=text[1]
+            date=text[2]
+            supid=GetSupID(supname)
+            prodid=GetProdID(prodname)
+            query=db.execute("SELECT Quantity FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
+            if len(query) != 1:
+                return apology("Something Wrong")
+            oldquantity=query[0]["Quantity"]
+            query=db.execute("SELECT Quantity FROM Product WHERE ProductID= :prodid",prodid=prodid)
+            productquantity=query[0]["Quantity"]
+            if request.form.get("ImportPriceEdit"):
+                query=db.execute("UPDATE Imports SET Price= :price WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",price=request.form.get("ImportPriceEdit"),supid=supid,prodid=prodid,date=date)
+            if request.form.get("ImportQuanEdit"):
+                addedquantity=request.form.get("ImportQuanEdit")
+                newquantity = productquantity - oldquantity + int(addedquantity)
+                if newquantity < 0:
+                    return apology("Quantity isn't valid, not enough products")
+                query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
+                query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
+            return redirect("/management")
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports)
 
 
 # Listen for errors

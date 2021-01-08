@@ -344,6 +344,15 @@ Management
         <form action="/management" method="post">
 
             <div class="mb-3">
+                <select class="form-control" name="SelectProdEdit">
+                    <option disabled selected value> Select Product </option>
+                    {% for product in products %}
+                    <option>{{product.ProductName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <input class="form-control" name="ProdNameEdit" placeholder="Product Name" type="text">
             </div>
 
@@ -353,6 +362,32 @@ Management
 
             <div class="mb-3">
                 <input class="form-control" name="ProdURLEdit" placeholder="Image URL" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdPriceEdit" placeholder="Product Price" type="number" step="0.01" min="0">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdQuantityEdit" placeholder="Product Quantity" type="number" step="1" min="0">
+            </div>
+
+            <div class="mb-3">
+                <select class="form-control" name="ProdCatEdit">
+                    <option disabled selected value> Select Category </option>
+                    {% for category in categories %}
+                    <option>{{category.CategoryName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-control" name="ProdSupEdit">
+                    <option disabled selected value> Select Supplier </option>
+                    {% for supplier in suppliers %}
+                    <option>{{supplier.SupplierName}}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="mb-3">
@@ -374,7 +409,7 @@ Management
             </div>
 
             <div class="mb-3">
-                <input class="form-control" name="ProdPriceInsert" placeholder="Product Price" type="number" step="0.1">
+                <input class="form-control" name="ProdPriceInsert" placeholder="Product Price" type="number" step="0.01" min="0">
             </div>
 
             <div class="mb-3">
@@ -408,8 +443,14 @@ Management
 
     <div class="collapse multi-collapse" id="ProductsDelete">
         <form action="/management" method="post">
-
-
+            <div class="mb-3">
+                <select class="form-control" name="SelectProdDelete">
+                    <option disabled selected value> Select Product </option>
+                    {% for product in products %}
+                    <option>{{product.ProductName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">

@@ -249,7 +249,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="SuppliersInsert">
-        <form  action="/management" method="post">
+        <form action="/management" method="post">
             <div class="mb-3">
                 <input class="form-control" name="SupplierNameInsert" placeholder="Supplier Name" type="text">
             </div>
@@ -258,7 +258,7 @@ Management
             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
-        
+
         <form class="mt-5" action="/management" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupplierInsert">
@@ -332,6 +332,7 @@ Management
 
     <div class="collapse multi-collapse" id="ImportsDelete">
         <form action="/management" method="post">
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -341,6 +342,19 @@ Management
 
     <div class="collapse multi-collapse" id="ProductsEdit">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdNameEdit" placeholder="Product Name" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdDescEdit" placeholder="Product Description" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdURLEdit" placeholder="Image URL" type="text">
+            </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -350,6 +364,41 @@ Management
 
     <div class="collapse multi-collapse" id="ProductsInsert">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdNameInsert" placeholder="Product Name" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdDescInsert" placeholder="Product Description" type="text">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdPriceInsert" placeholder="Product Price" type="number" step="0.1">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ProdURLInsert" placeholder="Image URL" type="text">
+            </div>
+
+            <div class="mb-3">
+                <select class="form-control" name="ProdCatInsert">
+                    <option disabled selected value> Select Category </option>
+                    {% for category in categories %}
+                    <option>{{category.CategoryName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-control" name="ProdSupInsert">
+                    <option disabled selected value> Select Supplier </option>
+                    {% for supplier in suppliers %}
+                    <option>{{supplier.SupplierName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -359,6 +408,9 @@ Management
 
     <div class="collapse multi-collapse" id="ProductsDelete">
         <form action="/management" method="post">
+
+
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>

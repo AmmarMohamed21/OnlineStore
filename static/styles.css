@@ -132,8 +132,13 @@ main button
 /* flash sale */
 .slider
 {
-    border-radius: 20px;
-    margin: 0 auto;
+   width: 100%;
+   background-image: linear-gradient(rgba(0, 0, 0, 0.548));
+}
+.slider img
+{
+    width: 100%;
+    
 }
 
 /* categories list*/

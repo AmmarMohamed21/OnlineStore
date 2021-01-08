@@ -351,6 +351,7 @@ def product():
     prod_id=request.args.get("prodid")
     added_to_cart=request.form.get("ProductID-addtocart")
     added_to_wishlist=request.form.get("ProductID-addtowishlist")
+    delete_rating=request.args.get("del_rating")
     Product=[]
     sale=None
     if added_to_cart:
@@ -401,6 +402,9 @@ def product():
                 ok2=db.execute(f"INSERT INTO Customer_Wishlist VALUES ({cust_id},{prod_id})")
             else:
                 message2="Already in the wishlist"
+        if delete_rating:
+            db.execute(f"DELETE FROM Customer_Rates_Products WHERE ProductID={prod_id} AND CustomerID={cust_id}")
+            current_user_rating=None
     else:
         if added_to_cart:
             message1="Please Login to add to cart"

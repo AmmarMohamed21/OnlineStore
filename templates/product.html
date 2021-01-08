@@ -115,7 +115,7 @@ Product
             {%endif%}
         </div>
         {%if session.user_id%}
-
+<br><br>
             {%if not current_user_rating%}
         <div>
             <div class="stars">
@@ -149,6 +149,8 @@ Product
                 {%for i in range(5-(current_user_rating|int))%}
                     <span class="fa fa-star"></span>
                 {%endfor%}
+                <br><br>
+                <a href="/product?prodid={{Product[0].ProductID}}&del_rating=1"type="button" class="btn btn-primary">Delete your rating</a>
             {%endif%}
         {%endif%}
     </div>

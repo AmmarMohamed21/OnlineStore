@@ -34,24 +34,15 @@ Search Results
         <div class="row">
             {% for prod in Products %}
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                <div class="cat-list-items">
-                    <div class="thumbnail">
-                        <a href="/product?prodid={{prod.ProductID}} ">
-                            <img src="{{prod.ImageURL}}" alt="..." width="300px" height="300px"
-                                style="max-width:auto; max-height:auto;">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="/product?prodid={{prod.ProductID}} ">
-                                    {{prod.ProductName}}
-                                </a>
-                            </h3>
-                            
-                            <span>EGP <h5>{{prod.Price}}</h5></span>
-                        </div>
-
+                <a href="/product?prodid={{prod.ProductID}} " style="text-decoration: none;">
+                    <div class="cat-list-items">
+                        <img src="{{prod.ImageURL}}" alt="...">
+                        <h1 style="color: black;">
+                            {{prod.ProductName}}
+                        </h1>
+                        <h5 style="color: black;">EGP {{prod.Price}}</h5>
                     </div>
-                </div>
+                </a>
             </div>
             {%endfor%}
         </div>

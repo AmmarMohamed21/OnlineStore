@@ -318,6 +318,24 @@ Management
 
     <div class="collapse multi-collapse" id="ImportsEdit">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <select class="form-control" name="ImportsEdit">
+                    <option disabled selected value> Select Import </option>
+                    {% for import in imports %}
+                    <option>{{import.SupplierName}}, {{import.ProductName}}, {{import.DateImported}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ImportPriceEdit" placeholder="Product Price" type="number" step="0.01" min="0">
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control" name="ImportQuanEdit" placeholder="Product Quantity" type="number" step="1" min="0">
+            </div>
+
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>
@@ -365,6 +383,15 @@ Management
 
     <div class="collapse multi-collapse" id="ImportsDelete">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <select class="form-control" name="ImportDelete">
+                    <option disabled selected value> Select Import </option>
+                    {% for import in imports %}
+                    <option>{{import.SupplierName}}, {{import.ProductName}}, {{import.DateImported}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">

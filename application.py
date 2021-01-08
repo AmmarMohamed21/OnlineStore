@@ -349,11 +349,19 @@ def product():
     # jinja2 parameters initialization,, productID is assumed to be sent using get, none may be initialized later
     categories=GetCategories()
     prod_id=request.args.get("prodid")
-    Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
-    sale=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={prod_id}")
-    new_price=None
     added_to_cart=request.form.get("ProductID-addtocart")
     added_to_wishlist=request.form.get("ProductID-addtowishlist")
+    Product=[]
+    sale=None
+    if added_to_cart:
+        prod_id=added_to_cart
+    if added_to_wishlist:
+        prod_id=added_to_wishlist
+    if prod_id:
+        Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
+        sale=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={prod_id}")
+    new_price=None
+
     message1=None
     message2=None
     ok1=None
@@ -366,6 +374,8 @@ def product():
     if session:
         cust_id=session["user_id"]
         current_user_rating=db.execute(f"SELECT Rating FROM Customer_Rates_Products WHERE CustomerID={cust_id} AND ProductID={prod_id}")
+        if current_user_rating:
+            current_user_rating=current_user_rating[0]['Rating']
         new_user_rating=request.args.get("star")
         if new_user_rating:
             if current_user_rating:
@@ -391,13 +401,20 @@ def product():
                 ok2=db.execute(f"INSERT INTO Customer_Wishlist VALUES ({cust_id},{prod_id})")
             else:
                 message2="Already in the wishlist"
+    else:
+        if added_to_cart:
+            message1="Please Login to add to cart"
+        if added_to_wishlist:
+            message2="Please Login to add to wishlist"
     if sale:
-        new_price=(100-float(sale[0]['SalePercentage']))/100*float(Product[0]['Price'])
+        new_price=round((100-float(sale[0]['SalePercentage']))/100*float(Product[0]['Price']))
     current_rating=db.execute(f"SELECT AVG(Rating) FROM Customer_Rates_Products WHERE ProductID={prod_id}")
-    current_rating=current_rating[0]['AVG(Rating)']
     number_of_rates=db.execute(f"SELECT COUNT(Rating) FROM Customer_Rates_Products WHERE ProductID={prod_id}")
     number_of_rates=number_of_rates[0]['COUNT(Rating)']
-    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,new_user_rating=new_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
+    if number_of_rates:
+        db.execute(f"UPDATE Product SET Rating={current_rating[0]['AVG(Rating)']} WHERE ProductID={prod_id}")
+        current_rating=round(current_rating[0]['AVG(Rating)'],2)
+    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
 
     # categories=GetCategories()
     # prod_id=request.args.get("prodid")

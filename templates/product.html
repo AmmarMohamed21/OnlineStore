@@ -13,16 +13,18 @@ Product
     <div class="col-lg-4">
         <h4>
             <br><br>
-            <div >
+            <div>
                 {{Product[0].ProductName}}
             </div>
         </h4>
         <h6>
 
             {%if Product[0].ProductDescription%}
-            <div class="text"style="padding-top:50px;">
+            <div class="text" style="padding-top:50px;">
                 Product Description:
-                <h5><p>{{Product[0].ProductDescription}}</p></h5>
+                <h5>
+                    <p>{{Product[0].ProductDescription}}</p>
+                </h5>
             </div>
             {%endif%}
         </h6>
@@ -46,9 +48,13 @@ Product
         <div style="color:green;">
             In Stock
         </div>
-        <br>
-        <br>
+        {%else%}
+        <div style="color:yellow;">
+            This item isn't available now ;(
+        </div>
         {%endif%}
+        <br>
+        <br>
         {%if ok1%}
         <div>
             <button disabled>Added to cart</button>
@@ -58,7 +64,8 @@ Product
             <div>
                 <form action="/product" method="post">
                     <input type="hidden" name="ProductID-addtocart" value="{{ Product[0].ProductID}}" />
-                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px; margin-top: 5px;" required />
+                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px; margin-top: 5px;"
+                        required />
                     <button class="btn btn-sm btn-primary" type="submit">Add to Cart</button>
                     {%if message1%}
                     <br>
@@ -102,32 +109,47 @@ Product
             {%for i in range(5-(current_rating|int))%}
             <span class="fa fa-star"></span>
             {%endfor%}
-            {{current_rating}} 
+            {{current_rating|float}}
             <br>
             {{number_of_rates}} rates
             {%endif%}
         </div>
         {%if session.user_id%}
-        <div>
-            Your rating:
-        </div>
+
+            {%if not current_user_rating%}
         <div>
             <div class="stars">
                 <form action="/product" method="GET">
                     <input type="hidden" value="{{ Product[0].ProductID}}" name="prodid">
-                  <input class="star star-5" id="star-5" type="radio" onclick="javascript:submit()" value="5" name="star"/>
-                  <label class="star star-5" for="star-5"></label>
-                  <input class="star star-4" id="star-4" type="radio" onclick="javascript:submit()" value="4" name="star"/>
-                  <label class="star star-4" for="star-4"></label>
-                  <input class="star star-3" id="star-3" type="radio" onclick="javascript:submit()"  value="3" name="star"/>
-                  <label class="star star-3" for="star-3"></label>
-                  <input class="star star-2" id="star-2" type="radio" onclick="javascript:submit()"  value="2" name="star"/>
-                  <label class="star star-2" for="star-2"></label>
-                  <input class="star star-1" id="star-1" type="radio" onclick="javascript:submit()"  value="1" name="star"/>
-                  <label class="star star-1" for="star-1"></label>
+                    <input class="star star-5" id="star-5" type="radio" onclick="javascript:submit()" value="5"
+                        name="star" />
+                    <label class="star star-5" for="star-5"></label>
+                    <input class="star star-4" id="star-4" type="radio" onclick="javascript:submit()" value="4"
+                        name="star" />
+                    <label class="star star-4" for="star-4"></label>
+                    <input class="star star-3" id="star-3" type="radio" onclick="javascript:submit()" value="3"
+                        name="star" />
+                    <label class="star star-3" for="star-3"></label>
+                    <input class="star star-2" id="star-2" type="radio" onclick="javascript:submit()" value="2"
+                        name="star" />
+                    <label class="star star-2" for="star-2"></label>
+                    <input class="star star-1" id="star-1" type="radio" onclick="javascript:submit()" value="1"
+                        name="star" />
+                    <label class="star star-1" for="star-1"></label>
                 </form>
-              </div>
+            </div>
         </div>
+        <br>
+        <br>
+            {%else%}
+                your rating:{{current_user_rating}}
+                {%for i in range(current_user_rating|int)%}
+                    <span class="fa fa-star checked"></span>
+                {%endfor%}
+                {%for i in range(5-(current_user_rating|int))%}
+                    <span class="fa fa-star"></span>
+                {%endfor%}
+            {%endif%}
         {%endif%}
     </div>
 

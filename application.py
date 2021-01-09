@@ -786,6 +786,9 @@ def Management():
                 query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
             return redirect("/management")
 
+        # Sale Insert
+        if request.form.get("SaleProdInsert") and request.form.get("SalePercentInsert") and request.form.get("SaleDateInsert"):
+            prodname = GetProdID(prodname)
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")

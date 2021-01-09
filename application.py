@@ -40,6 +40,12 @@ db = SQL("sqlite:///OnlineStore.db")
 
 def GetCategories():
     categories=db.execute("Select * from Categories order by CategoryName")
+    today = date.today()
+    #Remove Sale From which the sale ended
+    saleproducts = db.execute("SELECT * FROM In_Sale_Products")
+    for product in saleproducts:
+        if product["SaleEndDate"] < today:
+            query = db.execute("DELETE FROM In_Sale_Products WHERE ProductID=: prodid",prodid=product["ProductID"])
     return categories
 
 @app.route("/")
@@ -593,7 +599,7 @@ def Management():
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
     products = db.execute("SELECT * FROM Product order by ProductName")
     imports = db.execute("SELECT* FROM Product as P, Suppliers as S, Imports as I WHERE I.SupplierID = S.SupplierID and I.ProductID=P.ProductID order by S.SupplierName, P.ProductName, I.DateImported DESC")
-    saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.Duration FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
+    saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.SaleEndDate FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -803,7 +809,7 @@ def Management():
             if request.form.get("SalePercentEdit"):
                 query = db.execute("UPDATE In_Sale_Products SET SalePercentage=:percent WHERE ProductID= :prodid",percent=request.form.get("SalePercentEdit"),prodid=prodid)
             if request.form.get("SaleDateEdit"):
-                query = db.execute("UPDATE In_Sale_Products SET Duration=:date WHERE ProductID= :prodid",date=request.form.get("SaleDateEdit"),prodid=prodid)
+                query = db.execute("UPDATE In_Sale_Products SET SaleEndDate=:date WHERE ProductID= :prodid",date=request.form.get("SaleDateEdit"),prodid=prodid)
             return redirect("/management")
         
         #Sale Delete

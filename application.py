@@ -391,6 +391,7 @@ def product():
     current_rating=None
     current_user_rating=None
     new_user_rating=None
+    supplier=db.execute(f"SELECT SupplierName FROM Suppliers as S,Product as P WHERE S.SupplierID=P.SupplierID AND P.ProductID={prod_id}")
     #put values in parameters - new rating, added_to_cart, added_to_wishlist
     if session:
         cust_id=session["user_id"]
@@ -440,87 +441,11 @@ def product():
         current_rating=round(current_rating[0]['AVG(Rating)'],2)
     else:
         db.execute(f"UPDATE Product SET Rating=0 WHERE ProductID={prod_id}")
-    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
+    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates,supplier=supplier)
 
-    # categories=GetCategories()
-    # prod_id=request.args.get("prodid")
-    # Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id}")
-    # sale=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={prod_id}")
-    # new_price=''
-    # if request.args.get("star"):
-    #     return f'the value is {request.args.get("star")}'
-    # if sale and Product:
-    #     new_price=(1-float(sale[0]['SalePercentage']))*float(Product[0]['Price'])
-    # if request.method=='POST':
-    #     added_to_cart=request.form.get("ProductID-addtocart")
-    #     added_to_wishlist=request.form.get("ProductID-addtowishlist")
-    #     message1=""
-    #     message2=""
-    #     ok1=""
-    #     ok2=""
-    #     if added_to_cart:
-    #         if not session:
-    #             message1="Please Login to add to cart"
-    #         else:
-    #             prod_id=added_to_cart
-    #             value=int(request.form.get("quantity"))
-    #             cust_id=session["user_id"]
-    #             availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ")
-    #             if int(value)<=int(availability[0]['Quantity']):
-    #                 Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id}")
-    #                 if Quantity:
-    #                     ok1=db.execute(f"UPDATE Customer_Cart SET Quantity={value} WHERE ProductID={prod_id} and CustomerID={cust_id}")
-    #                 else:
-    #                     ok1=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value})")
-    #             else:
-    #                 message1=f"Only {int(availability[0]['Quantity'])} in stock"
-    #     if added_to_wishlist:
-    #         prod_id=''
-    #         if not session:
-    #             message2="Please Login to add to wishlist"
-    #         else:
-    #             prod_id=added_to_wishlist
-    #             cust_id=session["user_id"]
-    #             num=db.execute(f"SELECT * FROM Customer_Wishlist WHERE ProductID={prod_id} and CustomerID={cust_id}")
-    #             if not num:
-    #                 ok2=db.execute(f"INSERT INTO Customer_Wishlist VALUES ({cust_id},{prod_id})")
-    #             else:
-    #                 message2="Already in the wishlist"
-    #     return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price)
-    # else:
-    #     if request.args.get("prodid"):
-    #         prod_id=request.args.get("prodid")
-    #         Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
-    #         return render_template("product.html",categories=categories,Product=Product,sale=sale,new_price=new_price)
-    #     else:
-    #         redirect('/')
 
-    # added_to_cart=request.args.get("addedtocart")
-    # message="" 
-    # ok=0
-    # if added_to_cart:
-    #     if not session:
-    #         message="Login to add to cart"
-    #     else:
-    #         prod_id=request.args.get("prodid")
-    #         value=1
-    #         if prod_id:
-    #             cust_id=session["user_id"]
-    #             availability=db.execute(f"SELECT Quantity FROM Product WHERE ProductID={prod_id} ;")
-    #             if int(value)<=int(availability[0]['Quantity']):
-    #                 Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id};")
-    #                 if Quantity:
-    #                     ok=db.execute(f"UPDATE Customer_Cart SET Quantity=Quantity+{value} WHERE ProductID={prod_id} and CustomerID={cust_id};")
-    #                 else:
-    #                     ok=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value}) ;")
-    #             else:
-    #                 message="Not enough in stock, It is about to finish"
-    # if request.args.get("prodid"):
-    #     prod_id=request.args.get("prodid")
-    #     Product=db.execute(f"SELECT * FROM Product WHERE ProductID={prod_id};")
-    #     return render_template("product.html",categories=categories,Product=Product,message=message,ok=ok)
-    # else:
-    #     return redirect("/product")
+
+
 
 @app.route("/category",methods=["GET","POST"])
 def category():

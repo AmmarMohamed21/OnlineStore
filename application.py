@@ -788,7 +788,30 @@ def Management():
 
         # Sale Insert
         if request.form.get("SaleProdInsert") and request.form.get("SalePercentInsert") and request.form.get("SaleDateInsert"):
-            prodname = GetProdID(prodname)
+            prodname=request.form.get("SaleProdInsert")
+            prodid = GetProdID(prodname)
+            query = db.execute("SELECT * FROM In_Sale_Products WHERE ProductID = :prodid",prodid=prodid)
+            if len(query) != 0:
+                return apology("This Product is already in Sale")
+            query = db.execute("INSERT INTO In_Sale_Products VALUES(:percent,:date,:prodid)",percent=request.form.get("SalePercentInsert"),date=request.form.get("SaleDateInsert"),prodid=prodid)
+            return redirect("/management")
+
+        #Sale Edit
+        if request.form.get("SaleProdEdit"):
+            prodname=request.form.get("SaleProdInsert")
+            prodid = GetProdID(prodname)
+            if request.form.get("SalePercentEdit"):
+                query = db.execute("UPDATE In_Sale_Products SET SalePercentage=:percent WHERE ProductID= :prodid",percent=request.form.get("SalePercentEdit"),prodid=prodid)
+            if request.form.get("SaleDateEdit"):
+                query = db.execute("UPDATE In_Sale_Products SET Duration=:date WHERE ProductID= :prodid",date=request.form.get("SaleDateEdit"),prodid=prodid)
+            return redirect("/management")
+        
+        #Sale Delete
+        if request.form.get("SaleProdDelete"):
+            prodname=request.form.get("SaleProdDelete")
+            prodid = GetProdID(prodname)
+            query=db.execute("DELETE In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
+            return redirect("/management")
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")

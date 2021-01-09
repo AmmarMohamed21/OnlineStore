@@ -391,6 +391,7 @@ def product():
     current_rating=None
     current_user_rating=None
     new_user_rating=None
+    supplier=db.execute(f"SELECT SupplierName FROM Suppliers as S,Product as P WHERE S.SupplierID=P.SupplierID AND P.ProductID={prod_id}")
     #put values in parameters - new rating, added_to_cart, added_to_wishlist
     if session:
         cust_id=session["user_id"]
@@ -440,7 +441,7 @@ def product():
         current_rating=round(current_rating[0]['AVG(Rating)'],2)
     else:
         db.execute(f"UPDATE Product SET Rating=0 WHERE ProductID={prod_id}")
-    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
+    return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates,supplier=supplier)
 
     # categories=GetCategories()
     # prod_id=request.args.get("prodid")

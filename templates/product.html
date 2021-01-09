@@ -11,12 +11,16 @@ Product
         <img src="{{Product[0].ImageURL}}">
     </div>
     <div class="col-lg-4">
-        <h4>
-            <br><br>
-            <div>
+
+        <div>
+            <h4>
+                <br><br>
                 {{Product[0].ProductName}}
-            </div>
-        </h4>
+            </h4>
+        </div>
+        <div style="color: brown;">
+           From: {{supplier[0].SupplierName}}
+        </div>
         <h6>
 
             {%if Product[0].ProductDescription%}
@@ -115,8 +119,8 @@ Product
             {%endif%}
         </div>
         {%if session.user_id%}
-<br><br>
-            {%if not current_user_rating%}
+        <br><br>
+        {%if not current_user_rating%}
         <div>
             <div class="stars">
                 <form action="/product" method="GET">
@@ -141,17 +145,18 @@ Product
         </div>
         <br>
         <br>
-            {%else%}
-                your rating:{{current_user_rating}}
-                {%for i in range(current_user_rating|int)%}
-                    <span class="fa fa-star checked"></span>
-                {%endfor%}
-                {%for i in range(5-(current_user_rating|int))%}
-                    <span class="fa fa-star"></span>
-                {%endfor%}
-                <br><br>
-                <a href="/product?prodid={{Product[0].ProductID}}&del_rating=1"type="button" class="btn btn-primary">Delete your rating</a>
-            {%endif%}
+        {%else%}
+        your rating:{{current_user_rating}}
+        {%for i in range(current_user_rating|int)%}
+        <span class="fa fa-star checked"></span>
+        {%endfor%}
+        {%for i in range(5-(current_user_rating|int))%}
+        <span class="fa fa-star"></span>
+        {%endfor%}
+        <br><br>
+        <a href="/product?prodid={{Product[0].ProductID}}&del_rating=1" type="button" class="btn btn-primary">Delete
+            your rating</a>
+        {%endif%}
         {%endif%}
     </div>
 

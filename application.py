@@ -580,6 +580,7 @@ def Management():
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
     products = db.execute("SELECT * FROM Product order by ProductName")
     imports = db.execute("SELECT* FROM Product as P, Suppliers as S, Imports as I WHERE I.SupplierID = S.SupplierID and I.ProductID=P.ProductID order by S.SupplierName, P.ProductName, I.DateImported DESC")
+    saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.Duration FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -771,6 +772,8 @@ def Management():
                 query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
                 query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
             return redirect("/management")
+
+
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)

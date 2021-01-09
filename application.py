@@ -44,10 +44,11 @@ def GetCategories():
     #Remove Sale From which the sale ended
     saleproducts = db.execute("SELECT * FROM In_Sale_Products")
     for product in saleproducts:
+        prodid=product["ProductID"]
         productdate = product["SaleEndDate"].split("-")
         productdate = date(int(productdate[0]),int(productdate[1]),int(productdate[2]))
         if productdate < today:
-            query = db.execute("DELETE FROM In_Sale_Products WHERE ProductID=: prodid",prodid=product["ProductID"])
+            query = db.execute("DELETE FROM In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
     return categories
 
 @app.route("/")
@@ -311,7 +312,7 @@ def Transactions():
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
         RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
-
+        return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
     rows = rows , TransConPros = TransConPros , Product = Product , Refunds = Refunds , Refund_Product =Refund_Product)

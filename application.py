@@ -826,7 +826,7 @@ def Management():
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports, saleproducts=saleproducts)
 
 
 # Listen for errors

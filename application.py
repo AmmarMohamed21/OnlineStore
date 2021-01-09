@@ -287,11 +287,11 @@ def Transactions():
         Refund_Quantity = db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
         ProdID = ProID , TransaID = TransID )######################################
 
-        for Refund_Quan in Refund_Quantity:
-            for Refund_Qua in Refund_Quan:
-                if Refund_Qua[0] is int: 
-                    if RefQua > (ProQua - int(Refund_Qua[0])) :
-                        return apology(" Refund Quantity > Product Quantity ")
+        # for Refund_Quan in Refund_Quantity:
+        #     for Refund_Qua in Refund_Quan:
+        #         if Refund_Qua[0] is int: 
+        #             if RefQua > (ProQua - int(Refund_Qua[0])) :
+        #                 return apology(" Refund Quantity > Product Quantity ")
 
 #############################################################################################################
         #  if  datetime.datetime.now().date - Trans_Date > 14:###############################################
@@ -303,7 +303,7 @@ def Transactions():
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
         RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
-
+        return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
     rows = rows , TransConPros = TransConPros , Product = Product , Refunds = Refunds , Refund_Product =Refund_Product)

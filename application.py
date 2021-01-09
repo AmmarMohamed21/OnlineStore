@@ -40,6 +40,14 @@ db = SQL("sqlite:///OnlineStore.db")
 
 def GetCategories():
     categories=db.execute("Select * from Categories order by CategoryName")
+    today = date.today()
+    #Remove Sale From which the sale ended
+    saleproducts = db.execute("SELECT * FROM In_Sale_Products")
+    for product in saleproducts:
+        productdate = product["SaleEndDate"].split("-")
+        productdate = date(int(productdate[0]),int(productdate[1]),int(productdate[2]))
+        if productdate < today:
+            query = db.execute("DELETE FROM In_Sale_Products WHERE ProductID=: prodid",prodid=product["ProductID"])
     return categories
 
 @app.route("/")
@@ -311,7 +319,8 @@ def Transactions():
      
 @app.route("/search",methods=["GET","POST"])
 def search():
-
+    sale=[]
+    new_price=[]
     categories=GetCategories()
     search_for=""
     if request.method == "POST":
@@ -339,11 +348,19 @@ def search():
 
     else:
         Products=[]
-    # for i in len(Products):
+ 
+    for i in range(len(Products)):
+        temp=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={Products[i]['ProductID']}")
+        temp2=None
+        if temp:
+            temp2=round((100-float(temp[0]['SalePercentage']))/100*float(Products[i]['Price']))
+            sale.append(temp)
+            new_price.append(temp2)
+        else:
+            sale.append(None)
+            new_price.append(None)
+    return render_template("search.html",Products=Products,categories=categories,search_for=search_for,sale=sale,new_price=new_price)
 
-    return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
-
-    
 
     
 @app.route("/product",methods=['POST','GET'])
@@ -584,7 +601,7 @@ def Management():
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
     products = db.execute("SELECT * FROM Product order by ProductName")
     imports = db.execute("SELECT* FROM Product as P, Suppliers as S, Imports as I WHERE I.SupplierID = S.SupplierID and I.ProductID=P.ProductID order by S.SupplierName, P.ProductName, I.DateImported DESC")
-    saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.Duration FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
+    saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.SaleEndDate FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
     #Define Password
     ManagementPassword="ronaldinho"
 
@@ -777,6 +794,32 @@ def Management():
                 query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
             return redirect("/management")
 
+        # Sale Insert
+        if request.form.get("SaleProdInsert") and request.form.get("SalePercentInsert") and request.form.get("SaleDateInsert"):
+            prodname=request.form.get("SaleProdInsert")
+            prodid = GetProdID(prodname)
+            query = db.execute("SELECT * FROM In_Sale_Products WHERE ProductID = :prodid",prodid=prodid)
+            if len(query) != 0:
+                return apology("This Product is already in Sale")
+            query = db.execute("INSERT INTO In_Sale_Products VALUES(:percent,:date,:prodid)",percent=request.form.get("SalePercentInsert"),date=request.form.get("SaleDateInsert"),prodid=prodid)
+            return redirect("/management")
+
+        #Sale Edit
+        if request.form.get("SaleProdEdit"):
+            prodname=request.form.get("SaleProdEdit")
+            prodid = GetProdID(prodname)
+            if request.form.get("SalePercentEdit"):
+                query = db.execute("UPDATE In_Sale_Products SET SalePercentage=:percent WHERE ProductID= :prodid",percent=request.form.get("SalePercentEdit"),prodid=prodid)
+            if request.form.get("SaleDateEdit"):
+                query = db.execute("UPDATE In_Sale_Products SET SaleEndDate=:date WHERE ProductID= :prodid",date=request.form.get("SaleDateEdit"),prodid=prodid)
+            return redirect("/management")
+        
+        #Sale Delete
+        if request.form.get("SaleProdDelete"):
+            prodname=request.form.get("SaleProdDelete")
+            prodid = GetProdID(prodname)
+            query=db.execute("DELETE FROM In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
+            return redirect("/management")
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")

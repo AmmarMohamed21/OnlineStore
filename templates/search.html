@@ -32,19 +32,6 @@ Search Results
     <br>
     <div class="container">
         <div class="row">
-            <!-- {% for prod in Products %}
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                <a href="/product?prodid={{prod.ProductID}} " style="text-decoration: none;">
-                    <div class="cat-list-items">
-                        <img src="{{prod.ImageURL}}" alt="...">
-                        <h1 style="color: black;">
-                            {{prod.ProductName}}
-                        </h1>
-                        <h5 style="color: black;">EGP {{prod.Price}}</h5>
-                    </div>
-                </a>
-            </div>
-            {%endfor%} -->
             {%for i in range(Products|length)%}
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <a href="/product?prodid={{Products[i]['ProductID']}} " style="text-decoration: none;">

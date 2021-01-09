@@ -279,7 +279,7 @@ def Transactions():
         ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
-        ProPrice =  request.form.get("ProductPrice")
+        ProPrice =  int(request.form.get("ProductPrice"))
         Trans_Date = request.form.get("Transaction_Date")
 
         Number = random.randint(1,100)

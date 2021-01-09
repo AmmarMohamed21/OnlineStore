@@ -48,13 +48,19 @@ Search Results
             {%for i in range(Products|length)%}
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <a href="/product?prodid={{Products[i]['ProductID']}} " style="text-decoration: none;">
-                    <div class="cat-list-items">
+                    <div class="cat-list-items" style="height:600px">
+                        <div style="height:400px; overflow: hidden;" >
+                            <img src="{{Products[i]['ImageURL']}}"style="width:100%; margin:5px" alt="...">
+                        </div>
+                        <h1 style="color: black;">
+                            {{Products[i]['ProductName']}}
+                        </h1>
                         <div>
                             {%if not Products[i]['Rating']%}
                             {%for j in range(5)%}
                             <span class="fa fa-star"></span>
                             {%endfor%}
-                            0 ratings
+                            0 
                             {%else%}
                             {%for j in range(Products[i]['Rating']|int)%}
                             <span class="fa fa-star checked"></span>
@@ -64,11 +70,9 @@ Search Results
                             {%endfor%}
                             {{Products[i]['Rating']|float}}
                             <br>
-                            {{number_of_rates}} rates
                             {%endif%}
                         </div>
                         <div>
-                            {{sale[i]['SalePercentage']}}
                             {%if not sale[i]%}
                             <h4 style="color: black;"> {{Products[i]['Price']}} EGP</h4>
                             {%else%}
@@ -77,14 +81,11 @@ Search Results
                                 {{new_price[i]}} EGP
                             </h4>
                             <h5 style="color:red;">
-                                SALE {{sale[i]['SalePercentage']}} %
+                                SALE {{sale[i][0].SalePercentage}} %
                             </h5>
                             {%endif%}
                         </div>
-                        <img src="{{Products[i]['ImageURL']}}" alt="...">
-                        <h1 style="color: black;">
-                            {{Products[i]['ProductName']}}
-                        </h1>
+                        
                        
                     </div>
                 </a>

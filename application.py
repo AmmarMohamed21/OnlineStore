@@ -798,7 +798,7 @@ def Management():
 
         #Sale Edit
         if request.form.get("SaleProdEdit"):
-            prodname=request.form.get("SaleProdInsert")
+            prodname=request.form.get("SaleProdEdit")
             prodid = GetProdID(prodname)
             if request.form.get("SalePercentEdit"):
                 query = db.execute("UPDATE In_Sale_Products SET SalePercentage=:percent WHERE ProductID= :prodid",percent=request.form.get("SalePercentEdit"),prodid=prodid)
@@ -810,14 +810,14 @@ def Management():
         if request.form.get("SaleProdDelete"):
             prodname=request.form.get("SaleProdDelete")
             prodid = GetProdID(prodname)
-            query=db.execute("DELETE In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
+            query=db.execute("DELETE FROM In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
             return redirect("/management")
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports, saleproducts=saleproducts)
 
 
 # Listen for errors

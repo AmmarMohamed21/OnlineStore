@@ -81,6 +81,9 @@ Management
         date = new Date();
         date = date.toLocaleDateString();
         document.getElementById("ImportDateInsert").value=date;
+        document.getElementById("SaleDateEdit").min=date;
+        
+        
     }
 </script>
 
@@ -592,6 +595,18 @@ Management
 
     <div class="collapse multi-collapse" id="SaleEdit">
         <form action="/management" method="post">
+
+            <div class="mb-3">
+                <select class="form-control" name="SaleProdEdit">
+                    <option disabled selected value> Select Product </option>
+                    {% for saleproduct in saleproducts %}
+                    <option>{{saleproduct.ProductName}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        <div class="mb-3">
+            <input type="date" class="form-control" id = "SaleDateEdit" name = "SaleDateEdit" placeholder="Sale End Date" min="2021-01-01">
+        </div>    
             <div class="mb-3">
                 <input class="form-control" name="password" placeholder="Management Password" type="password">
             </div>

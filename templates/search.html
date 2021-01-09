@@ -32,7 +32,7 @@ Search Results
     <br>
     <div class="container">
         <div class="row">
-            {% for prod in Products %}
+            <!-- {% for prod in Products %}
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <a href="/product?prodid={{prod.ProductID}} " style="text-decoration: none;">
                     <div class="cat-list-items">
@@ -41,6 +41,51 @@ Search Results
                             {{prod.ProductName}}
                         </h1>
                         <h5 style="color: black;">EGP {{prod.Price}}</h5>
+                    </div>
+                </a>
+            </div>
+            {%endfor%} -->
+            {%for i in range(Products|length)%}
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a href="/product?prodid={{Products[i]['ProductID']}} " style="text-decoration: none;">
+                    <div class="cat-list-items">
+                        <img src="{{Products[i]['ImageURL']}}" alt="...">
+                        <h1 style="color: black;">
+                            {{Products[i]['ProductName']}}
+                        </h1>
+                        <h5 style="color: black;">EGP {{Products[i]['Price']}}</h5>
+                        <div>
+                            Products[i]['Rating']
+                            {%if not Products[i]['Rating']%}
+                            {%for j in range(5)%}
+                            <span class="fa fa-star"></span>
+                            {%endfor%}
+                            0 ratings
+                            {%else%}
+                            {%for j in range(Products[i]['Rating']|int)%}
+                            <span class="fa fa-star checked"></span>
+                            {%endfor%}
+                            {%for j in range(5-(Products[i]['Rating']|int))%}
+                            <span class="fa fa-star"></span>
+                            {%endfor%}
+                            {{Products[i]['Rating']|float}}
+                            <br>
+                            {{number_of_rates}} rates
+                            {%endif%}
+                        </div>
+                        <div>
+                            {%if not sale[i]['SalePercentage']%}
+                            <h4> {{Products[i]['Price']}} EGP</h4>
+                            {%else%}
+                            <del> {{Products[i]['Price']}} EGP</del>
+                            <h4 style="color: darkcyan;">
+                                {{new_price[i]}} EGP
+                            </h4>
+                            <h5 style="color:red;">
+                                SALE {{sale[i]['SalePercentage']}} %
+                            </h5>
+                            {%endif%}
+                        </div>
                     </div>
                 </a>
             </div>

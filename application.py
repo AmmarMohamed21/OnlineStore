@@ -311,7 +311,7 @@ def Transactions():
      
 @app.route("/search",methods=["GET","POST"])
 def search():
-    sale=[]
+    
     categories=GetCategories()
     search_for=""
     if request.method == "POST":
@@ -339,8 +339,6 @@ def search():
 
     else:
         Products=[]
-    # for i in len(Products):
-
     return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
 
     
@@ -420,8 +418,6 @@ def product():
     if number_of_rates:
         db.execute(f"UPDATE Product SET Rating={current_rating[0]['AVG(Rating)']} WHERE ProductID={prod_id}")
         current_rating=round(current_rating[0]['AVG(Rating)'],2)
-    else:
-        db.execute(f"UPDATE Product SET Rating=0 WHERE ProductID={prod_id}")
     return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates)
 
     # categories=GetCategories()

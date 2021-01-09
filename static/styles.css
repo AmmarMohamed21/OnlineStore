@@ -106,7 +106,7 @@ main th.Var
 main th.Fix
 {
     font-size: 25px;
-    color:mediumseagreen;
+    color:rgb(0, 0, 0);
     padding-right:100px;
     background-color:darkcyan;
 }
@@ -128,6 +128,21 @@ main button
     text-align: left;
 }
 
+main th.Var
+{
+    font-size: 20px;
+    color:darkcyan;
+    padding-right:75px;
+    text-align: left;
+
+}
+main th.Fix
+{
+    font-size: 25px;
+    color:rgb(0, 0, 0);
+    padding-right:100px;
+    background-color:darkcyan;
+}
 /* home page styles */
 /* flash sale */
 .slider

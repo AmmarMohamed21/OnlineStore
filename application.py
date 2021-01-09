@@ -279,7 +279,7 @@ def Transactions():
         ProQua = int(request.form.get("Product_Quantity"))
         ProID = int(request.form.get("ProductID"))
         TransID = int(request.form.get("TransactionID"))
-        ProPrice =  request.form.get("ProductPrice")
+        ProPrice =  float(request.form.get("ProductPrice"))
         Trans_Date = request.form.get("Transaction_Date")
 
         Number = random.randint(1,100)
@@ -311,8 +311,7 @@ def Transactions():
      
 @app.route("/search",methods=["GET","POST"])
 def search():
-    sale=[]
-    new_price=[]
+
     categories=GetCategories()
     search_for=""
     if request.method == "POST":
@@ -340,17 +339,9 @@ def search():
 
     else:
         Products=[]
-    for i in range(len(Products)):
-        temp=db.execute(f"select SalePercentage from In_Sale_Products WHERE ProductID={Products[i]['ProductID']}")
-        temp2=None
-        if temp:
-            temp2=round((100-float(temp[0]['SalePercentage']))/100*float(Products[i]['Price']))
-            sale.append(temp)
-            new_price.append(temp2)
-        else:
-            sale.append(None)
-            new_price.append(None)
-    return render_template("search.html",Products=Products,categories=categories,search_for=search_for,sale=sale,new_price=new_price)
+    # for i in len(Products):
+
+    return render_template("search.html",Products=Products,categories=categories,search_for=search_for)
 
     
 

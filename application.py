@@ -412,7 +412,7 @@ def product():
             if int(value)<=int(availability[0]['Quantity']):
                 Quantity=db.execute(f"SELECT Quantity FROM Customer_Cart WHERE ProductID={prod_id} and CustomerID={cust_id}")
                 if Quantity:
-                    ok1=db.execute(f"UPDATE Customer_Cart SET Quantity={value} WHERE ProductID={prod_id} and CustomerID={cust_id}")
+                    ok1=db.execute(f"UPDATE Customer_Cart SET Quantity=Quantity+{value} WHERE ProductID={prod_id} and CustomerID={cust_id}")
                 else:
                     ok1=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value})")
             else:
@@ -441,6 +441,8 @@ def product():
         current_rating=round(current_rating[0]['AVG(Rating)'],2)
     else:
         db.execute(f"UPDATE Product SET Rating=0 WHERE ProductID={prod_id}")
+    if session and added_to_cart:
+        return redirect(f"/product?prodid={prod_id}")
     return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates,supplier=supplier)
 
 

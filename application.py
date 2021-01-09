@@ -44,7 +44,9 @@ def GetCategories():
     #Remove Sale From which the sale ended
     saleproducts = db.execute("SELECT * FROM In_Sale_Products")
     for product in saleproducts:
-        if product["SaleEndDate"] < today:
+        productdate = product["SaleEndDate"].split("-")
+        productdate = date(int(productdate[0]),int(productdate[1]),int(productdate[2]))
+        if productdate < today:
             query = db.execute("DELETE FROM In_Sale_Products WHERE ProductID=: prodid",prodid=product["ProductID"])
     return categories
 

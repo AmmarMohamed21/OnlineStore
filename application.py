@@ -801,32 +801,39 @@ def cart():
             quantity = int(request.form.get("editQuantity"))
             db.execute("update Customer_Cart set Quantity = :q where CustomerID = :id and ProductID = :pid", q = quantity, id = session['user_id'], pid = productId)
         elif "confirmPayment" in request.form:
-            totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
-            count = totalPrice[0]["sum(Price * C.Quantity)"]
-            productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
-            # get the local date
-            today = date.today().strftime("%d/%m/%y")
-            # check for voucher value
-            voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
-            voucher = voucher[0]["VoucherValue"]
-            # get the value of the check button
-            voucherButton = request.form.get("voucher")
-            # check if the voucher button is pressed
-            if voucherButton:
-                count = count - voucher
-                # delete the voucher value or make it zero in the data base
-                db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
-            # get the payment method
-            paymentMethod = request.form.get("btnradio")
-            # query to put the products within cart into transaction
-            db.execute("insert into Transactions(TransactionDate, IsDelivered, Price, PaymentMethod, CustomerID) values(:date, false, :price, :paymentmethod, :id)", date = today, price = count, paymentmethod = paymentMethod, id = session['user_id'])
-            # get the the transaction id 
-            transactionId = db.execute("select max(TransactionID) from Transactions")[0]["max(TransactionID)"]
-            # this loop for insert every product into transaction_contains_product
-            for i in productsCustomer:
-                db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
-            # delete the items in the cart
-            db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
+            count = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id = session['user_id'])[0]["count(ProductID)"]
+            if count:
+                totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+                count = totalPrice[0]["sum(Price * C.Quantity)"]
+                productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+                # get the local date
+                today = date.today().strftime("%y-%m-%d")
+                # check for voucher value
+                voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
+                voucher = voucher[0]["VoucherValue"]
+                # get the value of the check button
+                voucherButton = request.form.get("voucher")
+                # check if the voucher button is pressed
+                if voucherButton:
+                    if count >= voucher:
+                        count = count - voucher
+                        # delete the voucher value or make it zero in the data base
+                        db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
+                    else:
+                        voucher -= count
+                        count = 0
+                        db.execute("update Customer set VoucherValue = :v where CustomerID = :id", id = session['user_id'], v = voucher)
+                # get the payment method
+                paymentMethod = request.form.get("btnradio")
+                # query to put the products within cart into transaction
+                db.execute("insert into Transactions(TransactionDate, IsDelivered, Price, PaymentMethod, CustomerID) values(:date, false, :price, :paymentmethod, :id)", date = today, price = count, paymentmethod = paymentMethod, id = session['user_id'])
+                # get the the transaction id 
+                transactionId = db.execute("select max(TransactionID) from Transactions")[0]["max(TransactionID)"]
+                # this loop for insert every product into transaction_contains_product
+                for i in productsCustomer:
+                    db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
+                    # delete the items in the cart
+                db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
         
 
 
@@ -835,13 +842,12 @@ def cart():
 
     
     productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
-    productsQuantity = db.execute("select Quantity from Customer_Cart where CustomerID = :id", id=session["user_id"])
     productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
     count = totalPrice[0]["sum(Price * C.Quantity)"]
     productsCount = productsCount[0]["count(ProductID)"]
 
-    return render_template("Cart.html", products = productsCustomer, productsQuantity = productsQuantity, count = productsCount, totalPrice = count)
+    return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = count)
 
 @app.route("/wishlist", methods = ["GET", "POST"])
 def wishlist():

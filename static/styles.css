@@ -127,8 +127,35 @@ main button
     background-color: #537fbe;
     text-align: left;
 }
-
-/* home page styles */
+ /*================ Refund Style====================*/
+ main th.ConstR
+ {
+     font-size: 25px;
+     color:darkslategrey;
+     padding-right:5px;
+ 
+ }
+ main th.VarR
+ {
+     font-size: 20px;
+     color:olive;
+     padding-right:75px;
+     text-align: left;
+ 
+ }
+ main th.FixR
+ {
+     font-size: 25px;
+     color:rgb(0, 0, 0);
+     padding-right:100px;
+     background-color:darkslateblue;
+ }
+ main table.RefundB
+ {
+     border: 5px solid darkslateblue;
+ }
+ 
+ /* home page styles */
 /* flash sale */
 .slider
 {

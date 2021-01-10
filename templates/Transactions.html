@@ -25,6 +25,22 @@
                 <th class = "Const"> Price: </th>
                 <th class = "Var"> {{row.Price}} </th>
             </tr>
+            <tr class = "H3">
+                <th class = "Const"> delivery: </th>
+                <th class = "Var">
+                {%if not row.IsDelivered%}
+                <form action="/Transactions" method="post">
+                    <input type="hidden" name="TransactionID_delivered" value="{{ row.TransactionID}}"/>
+                    <button class="btn btn-sm btn-primary" type="submit">Mark as delivered</button>
+                </form>      
+                {%else%}
+                delivered
+                    {%endif%}
+
+                
+                </th>
+            </tr>
+            
         </thead>
     </table>
     <br>

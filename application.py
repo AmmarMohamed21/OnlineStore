@@ -299,17 +299,17 @@ def Transactions():
         if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
             return apology(" Refund Quantity > Product Quantity ")
 
-        # format = "%Y-%m-%d %H:%M:%S"
-        # Trans_Date2 = datetime.datetime.strptime(Trans_Date,format)
-        # TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
-        # CurrentDate = datetime.datetime.now().date()
+        format = "%Y-%m-%d %H:%M:%S"
+        Trans_Date2 = datetime.datetime.strptime(Trans_Date,format)
+        TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
+        CurrentDate = datetime.datetime.now().date()
 
-        # if  CurrentDate > TransDate14:##############################################
-        #      return apology(" Refund Date Out 14 Days ", 403)
+        if  CurrentDate > TransDate14:##############################################
+            return apology(" Refund Date Out 14 Days ", 403)
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
-        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = datetime.datetime.now().date() , TransID = TransID )######################################
 
         db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
         RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)

@@ -299,7 +299,9 @@ def Transactions():
         if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
             return apology(" Refund Quantity > Product Quantity ")
 
-        TransDate14 = Trans_Date + datetime.timedelta(days = 14)
+        format = "%Y-%m-%d %H:%M:%S"
+        Trans_Date2 = datetime.datetime.strptime(Trans_Date,format)
+        TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
         CurrentDate = datetime.datetime.now().date()
 
         if  CurrentDate > TransDate14:##############################################

@@ -53,10 +53,6 @@ def GetCategories():
 
 @app.route("/")
 def index():
-    """Show portfolio of stocks"""
-    #userid = session["user_id"]
-    #rows=db.execute("SELECT * FROM history WHERE id= :userid", userid=userid)
-    #usercash=db.execute("SELECT * FROM users WHERE id= :userid", userid=userid)
     categories=GetCategories()
     return render_template("index.html",categories=categories)
 

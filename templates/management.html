@@ -62,6 +62,12 @@ Management
             document.getElementById("SaleDelete").className = "collapse hide";
         }
 
+        if (elemid != "ShowDeliveries") {
+            document.getElementById("ShowDeliveries").className = "collapse hide";
+        }
+
+        
+
         date = new Date();
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
@@ -75,6 +81,32 @@ Management
         var fulldate = y + "-" + m + "-" + d;
         document.getElementById("SaleDateEdit").min = fulldate;
         document.getElementById("SaleDateInsert").min = fulldate; 
+    }
+</script>
+    
+<script>
+    function GetTransaction(transactionid)
+    {
+        document.getElementById("table").innerHTML=" {% for trans in transproducts %} "+
+        " {% if trans[0].TransactionID == transactionid %} " + 
+        "   <thead> " +
+        "<tr>" +      
+        "<th> Product Name </th>" +
+        "<th> Quantity </th>" +
+        "<th> Product Price </th>" +    
+        "</tr>" +
+        "</thead>" +
+        " {% for tr in trans %} "+
+        "<tr>" +      
+        "<td> {{tr.ProductName}} </td>" +
+        "<td> {{tr.Quantity}} </td>" +
+        "<td> {{tr.Price}} </td>" +    
+        "</tr>" +
+        " {% endfor %}" +
+        "{% endif %} " +
+        "{% endfor %}";  
+                   
+                
     }
 </script>
 
@@ -92,7 +124,7 @@ Management
                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#CategoryInsert" aria-expanded="false"
                     aria-controls="CategoryInsert" onclick=CollapseManagement("CategoryInsert")> Insert </button>
-                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"
+                <button type="button" class="btn-danger rounded mt-1" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#CategoryDelete" aria-expanded="false"
                     aria-controls="CategoryDelete" onclick=CollapseManagement("CategoryDelete")> Delete </button>
                
@@ -108,7 +140,7 @@ Management
                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#SuppliersInsert" aria-expanded="false"
                     aria-controls="SuppliersInsert" onclick=CollapseManagement("SuppliersInsert")> Insert </button>
-                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"
+                <button type="button" class="btn-danger rounded mt-1" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#SuppliersDelete" aria-expanded="false"
                     aria-controls="SuppliersDelete" onclick=CollapseManagement("SuppliersDelete")> Delete </button>
                
@@ -123,7 +155,7 @@ Management
                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#ImportsInsert" aria-expanded="false"
                     aria-controls="ImportsInsert" onclick=CollapseManagement("ImportsInsert")> Insert </button>
-                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"
+                <button type="button" class="btn-danger rounded mt-1" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#ImportsDelete" aria-expanded="false"
                     aria-controls="ImportsDelete" onclick=CollapseManagement("ImportsDelete")> Delete </button>
                 
@@ -138,7 +170,7 @@ Management
                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#ProductsInsert" aria-expanded="false"
                     aria-controls="ProductsInsert" onclick=CollapseManagement("ProductsInsert")> Insert </button>
-                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"
+                <button type="button" class="btn-danger rounded mt-1" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#ProductsDelete" aria-expanded="false"
                     aria-controls="ProductsDelete" onclick=CollapseManagement("ProductsDelete")> Delete </button>
      
@@ -153,10 +185,19 @@ Management
                 <button type="button" class="btn-primary rounded" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#SaleInsert" aria-expanded="false"
                     aria-controls="SaleInsert" onclick=CollapseManagement("SaleInsert")> Insert </button>
-                <button type="button" class="btn-danger rounded" style="width: 60px; text-align: center;"
+                <button type="button" class="btn-danger rounded mt-1" style="width: 60px; text-align: center;"
                     data-bs-toggle="collapse" data-bs-target="#SaleDelete" aria-expanded="false"
                     aria-controls="SaleDelete" onclick=CollapseManagement("SaleDelete")> Delete </button>
 
+            </div>
+        </div>
+
+        <div class="col ">
+            <div class="shadow-lg p-3 mb-3 bg-white rounded" style="font-weight: bold; font-size: large;">Deliveries</div>
+            <div class="mb-3">
+                <button type="button" class="btn-success rounded" style="width: 140px; text-align: center;"
+                    data-bs-toggle="collapse" data-bs-target="#ShowDeliveries" aria-expanded="false" aria-controls="ShowDeliveries"
+                    onclick=CollapseManagement("ShowDeliveries")> Show Deliveries </button>
             </div>
         </div>
     </div>
@@ -623,6 +664,42 @@ Management
             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+    </div>
+
+    <div class="collapse multi-collapse" id="ShowDeliveries">
+        
+
+            <table class = "table table-striped">
+                <thead>
+                <tr>
+                    <th> Delivery ID </th>
+                    <th> Transaction ID </th>
+                    <th> Customer Name </th>
+                    <th> Address </th>
+                    <th> Price </th>
+                    <th> Transaction Date </th>
+                </tr>
+                </thead>
+
+             {% for delivery in deliveries %}
+                <tr>
+                    <input type="hidden" id="TransactionID" name="TransactionID" value="{{delivery.TransactionID}}">
+                    <td> {{delivery.DeliveryID}} </td>
+                    <td> {{delivery.TransactionID}} </td>
+                    <td> {{delivery.FirstName}} {{delivery.LastName}} </td>
+                    <td> {{delivery.Address}} </td>
+                    <td> {{delivery.Price}} </td>
+                    <td> {{delivery.TransactionDate}} </td>
+                    <td> <button class="btn btn-sm btn-primary type="button" onclick=GetTransaction(TransactionID.value)>Show Detalis</button> </td>
+                </tr>
+                
+             {% endfor %}
+             <tr>
+             </table>
+
+             <table class = "table table-striped" id="table">
+             </table>
+
     </div>
 
 

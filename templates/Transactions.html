@@ -24,8 +24,7 @@
             <tr class = "H3">
                 <th class = "Const"> Price: </th>
                 <th class = "Var"> {{row.Price}} </th>
-            </tr>
-            <tr class = "H3">
+            
                 <th class = "Const"> delivery: </th>
                 <th class = "Var">
                 {%if not row.IsDelivered%}
@@ -72,7 +71,7 @@
                                         <input type="hidden" name="TransactionID" value="{{ Tran.TransactionID }}"/>
                                         <input type="hidden" name="ProductPrice" value="{{ Pro[0].Price }}"/>
                                         <input type="hidden" name="Product_Quantity" value="{{ Tran.Quantity }}"/>                                        
-                                        <input type="hidden" name="Transaction_Date" value="{{ Tran.TransactionDate }}"/>                                        
+                                        <input type="hidden" name="Transaction_Date" value="{{ row.TransactionID }}"/>                                        
 
                                         
                                         <input type="number" name="Refund_Quantity" min="1" placeholder="0" style="width: 50px" required />

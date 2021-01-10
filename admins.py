@@ -792,7 +792,6 @@ for code in default_exceptions:
 
 # this function is for cart
 @app.route("/cart", methods=["GET", "POST"])
-@login_required
 def cart():
 
     if(request.method == "POST"):
@@ -866,7 +865,6 @@ def cart():
     return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = count)
 
 @app.route("/wishlist", methods = ["GET", "POST"])
-@login_required
 def wishlist():
 
     # confirm the post requests
@@ -933,3 +931,4 @@ def GetProdID (prodname):
         return apology("Somthing Missing")
     prodid=query[0]["ProductID"]
     return prodid
+

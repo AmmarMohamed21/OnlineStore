@@ -283,33 +283,42 @@ def Transactions():
         
     # IF User SubMit 
     if request.method == "POST":
+        mark_as_delivered_ID=request.form.get("TransactionID_delivered")
+        if mark_as_delivered_ID:
+            db.execute(f"UPDATE Transactions SET IsDelivered=1 WHERE TransactionID={mark_as_delivered_ID}")
+            today=date.today()
+            db.execute(f"INSERT INTO Deliveries(DateDelivered,TransactionID) VALUES('{today.year}-{today.month}-{today.day}',{mark_as_delivered_ID}) ")
+            # db.execute(f"UPDATE Deliveries SET DateDelivered={today} WHERE TransactionID={mark_as_delivered_ID} ")
+        else:
+            RefQua = int(request.form.get("Refund_Quantity"))
+            ProQua = int(request.form.get("Product_Quantity"))
+            ProID = int(request.form.get("ProductID"))
+            TransID = int(request.form.get("TransactionID"))
+            ProPrice =  float(request.form.get("ProductPrice"))
+            Trans_Date = request.form.get("Transaction_Date")
 
-        RefQua = int(request.form.get("Refund_Quantity"))
-        ProQua = int(request.form.get("Product_Quantity"))
-        ProID = int(request.form.get("ProductID"))
-        TransID = int(request.form.get("TransactionID"))
-        ProPrice =  float(request.form.get("ProductPrice"))
-        Trans_Date = request.form.get("Transaction_Date")
+            Number = random.randint(1,100)
 
-        Number = random.randint(1,100)
-
-        Refund_Quantity=[]
-        Refund_Quantity.append ( db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
-        ProdID = ProID , TransaID = TransID ))######################################
-        
-        for REF in Refund_Quantity[0][0]:
-            if REF > str(ProQua - RefQua):
+            Refund_Quantity = ( db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
+            ProdID = ProID , TransaID = TransID ))######################################
+            
+            if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
                 return apology(" Refund Quantity > Product Quantity ")
 
-        # if  datetime.datetime.now().date - Trans_Date > 14:##############################################
-        #     return apology(" Refund Date Out 14 Days ", 403)
-        
+            format = "%Y-%m-%d"
+            Trans_Date2 = datetime.datetime.strptime(Trans_Date,format).date()
+            TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
+            CurrentDate = datetime.datetime.now().date()
 
-        db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
-        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = '4/1/2020' , TransID = TransID )######################################
+            if  CurrentDate > TransDate14:##############################################
+                return apology(" Refund Date Out 14 Days ", 403)
+            
 
-        db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
+            db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
+            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = datetime.datetime.now().date() , TransID = TransID )######################################
+
+            db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
+            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
         return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
@@ -331,7 +340,7 @@ def search():
     order_by=""
     if sorting_way and search_for:
         if sorting_way=="Date (new first)":
-            Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,CategoryID "+
+            Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,Rating,ImageURL,P.SupplierID,CategoryID "+
                                 f"FROM Product as P,Imports AS I"+
                                 f" WHERE P.ProductID=I.ProductID AND ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by I.DateImported;")
         else:
@@ -455,7 +464,7 @@ def category():
     cat_id=request.args.get("categoryid")
     if cat_id:
         Category=db.execute(f"Select * from Categories WHERE [CategoryID]={cat_id}")
-        Products=db.execute(f"SELECT DISTINCT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,P.CategoryID "+
+        Products=db.execute(f"SELECT DISTINCT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,Rating,ImageURL,P.SupplierID,P.CategoryID "+
         f"FROM Product as P,Categories AS C"+
         f" WHERE P.CategoryID={cat_id} ;")
         for i in range(len(Products)):

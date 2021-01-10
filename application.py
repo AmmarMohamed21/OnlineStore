@@ -458,7 +458,7 @@ def category():
     cat_id=request.args.get("categoryid")
     if cat_id:
         Category=db.execute(f"Select * from Categories WHERE [CategoryID]={cat_id}")
-        Products=db.execute(f"SELECT DISTINCT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,P.CategoryID "+
+        Products=db.execute(f"SELECT DISTINCT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,Rating,ImageURL,P.SupplierID,P.CategoryID "+
         f"FROM Product as P,Categories AS C"+
         f" WHERE P.CategoryID={cat_id} ;")
         for i in range(len(Products)):

@@ -331,7 +331,7 @@ def search():
     order_by=""
     if sorting_way and search_for:
         if sorting_way=="Date (new first)":
-            Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,InStock,Rating,ImageURL,P.SupplierID,CategoryID "+
+            Products=db.execute(f"SELECT  P.ProductID,ProductName,ProductDescription,P.Price,P.Quantity,Rating,ImageURL,P.SupplierID,CategoryID "+
                                 f"FROM Product as P,Imports AS I"+
                                 f" WHERE P.ProductID=I.ProductID AND ([ProductName] LIKE '%{search_for}%' or ProductDescription LIKE '%{search_for}%') order by I.DateImported;")
         else:

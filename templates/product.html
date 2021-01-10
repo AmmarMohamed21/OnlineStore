@@ -68,7 +68,7 @@ Product
             <div>
                 <form action="/product" method="post">
                     <input type="hidden" name="ProductID-addtocart" value="{{ Product[0].ProductID}}" />
-                    <input type="number" name="quantity" min="1" placeholder="0" style="width: 50px; margin-top: 5px;"
+                    <input type="number" name="quantity" min="1" value="1" placeholder="0" style="width: 50px; margin-top: 5px;"
                         required />
                     <button class="btn btn-sm btn-primary" type="submit">Add to Cart</button>
                     {%if message1%}

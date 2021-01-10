@@ -424,7 +424,7 @@ def product():
                 else:
                     ok1=db.execute(f"INSERT INTO Customer_Cart VALUES ({prod_id},{cust_id},{value})")
             else:
-                message1=f"Not enough in stock"
+                message1="Not enough in stock"
         if added_to_wishlist:
             num=db.execute(f"SELECT * FROM Customer_Wishlist WHERE ProductID={prod_id} and CustomerID={cust_id}")
             if not num:
@@ -450,7 +450,9 @@ def product():
     else:
         db.execute(f"UPDATE Product SET Rating=0 WHERE ProductID={prod_id}")
     if session and added_to_cart:
-        return redirect(f"/product?prodid={prod_id}")
+        if message1 !="Not enough in stock":
+            return redirect(f"/product?prodid={prod_id}")
+
     return render_template("product.html",categories=categories,Product=Product,message1=message1,ok1=ok1,message2=message2,ok2=ok2,sale=sale,new_price=new_price,current_user_rating=current_user_rating,current_rating=current_rating,number_of_rates=number_of_rates,supplier=supplier)
 
 

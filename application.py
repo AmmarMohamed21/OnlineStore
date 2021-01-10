@@ -298,8 +298,7 @@ def Transactions():
 
         for Refund_Quan in Refund_Quantity:
             for Refund_Qua in Refund_Quan:
-                for Refund_Q in Refund_Qua  
-                    if Refund_Q[1] > (ProQua - RefQua) :
+                    if Refund_Qua[1] > (ProQua - RefQua) :
                         return apology(" Refund Quantity > Product Quantity ")
 
 #############################################################################################################

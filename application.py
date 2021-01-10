@@ -805,9 +805,18 @@ def cart():
         elif "confirmPayment" in request.form:
             count = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id = session['user_id'])[0]["count(ProductID)"]
             if count:
+                #get the customer cart products
+                productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+                for i in productsCustomer:
+                    #get the total quantity of the product
+                    totalProductQuantity = db.execute("select Quantity from Product where ProductID = :id", id = i["ProductID"])[0]["Quantity"]
+                    if totalProductQuantity < i["Quantity"]:
+                        pName = i["ProductName"]
+                        q = str(totalProductQuantity)
+                        return apology("Not enough quantity of " + pName + " Max Quantity is " + q)
+
                 totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
                 count = totalPrice[0]["sum(Price * C.Quantity)"]
-                productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
                 # get the local date
                 today = date.today().strftime("%Y-%m-%d")
                 # check for voucher value
@@ -831,9 +840,13 @@ def cart():
                 db.execute("insert into Transactions(TransactionDate, IsDelivered, Price, PaymentMethod, CustomerID) values(:date, false, :price, :paymentmethod, :id)", date = today, price = count, paymentmethod = paymentMethod, id = session['user_id'])
                 # get the the transaction id 
                 transactionId = db.execute("select max(TransactionID) from Transactions")[0]["max(TransactionID)"]
+                # insert the transaction into deliveries
+                db.execute("insert into Deliveries (TransactionID) values (:t)", t = transactionId)
                 # this loop for insert every product into transaction_contains_product
                 for i in productsCustomer:
                     db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
+                    # update the quantity in the Product
+                    db.execute("update Product set Quantity = Quantity - :q where ProductID = :id", q = i["Quantity"], id = i["ProductID"])
                     # delete the items in the cart
                 db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
         
@@ -864,7 +877,11 @@ def wishlist():
         elif "addToCart" in request.form:
             # add the item to cart
             productId = int(request.form.get("productId"))
-            db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = productId, id = session['user_id'])
+            quantity = db.execute("select Quantity from Customer_Cart where ProductID = :id and CustomerID = :cid", id = productId, cid = session['user_id'])[0]["Quantity"]
+            if quantity:
+                db.execute("update Customer_Cart set Quantity = Quantity + 1 where CustomerID = :cid and ProductID = :id", cid = session['user_id'], id = productId)
+            else:
+                db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = productId, id = session['user_id'])
             # then delete it from the wish list
             db.execute("delete from Customer_Wishlist where CustomerID = :id and ProductID = :pId", id = session['user_id'], pId = productId)
         # if the clicked button is add all to cart
@@ -873,7 +890,11 @@ def wishlist():
             productsInWishlist = db.execute("select ProductID from Customer_Wishlist where CustomerID = :id", id = session['user_id'])
             # loop for every product to insert it into cart
             for i in productsInWishlist:
-                db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = i["ProductID"], id = session['user_id'])
+                quantity = db.execute("select Quantity from Customer_Cart where ProductID = :id and CustomerID = :cid", id = i["ProductID"], cid = session['user_id'])
+                if quantity:
+                    db.execute("update Customer_Cart set Quantity = Quantity + 1 where CustomerID = :cid and ProductID = :id", cid = session['user_id'], id = i["ProductID"])
+                else:
+                    db.execute("insert into Customer_Cart values (:pId, :id, 1)", pId = i["ProductID"], id = session['user_id'])
             # delete the products from the wish list
             db.execute("delete from Customer_Wishlist where CustomerID = :id", id = session['user_id'])
 

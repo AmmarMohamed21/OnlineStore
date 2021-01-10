@@ -298,7 +298,7 @@ def Transactions():
         ProdID = ProID , TransaID = TransID ))######################################
         
         for REF in Refund_Quantity[0]:
-            if int(REF[1]) > (ProQua - RefQua):
+            if int(REF[1]][0]) > (ProQua - RefQua):
                 return apology(" Refund Quantity > Product Quantity ")
 
         # if  datetime.datetime.now().date - Trans_Date > 14:##############################################

@@ -299,8 +299,11 @@ def Transactions():
         if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
             return apology(" Refund Quantity > Product Quantity ")
 
-        # if  datetime.datetime.now().date - Trans_Date > 14:##############################################
-        #     return apology(" Refund Date Out 14 Days ", 403)
+        TransDate14 = Trans_Date + datetime.timedelta(days = 14)
+        CurrentDate = datetime.datetime.now().date()
+
+        if  CurrentDate > TransDate14:##############################################
+             return apology(" Refund Date Out 14 Days ", 403)
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 

@@ -283,42 +283,37 @@ def Transactions():
         
     # IF User SubMit 
     if request.method == "POST":
-        mark_as_delivered_ID=request.form.get("TransactionID_delivered")
-        if mark_as_delivered_ID:
-            db.execute(f"UPDATE Transactions SET IsDelivered=1 WHERE TransactionID={mark_as_delivered_ID}")
-            today=date.today()
-            db.execute(f"INSERT INTO Deliveries(DateDelivered,TransactionID) VALUES('{today.year}-{today.month}-{today.day}',{mark_as_delivered_ID}) ")
-            # db.execute(f"UPDATE Deliveries SET DateDelivered={today} WHERE TransactionID={mark_as_delivered_ID} ")
-        else:
-            RefQua = int(request.form.get("Refund_Quantity"))
-            ProQua = int(request.form.get("Product_Quantity"))
-            ProID = int(request.form.get("ProductID"))
-            TransID = int(request.form.get("TransactionID"))
-            ProPrice =  float(request.form.get("ProductPrice"))
-            Trans_Date = request.form.get("Transaction_Date")
 
-            Number = random.randint(1,100)
+        RefQua = int(request.form.get("Refund_Quantity"))
+        ProQua = int(request.form.get("Product_Quantity"))
+        ProID = int(request.form.get("ProductID"))
+        TransID = int(request.form.get("TransactionID"))
+        ProPrice =  float(request.form.get("ProductPrice"))
+        Trans_Date = str(request.form.get("Transaction_Date"))
 
-            Refund_Quantity = ( db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
-            ProdID = ProID , TransaID = TransID ))######################################
-            
-            if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
-                return apology(" Refund Quantity > Product Quantity ")
+        Number = random.randint(1,100)
 
-            format = "%Y-%m-%d"
-            Trans_Date2 = datetime.datetime.strptime(Trans_Date,format).date()
-            TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
-            CurrentDate = datetime.datetime.now().date()
+        Refund_Quantity = ( db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
+        ProdID = ProID , TransaID = TransID ))######################################
+        
+        if Refund_Quantity[0]['Count(Quantity)'] > (ProQua - RefQua):
+            return apology(" Refund Quantity > Product Quantity ")
 
-            if  CurrentDate > TransDate14:##############################################
-                return apology(" Refund Date Out 14 Days ", 403)
-            
+        Trans_Date1 = Trans_Date + " 0:0:0"
+        format = "%Y-%m-%d %H:%M:%S"
+        Trans_Date2 = datetime.datetime.strptime(Trans_Date1,format)
+        TransDate14 = Trans_Date2 + datetime.timedelta(days = 14)
+        CurrentDate = datetime.datetime.now().date()
 
-            db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
-            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = datetime.datetime.now().date() , TransID = TransID )######################################
+        if  CurrentDate > TransDate14.date():##############################################
+            return apology(" Refund Date Out 14 Days ")
+        
 
-            db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
+        db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = datetime.datetime.now().date() , TransID = TransID )######################################
+
+        db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
+        RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
         return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,

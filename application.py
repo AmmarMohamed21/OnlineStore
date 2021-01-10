@@ -298,12 +298,11 @@ def Transactions():
         ProdID = ProID , TransaID = TransID ))######################################
         
         for REF in Refund_Quantity[0][0]:
-                if int(REF) > (ProQua - RefQua) :
+            if int(REF) > (ProQua - RefQua):
                     return apology(" Refund Quantity > Product Quantity ")
 
-#############################################################################################################
-        #  if  datetime.datetime.now().date - Trans_Date > 14:###############################################
-        #      return apology(" Refund Date Out 14 Days ", 403)##############################################
+        if  datetime.datetime.now().date - Trans_Date > 14:##############################################
+            return apology(" Refund Date Out 14 Days ", 403)
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 

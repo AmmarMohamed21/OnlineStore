@@ -81,14 +81,13 @@ Management
         var fulldate = y + "-" + m + "-" + d;
         document.getElementById("SaleDateEdit").min = fulldate;
         document.getElementById("SaleDateInsert").min = fulldate; 
-    }
-</script>
-    
-<script>
+    };
+
     function GetTransaction(transactionid)
     {
+        console.log(transactionid);
         document.getElementById("table").innerHTML=" {% for trans in transproducts %} "+
-        " {% if trans[0].TransactionID == transactionid %} " + 
+        " {% if trans[0].TransactionID|int == transactionid %} " + 
         "   <thead> " +
         "<tr>" +      
         "<th> Product Name </th>" +
@@ -104,12 +103,10 @@ Management
         "</tr>" +
         " {% endfor %}" +
         "{% endif %} " +
-        "{% endfor %}";  
-                   
-                
+        "{% endfor %}";                                
     }
 </script>
-
+    
 
 
 <div class="container px-4 shadow-lg p-3 mb-5 bg-white rounded">
@@ -690,7 +687,7 @@ Management
                     <td> {{delivery.Address}} </td>
                     <td> {{delivery.Price}} </td>
                     <td> {{delivery.TransactionDate}} </td>
-                    <td> <button class="btn btn-sm btn-primary type="button" onclick=GetTransaction(TransactionID.value)>Show Detalis</button> </td>
+                    <td> <button class="btn btn-sm btn-primary" type="button" onclick=GetTransaction('{{delivery.TransactionID}}')>Show Detalis</button> </td>
                 </tr>
                 
              {% endfor %}

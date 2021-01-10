@@ -81,14 +81,6 @@ Management
         var fulldate = y + "-" + m + "-" + d;
         document.getElementById("SaleDateEdit").min = fulldate;
         document.getElementById("SaleDateInsert").min = fulldate; 
-    };
-
-    function GetTransaction(transactionid)
-    {   
-        let transid = transactionid;
-        console.log(transid);
-        document.getElementById("table").innerHTML=
-                                     
     }
 </script>
     
@@ -697,13 +689,7 @@ Management
         {% endfor %}
         </table>
         {% endfor %}  
-
-             
-             
-
     </div>
-
-
 </div>
 
 {% endblock %}

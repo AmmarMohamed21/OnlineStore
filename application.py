@@ -297,7 +297,8 @@ def Transactions():
         ProdID = ProID , TransaID = TransID )######################################
 
         for Refund_Quan in Refund_Quantity:
-                    if int(Refund_Quan[1][0]) > (ProQua - RefQua) :
+            for Refund_Qua in Refund_Quan:
+                    if int(Refund_Qua[1][0]) > (ProQua - RefQua) :
                         return apology(" Refund Quantity > Product Quantity ")
 
 #############################################################################################################

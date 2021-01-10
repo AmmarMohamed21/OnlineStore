@@ -297,12 +297,11 @@ def Transactions():
         Refund_Quantity.append ( db.execute("SELECT Count(Quantity) FROM RefundProducts RP , RefundS R where R.RefundID = RP.RefundID and RP.ProductID = :ProdID and R.TransactionID = :TransaID", 
         ProdID = ProID , TransaID = TransID ))######################################
         
-        for REF in Refund_Quantity[0][0]:
-            if int(REF) > (ProQua - RefQua):
-                    return apology(" Refund Quantity > Product Quantity ")
+        if int(Refund_Quantity[0]['COUNT(refund)']) > (ProQua - RefQua):
+            return apology(" Refund Quantity > Product Quantity ")
 
-        if  datetime.datetime.now().date - Trans_Date > 14:##############################################
-            return apology(" Refund Date Out 14 Days ", 403)
+        # if  datetime.datetime.now().date - Trans_Date > 14:##############################################
+        #     return apology(" Refund Date Out 14 Days ", 403)
         
 
         db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 

@@ -807,7 +807,7 @@ def cart():
                 count = totalPrice[0]["sum(Price * C.Quantity)"]
                 productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
                 # get the local date
-                today = date.today().strftime("%y-%m-%d")
+                today = date.today().strftime("%Y-%m-%d")
                 # check for voucher value
                 voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
                 voucher = voucher[0]["VoucherValue"]

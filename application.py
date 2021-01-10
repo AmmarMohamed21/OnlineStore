@@ -790,7 +790,16 @@ def cart():
             productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
             # get the local date
             today = date.today().strftime("%d/%m/%y")
-
+            # check for voucher value
+            voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
+            voucher = voucher[0]["VoucherValue"]
+            # get the value of the check button
+            voucherButton = request.form.get("voucher")
+            # check if the voucher button is pressed
+            if voucherButton:
+                count = count - voucher
+                # delete the voucher value or make it zero in the data base
+                db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
             # get the payment method
             paymentMethod = request.form.get("btnradio")
             # query to put the products within cart into transaction
@@ -802,6 +811,7 @@ def cart():
                 db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
             # delete the items in the cart
             db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
+        
 
 
     

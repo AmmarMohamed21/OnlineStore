@@ -477,3 +477,20 @@ div.stars {
   label.star:before {
     content: '\2605';
   }
+.payment .form-check
+{
+    width: 50%;
+    margin: 5% auto;
+}
+.payment div:first-of-type span
+{
+    float: left;
+    font-size: 18px;
+   
+}
+.payment div:first-of-type input
+{
+    float: right;
+    margin-right: 15%;
+    margin-top: 4%;
+}

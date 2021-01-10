@@ -540,11 +540,17 @@ def Management():
     products = db.execute("SELECT * FROM Product order by ProductName")
     imports = db.execute("SELECT* FROM Product as P, Suppliers as S, Imports as I WHERE I.SupplierID = S.SupplierID and I.ProductID=P.ProductID order by S.SupplierName, P.ProductName, I.DateImported DESC")
     saleproducts = db.execute("SELECT P.ProductName, S.SalePercentage, S.SaleEndDate FROM Product as P, In_Sale_Products as S WHERE P.ProductID=S.ProductID")
+    deliveries = db.execute("SELECT D.DeliveryID, T.TransactionID, C.FirstName, C.LastName, C.Address, T.TransactionDate, T.Price FROM Deliveries as D, Transactions as T, Customer as C WHERE D.TransactionID = T.TransactionID and T.IsDelivered=0 and C.CustomerID = T.CustomerID order by T.TransactionDate LIMIT 5")
+    transproducts=[]
+    for delivery in deliveries:
+        transproducts.append(db.execute("SELECT T.TransactionID, P.ProductName, T.Quantity, P.Price FROM Product as P, Transaction_Contains_Products as T WHERE P.ProductID=T.ProductID and T.TransactionID = :tid",tid=delivery["TransactionID"]))
+    
     #Define Password
     ManagementPassword="ronaldinho"
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+
         if not request.form.get("password"):
             return apology("Please Enter Management password")
 
@@ -758,12 +764,13 @@ def Management():
             prodid = GetProdID(prodname)
             query=db.execute("DELETE FROM In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
             return redirect("/management")
+        
 
         #POST WAS UNSUCCESFUL    
         return apology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports, saleproducts=saleproducts)
+        return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports, saleproducts=saleproducts, deliveries=deliveries, transproducts=transproducts)
 
 
 # Listen for errors

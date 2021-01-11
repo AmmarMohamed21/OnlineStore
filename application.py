@@ -625,11 +625,11 @@ def cart():
     for i in productsCustomer:
         perc = db.execute("select SalePercentage from In_Sale_Products where ProductID = :id", id = i["ProductID"])
         if not perc:
-            total += int(i["Price"])
+            total += int(i["Price"]) * i["Quantity"]
         else:
             perc = perc[0]["SalePercentage"] / 100
             PafterSale = i["Price"] - i["Price"] * perc
-            total += PafterSale
+            total += PafterSale * i["Quantity"]
     productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
     count = totalPriceAfterSale

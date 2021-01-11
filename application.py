@@ -599,15 +599,15 @@ def cart():
                         db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"] * i["Quantity"])
                     else:
                         Percentage = Percentage[0]["SalePercentage"] / 100
-                        PriceAfterSale = i["Price"] - i["Price"] * Percentage
-                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = PriceAfterSale * i["Quantity"])
+                        PriceAfterSale = round(i["Price"] - i["Price"] * Percentage,2)
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = PriceAfterSale)
                     # update the quantity in the Product
                     db.execute("update Product set Quantity = Quantity - :q where ProductID = :id", q = i["Quantity"], id = i["ProductID"])
                     # delete the items in the cart
                 db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
                 # update the transaction after sale
                     # get the total price after sale from transaction contains products
-                totalPriceAfterSale = db.execute("select sum(BuyPrice) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice)"]
+                totalPriceAfterSale = db.execute("select sum(BuyPrice*Quantity) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice*Quantity)"]
                 # update the transaction
                 db.execute("update Transactions set Price = :p where TransactionID = :id", p = totalPriceAfterSale, id = transactionId)
 
@@ -632,7 +632,6 @@ def cart():
             total += PafterSale * i["Quantity"]
     productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
-    count = totalPriceAfterSale
     productsCount = productsCount[0]["count(ProductID)"]
 
     return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = total,categories=categories)

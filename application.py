@@ -617,7 +617,7 @@ def cart():
     count = totalPriceAfterSale
     productsCount = productsCount[0]["count(ProductID)"]
 
-    return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = count,categories=categories)
+    return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = total,categories=categories)
 
 @app.route("/wishlist", methods = ["GET", "POST"])
 @login_required

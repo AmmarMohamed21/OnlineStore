@@ -252,7 +252,7 @@ def Transactions():
     # Get Tables OF Transactions Contain Product
     TransConPros = []
     for row in rows:
-        TransConPros.append(db.execute("SELECT * FROM Transaction_Contains_Products WHERE TransactionID = :id",
+        TransConPros.append(db.execute("SELECT T.TransactionID, T.ProductID, T.Quantity, P.ProductName, P.ProductID, P.Price FROM Transaction_Contains_Products as T, Product as P WHERE T.TransactionID = :id and T.ProductID=P.ProductID",
         id= row["TransactionID"]))
 
     # Get All Products IN Transactions
@@ -272,7 +272,7 @@ def Transactions():
     Refund_Product = []
     for Refund in Refunds:
         for Ref in Refund:
-            Refund_Product.append(db.execute("SELECT * FROM RefundProducts WHERE RefundID = :id",
+            Refund_Product.append(db.execute("SELECT R.RefundID, R.ProductID, R.Quantity, P.ProductName, P.Price, P.ProductID FROM RefundProducts as R, Product as P WHERE RefundID = :id and R.ProductID=P.ProductID",
             id= Ref["RefundID"]))
         
     # IF User SubMit 

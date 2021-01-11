@@ -57,19 +57,18 @@
         <tbody>
             {% for Trans in TransConPros %}
                 {% for Tran in Trans %}
-                    {% for Pro in Product %}    
-                        {% if row.TransactionID == Tran.TransactionID and Pro[0].ProductID == Tran.ProductID %}
+                        {% if row.TransactionID == Tran.TransactionID %}
                             <tr class = "T1R1">
-                            <td> {{ Pro[0].ProductName }} </td>
+                            <td> {{ Tran.ProductName }} </td>
                             <td> {{ Tran.Quantity }} </td>
-                            <td> {{ Pro[0].Price }} </td>
-                            <td> {{ Tran.Quantity * Pro[0].Price }} </td>
+                            <td> {{ Tran.Price }} </td>
+                            <td> {{ Tran.Quantity * Tran.Price }} </td>
                             
                             <td>
                                     <form action="/Transactions" method="post">
-                                        <input type="hidden" name="ProductID" value="{{ Pro[0].ProductID }}"/>
+                                        <input type="hidden" name="ProductID" value="{{ Tran.ProductID }}"/>
                                         <input type="hidden" name="TransactionID" value="{{ Tran.TransactionID }}"/>
-                                        <input type="hidden" name="ProductPrice" value="{{ Pro[0].Price }}"/>
+                                        <input type="hidden" name="ProductPrice" value="{{ Tran.Price }}"/>
                                         <input type="hidden" name="Product_Quantity" value="{{ Tran.Quantity }}"/>                                        
                                         <input type="hidden" name="Transaction_Date" value="{{ row.TransactionDate }}"/>                                        
 
@@ -81,7 +80,6 @@
                             
                         </tr>
                         {% endif %} 
-                    {% endfor %}
                 {% endfor %}
             {% endfor %}
         </tbody>
@@ -130,15 +128,13 @@
         <tbody>
              {% for Refund_Prod in Refund_Product %}
                  {% for Refund_Pro in Refund_Prod %}
-                    {% for Pro in Product %}
-                        {% if Refund_Pro.RefundID == Ref.RefundID and Pro[0].ProductID == Refund_Pro.ProductID  %}
+                        {% if Refund_Pro.RefundID == Ref.RefundID%}
                             <tr class = "T1R1">
-                                <td> {{ Pro[0].ProductName }} </td>
+                                <td> {{ Refund_Pro.ProductName }} </td>
                                 <td> {{ Refund_Pro.Quantity }} </td>
-                                <td> {{ Pro[0].Price }} </td>
+                                <td> {{ Refund_Pro.Price }} </td>
                             </tr>
                         {% endif %} 
-                    {% endfor %}
                 {% endfor %}
             {% endfor %}
         </tbody>

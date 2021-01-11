@@ -281,8 +281,8 @@ def Transactions():
         if mark_as_delivered_ID:
             db.execute(f"UPDATE Transactions SET IsDelivered=1 WHERE TransactionID={mark_as_delivered_ID}")
             today=date.today()
-            db.execute(f"INSERT INTO Deliveries(DateDelivered,TransactionID) VALUES('{today.year}-{today.month}-{today.day}',{mark_as_delivered_ID}) ")
-            # db.execute(f"UPDATE Deliveries SET DateDelivered='{today.year}-{today.month}-{today.day}' WHERE TransactionID={mark_as_delivered_ID} ")
+            # db.execute(f"INSERT INTO Deliveries(DateDelivered,TransactionID) VALUES('{today.year}-{today.month}-{today.day}',{mark_as_delivered_ID}) ")
+            db.execute(f"UPDATE Deliveries SET DateDelivered='{today.year}-{today.month}-{today.day}' WHERE TransactionID={mark_as_delivered_ID} ")
         else:
             RefQua = int(request.form.get("Refund_Quantity"))
             ProQua = int(request.form.get("Product_Quantity"))

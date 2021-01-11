@@ -555,7 +555,7 @@ def cart():
             count = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id = session['user_id'])[0]["count(ProductID)"]
             if count:
                 #get the customer cart products
-                productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+                productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity, P.Price from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
                 for i in productsCustomer:
                     #get the total quantity of the product
                     totalProductQuantity = db.execute("select Quantity from Product where ProductID = :id", id = i["ProductID"])[0]["Quantity"]
@@ -593,11 +593,24 @@ def cart():
                 db.execute("insert into Deliveries (TransactionID) values (:t)", t = transactionId)
                 # this loop for insert every product into transaction_contains_product
                 for i in productsCustomer:
-                    db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"])
+                    # calculate the percentage of the sale
+                    Percentage = db.execute("select SalePercentage from In_Sale_Products where ProductID = :id", id = i["ProductID"])
+                    if not Percentage:
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"])
+                    else:
+                        Percentage = Percentage[0]["SalePercentage"] / 100
+                        PriceAfterSale = i["Price"] - i["Price"] * Percentage
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = PriceAfterSale)
                     # update the quantity in the Product
                     db.execute("update Product set Quantity = Quantity - :q where ProductID = :id", q = i["Quantity"], id = i["ProductID"])
                     # delete the items in the cart
                 db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
+                # update the transaction after sale
+                    # get the total price after sale from transaction contains products
+                totalPriceAfterSale = db.execute("select sum(BuyPrice) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice)"]
+                # update the transaction
+                db.execute("update Transactions set Price = :p where TransactionID = :id", p = totalPriceAfterSale, id = transactionId)
+
         
 
 

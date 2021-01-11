@@ -288,7 +288,7 @@ def Transactions():
             ProQua = int(request.form.get("Product_Quantity"))
             ProID = int(request.form.get("ProductID"))
             TransID = int(request.form.get("TransactionID"))
-            ProPrice =  request.form.get("ProductPrice")
+            ProPrice =  float(request.form.get("ProductPrice"))
             Trans_Date = str(request.form.get("Transaction_Date"))
 
             Number = random.randint(1,100)
@@ -314,6 +314,8 @@ def Transactions():
 
             db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity, Price) VALUES ( :RID, :PID, :Qua, :price)",
             RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua, price=ProPrice)
+
+            db.execute("UPDATE Product SET Quantity = Quantity + :ref WHERE ProductID=:proid", ref=RefQua, proid=ProID )
         return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
@@ -583,7 +585,7 @@ def cart():
                     # calculate the percentage of the sale
                     Percentage = db.execute("select SalePercentage from In_Sale_Products where ProductID = :id", id = i["ProductID"])
                     if not Percentage:
-                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"] * i["Quantity"])
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"])
                     else:
                         Percentage = Percentage[0]["SalePercentage"] / 100
                         PriceAfterSale = round(i["Price"] - i["Price"] * Percentage,2)
@@ -642,7 +644,7 @@ def cart():
 @app.route("/wishlist", methods = ["GET", "POST"])
 @login_required
 def wishlist():
-
+    categories=GetCategories()
     # confirm the post requests
     if(request.method == "POST"):
         #if the clicked button is remove
@@ -680,7 +682,7 @@ def wishlist():
     # get the count of the items in the wishlist
     productsCount = db.execute("select count(ProductID) from Customer_Wishlist where CustomerID = :id", id=session["user_id"])
     productsCount = productsCount[0]["count(ProductID)"]
-    return render_template("/wishlist.html", products = productsCustomer, count = productsCount)
+    return render_template("/wishlist.html", products = productsCustomer, count = productsCount,categories=categories)
 
 def CheckAllProductInsert():
     if request.form.get("ProdNameInsert") and request.form.get("ProdDescInsert") and request.form.get("ProdPriceInsert") and request.form.get("ProdURLInsert") and request.form.get("ProdCatInsert") and request.form.get("ProdSupInsert"):

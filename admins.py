@@ -247,7 +247,7 @@ def Management():
             supname=request.form.get("selectSupplierInsert")
             suploc=request.form.get("SupplierLocInsert")
             supid = GetSupID(supname)
-            query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc,:supid)",supid=supid,suploc=suploc)
+            query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc, :supid)",suploc=suploc, supid=supid)
             return redirect("/")
 
         #Update Supplier Name

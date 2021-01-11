@@ -252,7 +252,7 @@ def Transactions():
     # Get Tables OF Transactions Contain Product
     TransConPros = []
     for row in rows:
-        TransConPros.append(db.execute("SELECT T.TransactionID, T.ProductID, T.Quantity, P.ProductName, P.ProductID, P.Price FROM Transaction_Contains_Products as T, Product as P WHERE T.TransactionID = :id and T.ProductID=P.ProductID",
+        TransConPros.append(db.execute("SELECT T.TransactionID, T.ProductID, T.Quantity, P.ProductName, P.ProductID, T.BuyPrice FROM Transaction_Contains_Products as T, Product as P WHERE T.TransactionID = :id and T.ProductID=P.ProductID",
         id= row["TransactionID"]))
 
     # Get All Products IN Transactions
@@ -272,7 +272,7 @@ def Transactions():
     Refund_Product = []
     for Refund in Refunds:
         for Ref in Refund:
-            Refund_Product.append(db.execute("SELECT R.RefundID, R.ProductID, R.Quantity, P.ProductName, P.Price, P.ProductID FROM RefundProducts as R, Product as P WHERE RefundID = :id and R.ProductID=P.ProductID",
+            Refund_Product.append(db.execute("SELECT R.RefundID, R.ProductID, R.Quantity, P.ProductName, R.Price, P.ProductID FROM RefundProducts as R, Product as P WHERE RefundID = :id and R.ProductID=P.ProductID",
             id= Ref["RefundID"]))
         
     # IF User SubMit 
@@ -312,8 +312,8 @@ def Transactions():
             db.execute("INSERT INTO Refunds (RefundID, Price, DateRefunded, TransactionID) VALUES (:RID, :ProPeice, :Date , :TransID)", 
             RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , ProPeice = ProPrice * RefQua , Date = datetime.datetime.now().date() , TransID = TransID )######################################
 
-            db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity) VALUES ( :RID, :PID, :Qua)",
-            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua)
+            db.execute("INSERT INTO RefundProducts (RefundID, ProductID, Quantity, Price) VALUES ( :RID, :PID, :Qua, :price)",
+            RID = TransID*1000 + ProQua *100 + ProID*10 + RefQua + Number , PID = ProID , Qua = RefQua, price=ProPrice)
         return redirect("/Transactions")
 
     return render_template("Transactions.html" ,categories=categories,CustomerInfo = CustomerInfo ,
@@ -611,17 +611,10 @@ def cart():
                 # update the transaction
                 db.execute("update Transactions set Price = :p where TransactionID = :id", p = totalPriceAfterSale, id = transactionId)
 
-        
-
-
-    
-    
-
-    
     productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
     productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
-    count = totalPrice[0]["sum(Price * C.Quantity)"]
+    count = totalPriceAfterSale
     productsCount = productsCount[0]["count(ProductID)"]
 
     return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = count,categories=categories)

@@ -593,22 +593,24 @@ def cart():
                     # delete the items in the cart
                 db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
                 # update the transaction after sale
+                
+                    # get the total price after sale from transaction contains products
+                totalPriceAfterSale = db.execute("select sum(BuyPrice*Quantity) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice*Quantity)"]
+                # the voucher value
                 voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
                 voucher = voucher[0]["VoucherValue"]
                 # get the value of the check button
                 voucherButton = request.form.get("voucher")
                 # check if the voucher button is pressed
                 if voucherButton:
-                    if count >= voucher:
-                        count = count - voucher
+                    if totalPriceAfterSale >= voucher:
+                        totalPriceAfterSale = totalPriceAfterSale - voucher
                         # delete the voucher value or make it zero in the data base
                         db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
                     else:
-                        voucher -= count
-                        count = 0
+                        voucher -= totalPriceAfterSale
+                        totalPriceAfterSale = 0
                         db.execute("update Customer set VoucherValue = :v where CustomerID = :id", id = session['user_id'], v = voucher)
-                    # get the total price after sale from transaction contains products
-                totalPriceAfterSale = db.execute("select sum(BuyPrice*Quantity) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice*Quantity)"]
                 # update the transaction
                 db.execute("update Transactions set Price = :p where TransactionID = :id", p = totalPriceAfterSale, id = transactionId)
 

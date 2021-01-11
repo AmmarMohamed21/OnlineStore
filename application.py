@@ -596,11 +596,11 @@ def cart():
                     # calculate the percentage of the sale
                     Percentage = db.execute("select SalePercentage from In_Sale_Products where ProductID = :id", id = i["ProductID"])
                     if not Percentage:
-                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"])
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = i["Price"] * i["Quantity"])
                     else:
                         Percentage = Percentage[0]["SalePercentage"] / 100
                         PriceAfterSale = i["Price"] - i["Price"] * Percentage
-                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = PriceAfterSale)
+                        db.execute("insert into Transaction_Contains_Products values(:trId, :pId, :q, :b)", trId = transactionId, pId = i["ProductID"], q = i["Quantity"], b = PriceAfterSale * i["Quantity"])
                     # update the quantity in the Product
                     db.execute("update Product set Quantity = Quantity - :q where ProductID = :id", q = i["Quantity"], id = i["ProductID"])
                     # delete the items in the cart

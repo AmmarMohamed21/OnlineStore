@@ -10,7 +10,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import date
-from helpers import apology, login_required, CheckIMAGEURL
+from helpers import empapology, login_required, CheckIMAGEURL
 
 # Configure application
 app = Flask(__name__)
@@ -49,11 +49,11 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username")
+            return empapology("must provide username")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password")
+            return empapology("must provide password")
 
         # Query database for username
         rows = db.execute("SELECT * FROM Employees WHERE Username = :username",
@@ -61,7 +61,7 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
-            return apology("invalid username and/or password")
+            return empapology("invalid username and/or password")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["EmployeeID"]
@@ -93,11 +93,11 @@ def register():
 
         #check that all fields are given
         if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("name") :
-            return apology("something is missing!")
+            return empapology("something is missing!")
         
         #check that passwords match
         if not (request.form.get("password")==request.form.get("confirmation")):
-            return apology("password doesn't match")
+            return empapology("password doesn't match")
 
         #get the fields data
         username = request.form.get("username")
@@ -109,7 +109,7 @@ def register():
         #Check that username doesn't exist
         query = db.execute("SELECT * from Employees WHERE Username= :username", username=request.form.get("username"))
         if len(query) != 0:
-            return apology("Username Already Exists")
+            return empapology("Username Already Exists")
 
         #insert the Customer into database
         rows = db.execute("INSERT INTO Employees (Username, Password, Name) VALUES(:username, :hashed, :name)", username=username, hashed=hashed, name=name)
@@ -134,17 +134,17 @@ def edituserinfo():
 
         #Check that the user entered his password
         if not request.form.get("password"):
-            return apology("Please Enter your password")
+            return empapology("Please Enter your password")
 
         #Check that the entered password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["Password"], request.form.get("password")):
-            return apology("Wrong password")
+            return empapology("Wrong password")
 
         #Check if he is changing his username
         if request.form.get("uname"):
             query = db.execute("SELECT * from Employees WHERE Username= :username", username=request.form.get("uname"))
             if len(query) != 0:
-                return apology("Username Already Exists")
+                return empapology("Username Already Exists")
             query = db.execute("UPDATE Employees SET Username= :username WHERE EmployeeID= :id",username=request.form.get("uname"), id=session["user_id"])
             return redirect("/edituserinfo")
 
@@ -156,13 +156,13 @@ def edituserinfo():
         #Check if he is changing his password
         if request.form.get("newpassword") and request.form.get("confirmpassword"):
             if not (request.form.get("newpassword")==request.form.get("confirmpassword")):
-                return apology("password doesn't match")
+                return empapology("password doesn't match")
             password = request.form.get("newpassword")
             hashed = generate_password_hash(password, method='sha256', salt_length=8)
             query = db.execute("UPDATE Employees SET Password= :password WHERE EmployeeID= :id",password=hashed, id=session["user_id"])
             return redirect("/edituserinfo")
         
-        return apology("Please fill the whole form")
+        return empapology("Please fill the whole form")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -176,7 +176,7 @@ def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
         e = InternalServerError()
-    return apology(e.name)
+    return empapology(e.name)
 
 
 
@@ -206,17 +206,17 @@ def Management():
     if request.method == "POST":
 
         if not request.form.get("password"):
-            return apology("Please Enter Management password")
+            return empapology("Please Enter Management password")
 
         #Check that the entered password is correct
         if  request.form.get("password") !=  ManagementPassword:
-            return apology("Wrong password")
+            return empapology("Wrong password")
         
         #Check If Insert Category
         if request.form.get("CatNameInsert") and request.form.get("CatURLInsert"):
             url=request.form.get("CatURLInsert")
             if not CheckIMAGEURL(url):
-                return apology("URL has to be ending with .jpg or .png")
+                return empapology("URL has to be ending with .jpg or .png")
             query = db.execute("INSERT INTO Categories (CategoryName,url) VALUES (:catname,:caturl)",catname=request.form.get("CatNameInsert"),caturl=request.form.get("CatURLInsert"))
             return redirect("/")
 
@@ -226,7 +226,7 @@ def Management():
             if request.form.get("CatURLEdit"):
                 url=request.form.get("CatURLEdit")
                 if not CheckIMAGEURL(url):
-                    return apology("URL has to be ending with .jpg or .png")
+                    return empapology("URL has to be ending with .jpg or .png")
                 query = db.execute("UPDATE Categories SET url = :url WHERE CategoryName = :selectedCat",selectedCat=selectedCat,url=request.form.get("CatURLEdit")) 
             if request.form.get("CatNameEdit"):
                 query = db.execute("UPDATE Categories SET CategoryName = :catname WHERE CategoryName = :selectedCat",selectedCat=selectedCat,catname=request.form.get("CatNameEdit"))
@@ -287,7 +287,7 @@ def Management():
             price = request.form.get("ProdPriceInsert")
             url = request.form.get("ProdURLInsert")
             if not CheckIMAGEURL(url):
-                return apology("URL has to be ending with .jpg or .png")
+                return empapology("URL has to be ending with .jpg or .png")
             supname = request.form.get("ProdSupInsert") 
             supid = GetSupID(supname)
             catname = request.form.get("ProdCatInsert")
@@ -304,7 +304,7 @@ def Management():
             if request.form.get("ProdURLEdit"):
                 url = request.form.get("ProdURLEdit")
                 if not CheckIMAGEURL(url):
-                    return apology("URL has to be ending with .jpg or .png")
+                    return empapology("URL has to be ending with .jpg or .png")
                 query=db.execute("UPDATE Product SET ImageURL= :url WHERE ProductName= :prodname", url=url, prodname=prodname)
             if request.form.get("ProdPriceEdit"):
                 query=db.execute("UPDATE Product SET Price= :price WHERE ProductName= :prodname", price=request.form.get("ProdPriceEdit"), prodname=prodname)
@@ -335,10 +335,10 @@ def Management():
             prodid=GetProdID(prodname)
             query = db.execute("SELECT SupplierID FROM Product WHERE ProductID=:prodid",prodid=prodid)
             if len(query) != 1:
-                return apology("Something Went Wrong")
+                return empapology("Something Went Wrong")
             realsupid = query[0]["SupplierID"]
             if realsupid != supid:  #Preventing from Inserting if the supplier is different
-                return apology("This Product has a different Supplier")
+                return empapology("This Product has a different Supplier")
             price = request.form.get("ImportPriceInsert")
             quantity = request.form.get("ImportQuanInsert")
             date = request.form.get("ImportDateInsert")
@@ -356,13 +356,13 @@ def Management():
             prodid=GetProdID(prodname)
             query=db.execute("SELECT Quantity FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
             if len(query) != 1:
-                return apology("Something Wrong")
+                return empapology("Something Wrong")
             quantity=query[0]["Quantity"]
             query=db.execute("SELECT Quantity FROM Product WHERE ProductID= :prodid",prodid=prodid)
             oldquantity=query[0]["Quantity"]
             newquantity = oldquantity - quantity
             if newquantity<0:
-                return apology("You can't delete this Import, not enough products")
+                return empapology("You can't delete this Import, not enough products")
             query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
             query = db.execute("DELETE FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
             return redirect("/")
@@ -377,7 +377,7 @@ def Management():
             prodid=GetProdID(prodname)
             query=db.execute("SELECT Quantity FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
             if len(query) != 1:
-                return apology("Something Wrong")
+                return empapology("Something Wrong")
             oldquantity=query[0]["Quantity"]
             query=db.execute("SELECT Quantity FROM Product WHERE ProductID= :prodid",prodid=prodid)
             productquantity=query[0]["Quantity"]
@@ -387,7 +387,7 @@ def Management():
                 addedquantity=request.form.get("ImportQuanEdit")
                 newquantity = productquantity - oldquantity + int(addedquantity)
                 if newquantity < 0:
-                    return apology("Quantity isn't valid, not enough products")
+                    return empapology("Quantity isn't valid, not enough products")
                 query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
                 query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
             return redirect("/")
@@ -398,7 +398,7 @@ def Management():
             prodid = GetProdID(prodname)
             query = db.execute("SELECT * FROM In_Sale_Products WHERE ProductID = :prodid",prodid=prodid)
             if len(query) != 0:
-                return apology("This Product is already in Sale")
+                return empapology("This Product is already in Sale")
             query = db.execute("INSERT INTO In_Sale_Products VALUES(:percent,:date,:prodid)",percent=request.form.get("SalePercentInsert"),date=request.form.get("SaleDateInsert"),prodid=prodid)
             return redirect("/")
 
@@ -421,7 +421,7 @@ def Management():
         
 
         #POST WAS UNSUCCESFUL    
-        return apology("Something Missing")
+        return empapology("Something Missing")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("management.html", categories=categories,suppliers=suppliers,suplocations=suplocations,products=products, imports=imports, saleproducts=saleproducts, deliveries=deliveries, transproducts=transproducts)
@@ -441,21 +441,21 @@ def CheckAllProductInsert():
 def GetSupID (supname):
     query=db.execute("SELECT * FROM Suppliers WHERE SupplierName= :supname",supname=supname)
     if len(query) != 1:
-        return apology("Somthing Missing")
+        return empapology("Somthing Missing")
     supid=query[0]["SupplierID"]
     return supid
 
 def GetCatID (catname):
     query=db.execute("SELECT * FROM Categories WHERE CategoryName= :catname",catname=catname)
     if len(query) != 1:
-        return apology("Somthing Missing")
+        return empapology("Somthing Missing")
     catid=query[0]["CategoryID"]
     return catid
 
 def GetProdID (prodname):
     query=db.execute("SELECT * FROM Product WHERE ProductName= :prodname",prodname=prodname)
     if len(query) != 1:
-        return apology("Somthing Missing")
+        return empapology("Somthing Missing")
     prodid=query[0]["ProductID"]
     return prodid
 

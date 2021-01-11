@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "emplayout.html" %}
 
 {% block title %}
 Management
@@ -181,7 +181,7 @@ Management
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
 
     <div class="collapse multi-collapse" id="CategoryEdit">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="selectCategoryEdit">
@@ -208,7 +208,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="CategoryInsert">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <input class="form-control" name="CatNameInsert" placeholder="Category Name" type="text">
@@ -226,7 +226,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="CategoryDelete">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="selectCategoryDelete">
@@ -246,7 +246,7 @@ Management
 
 
     <div class="collapse multi-collapse" id="SuppliersEdit">
-        <form action="/management" method="post">
+        <form action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupplierEdit">
                     <option disabled selected value> Select Supplier </option>
@@ -266,7 +266,7 @@ Management
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
 
-        <form class="mt-5" action="/management" method="post">
+        <form class="mt-5" action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupLocEdit">
                     <option disabled selected value> Select Location of Supplier </option>
@@ -288,7 +288,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="SuppliersInsert">
-        <form action="/management" method="post">
+        <form action="/" method="post">
             <div class="mb-3">
                 <input class="form-control" name="SupplierNameInsert" placeholder="Supplier Name" type="text">
             </div>
@@ -298,7 +298,7 @@ Management
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
 
-        <form class="mt-5" action="/management" method="post">
+        <form class="mt-5" action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupplierInsert">
                     <option disabled selected value> Select Supplier </option>
@@ -318,7 +318,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="SuppliersDelete">
-        <form action="/management" method="post">
+        <form action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupplierDelete">
                     <option disabled selected value> Select Supplier </option>
@@ -333,7 +333,7 @@ Management
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
 
-        <form class="mt-5" action="/management" method="post">
+        <form class="mt-5" action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="selectSupLocDelete">
                     <option disabled selected value> Select Location of Supplier </option>
@@ -353,7 +353,7 @@ Management
 
 
     <div class="collapse multi-collapse" id="ImportsEdit">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="ImportsEdit">
@@ -382,7 +382,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="ImportsInsert">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="ImportSupInsert">
@@ -422,7 +422,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="ImportsDelete">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="ImportDelete">
@@ -442,7 +442,7 @@ Management
 
 
     <div class="collapse multi-collapse" id="ProductsEdit">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="SelectProdEdit">
@@ -501,7 +501,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="ProductsInsert">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <input class="form-control" name="ProdNameInsert" placeholder="Product Name" type="text">
@@ -546,7 +546,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="ProductsDelete">
-        <form action="/management" method="post">
+        <form action="/" method="post">
             <div class="mb-3">
                 <select class="form-control" name="SelectProdDelete">
                     <option disabled selected value> Select Product </option>
@@ -565,7 +565,7 @@ Management
 
  
     <div class="collapse multi-collapse" id="SaleEdit">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="SaleProdEdit">
@@ -593,7 +593,7 @@ Management
     </div>
 
     <div class="collapse multi-collapse" id="SaleInsert">
-        <form action="/management" method="post">
+        <form action="/" method="post">
             
             <div class="mb-3">
                 <select class="form-control" name="SaleProdInsert">
@@ -622,7 +622,7 @@ Management
 
 
     <div class="collapse multi-collapse" id="SaleDelete">
-        <form action="/management" method="post">
+        <form action="/" method="post">
 
             <div class="mb-3">
                 <select class="form-control" name="SaleProdDelete">

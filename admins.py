@@ -26,9 +26,6 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# Custom filter
-#app.jinja_env.filters["usd"] = usd
-
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -38,9 +35,6 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///OnlineStore.db")
 
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -49,8 +43,6 @@ def login():
 
     # Forget any user_id
     session.clear()
-    #load categories list
-    categories=GetCategories()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -64,7 +56,7 @@ def login():
             return apology("must provide password")
 
         # Query database for username
-        rows = db.execute("SELECT * FROM Customer WHERE username = :username",
+        rows = db.execute("SELECT * FROM Employees WHERE Username = :username",
                           username=request.form.get("username"))
 
         # Ensure username exists and password is correct
@@ -72,14 +64,14 @@ def login():
             return apology("invalid username and/or password")
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["CustomerID"]
+        session["user_id"] = rows[0]["EmployeeID"]
 
         # Redirect user to home page
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html", categories=categories)
+        return render_template("emplogin.html")
 
 
 @app.route("/logout")
@@ -93,16 +85,14 @@ def logout():
     return redirect("/")
 
 @app.route("/register", methods=["GET", "POST"])
+@login_required
 def register():
-    """Register user"""
-
-    #load categories list
-    categories=GetCategories()
+    """Register Employee"""
 
     if request.method == "POST":
 
         #check that all fields are given
-        if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("fname") or not request.form.get("lname") or not request.form.get("address") or not request.form.get("phonenumber"):
+        if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation") or not request.form.get("name") :
             return apology("something is missing!")
         
         #check that passwords match
@@ -113,56 +103,30 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
         hashed = generate_password_hash(password, method='sha256', salt_length=8)
-        fname = request.form.get("fname")
-        lname = request.form.get("lname")
-        address = request.form.get("address")
-        phonenumber = request.form.get("phonenumber")
+        name = request.form.get("name")
+       
 
         #Check that username doesn't exist
-        query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("username"))
+        query = db.execute("SELECT * from Employees WHERE Username= :username", username=request.form.get("username"))
         if len(query) != 0:
             return apology("Username Already Exists")
 
-        #check that phonenumber is digits
-        if not phonenumber.isnumeric():
-            return apology("Phone Number is not valid")
-
         #insert the Customer into database
-        rows = db.execute("INSERT INTO Customer (Username, Password, FirstName, LastName, Address, PhoneNumber) VALUES(:username, :hashed, :fname, :lname, :address, :phonenumber)", username=username, hashed=hashed, fname=fname, lname=lname, address=address, phonenumber=phonenumber)
+        rows = db.execute("INSERT INTO Employees (Username, Password, Name) VALUES(:username, :hashed, :name)", username=username, hashed=hashed, name=name)
 
-        #Get The Generated CustomerID
-        query = db.execute("SELECT CustomerID from Customer WHERE Username= :username", username=username)
-        id = query[0]["CustomerID"]
-
-        #Check if the id is divisble by 10 to get 100 L.E. Voucher 
-        vouchervalue=0
-        if (id % 10 == 0):
-            vouchervalue=100
-        
-        #Get Unique Reigsteration Code from ID
-        id = str(id)
-        registerationcode = generate_password_hash(id, method='sha256', salt_length=6)
-        registerationcode = registerationcode[7:13]
-
-        #Update Customer Data
-        rows = db.execute("UPDATE Customer SET RegisterationCode= :code, VoucherValue= :value, CodeShares = 10 WHERE Username= :username", code=registerationcode, value=vouchervalue, username=username)
-
-        return render_template("login.html", rows = rows)
+        return redirect("/register")
 
     else:
-        return render_template("register.html", categories=categories)
+        return render_template("regemployee.html")
 
 
-@app.route("/edituserinfo", methods=["GET", "POST"])
+@app.route("/Profile", methods=["GET", "POST"])
 @login_required
 def edituserinfo():
     """Edit User Info"""
-    
-    #load categories list
-    categories=GetCategories()
 
     #Get Current User Info
-    rows = db.execute("SELECT * FROM Customer WHERE CustomerID = :id",
+    rows = db.execute("SELECT * FROM Employees WHERE EmployeeID = :id",
                          id=session["user_id"])
 
     # User reached route via POST (as by submitting a form via POST)
@@ -178,15 +142,15 @@ def edituserinfo():
 
         #Check if he is changing his username
         if request.form.get("uname"):
-            query = db.execute("SELECT * from Customer WHERE Username= :username", username=request.form.get("uname"))
+            query = db.execute("SELECT * from Employees WHERE Username= :username", username=request.form.get("uname"))
             if len(query) != 0:
                 return apology("Username Already Exists")
-            query = db.execute("UPDATE Customer SET Username= :username WHERE CustomerID= :id",username=request.form.get("uname"), id=session["user_id"])
+            query = db.execute("UPDATE Employees SET Username= :username WHERE EmployeeID= :id",username=request.form.get("uname"), id=session["user_id"])
             return redirect("/edituserinfo")
 
         #Check if he is changing his name
-        if request.form.get("fname") and request.form.get("lname"):
-            query = db.execute("UPDATE Customer SET FirstName = :fname, LastName = :lname WHERE CustomerID= :id",fname=request.form.get("fname"),lname=request.form.get("lname"), id=session["user_id"])
+        if request.form.get("name") and request.form.get("name"):
+            query = db.execute("UPDATE Employees SET Name = :name WHERE EmployeeID= :id",name=request.form.get("name"), id=session["user_id"])
             return redirect("/edituserinfo")
 
         #Check if he is changing his password
@@ -195,32 +159,16 @@ def edituserinfo():
                 return apology("password doesn't match")
             password = request.form.get("newpassword")
             hashed = generate_password_hash(password, method='sha256', salt_length=8)
-            query = db.execute("UPDATE Customer SET Password= :password WHERE CustomerID= :id",password=hashed, id=session["user_id"])
-            return redirect("/edituserinfo")
-
-        #Check if he is changing his address
-        if request.form.get("address"):
-            query = db.execute("UPDATE Customer SET Address = :address WHERE CustomerID= :id",address=request.form.get("address"), id=session["user_id"])
-            return redirect("/edituserinfo")
-        
-        #Check if he is changing his phonenumber
-        if request.form.get("phone"):
-            if not request.form.get("phone").isnumeric():
-                return apology("Phone Number is not valid")
-            query = db.execute("UPDATE Customer SET PhoneNumber = :phone WHERE CustomerID= :id",phone=request.form.get("phone"), id=session["user_id"])
+            query = db.execute("UPDATE Employees SET Password= :password WHERE EmployeeID= :id",password=hashed, id=session["user_id"])
             return redirect("/edituserinfo")
         
         return apology("Please fill the whole form")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("edituserinfo.html", categories=categories, row=rows[0])
+        return render_template("empprofile.html", row=rows[0])
 
-@app.route("/Profile", methods=["GET", "POST"])
-@login_required
-def Profile():
-    categories=GetCategories()
-    return render_template("Profile.html") #, rows = rows)
+
 
 
 
@@ -233,14 +181,14 @@ def errorhandler(e):
 
 
 #Manage The Store 
-@app.route("/management", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
+@login_required
 def Management():
     """Edit User Info"""
     
-    #load categories list
-    categories=GetCategories()
     
     #Get Suppliers Data
+    categories = db.execute("SELECT* FROM Categories order by CategoryName")
     suppliers = db.execute("SELECT * FROM Suppliers order by SupplierName")
     suplocations = db.execute("SELECT S.SupplierName,L.SupplierLocation FROM Suppliers as S, Supplier_Location as L WHERE S.SupplierID=L.SupplierID order by S.SupplierName,L.SupplierLocation")
     products = db.execute("SELECT * FROM Product order by ProductName")
@@ -252,7 +200,7 @@ def Management():
         transproducts.append(db.execute("SELECT T.TransactionID, P.ProductName, T.Quantity, P.Price FROM Product as P, Transaction_Contains_Products as T WHERE P.ProductID=T.ProductID and T.TransactionID = :tid",tid=delivery["TransactionID"]))
     
     #Define Password
-    ManagementPassword="ronaldinho"
+    ManagementPassword="123456"
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -270,7 +218,7 @@ def Management():
             if not CheckIMAGEURL(url):
                 return apology("URL has to be ending with .jpg or .png")
             query = db.execute("INSERT INTO Categories (CategoryName,url) VALUES (:catname,:caturl)",catname=request.form.get("CatNameInsert"),caturl=request.form.get("CatURLInsert"))
-            return redirect("/management")
+            return redirect("/")
 
         #Update Category
         if request.form.get("selectCategoryEdit"):
@@ -282,17 +230,17 @@ def Management():
                 query = db.execute("UPDATE Categories SET url = :url WHERE CategoryName = :selectedCat",selectedCat=selectedCat,url=request.form.get("CatURLEdit")) 
             if request.form.get("CatNameEdit"):
                 query = db.execute("UPDATE Categories SET CategoryName = :catname WHERE CategoryName = :selectedCat",selectedCat=selectedCat,catname=request.form.get("CatNameEdit"))
-            return redirect("/management")
+            return redirect("/")
         
         #Delete Category
         if request.form.get("selectCategoryDelete"):
             query = db.execute("DELETE FROM Categories WHERE CategoryName = :selectedcat",selectedcat=request.form.get("selectCategoryDelete"))
-            return redirect("/management")
+            return redirect("/")
         
         #Insert Supplier 
         if request.form.get("SupplierNameInsert"):
             query=db.execute("INSERT INTO Suppliers (SupplierName) VALUES(:name)",name=request.form.get("SupplierNameInsert"))
-            return redirect("/management")
+            return redirect("/")
         
         #Insert Supplier Location
         if request.form.get("selectSupplierInsert") and request.form.get("SupplierLocInsert"):
@@ -300,12 +248,12 @@ def Management():
             suploc=request.form.get("SupplierLocInsert")
             supid = GetSupID(supname)
             query= db.execute("INSERT INTO Supplier_Location VALUES(:suploc,:supid)",supid=supid,suploc=suploc)
-            return redirect("/management")
+            return redirect("/")
 
         #Update Supplier Name
         if request.form.get("selectSupplierEdit") and request.form.get("SupplierNameEdit"):
             query = db.execute("UPDATE Suppliers SET SupplierName = :name WHERE SupplierName = :oldname", name=request.form.get("SupplierNameEdit"),oldname=request.form.get("selectSupplierEdit"))
-            return redirect("/management")
+            return redirect("/")
         
         #Update Supplier Location
         if request.form.get("selectSupLocEdit") and request.form.get("SupLocEdit"):
@@ -314,12 +262,12 @@ def Management():
             suploc=text[1]
             supid = GetSupID(supname)
             query=db.execute("UPDATE Supplier_Location SET SupplierLocation= :newsuploc WHERE SupplierID= :supid and SupplierLocation= :suploc",suploc=suploc,supid=supid,newsuploc=request.form.get("SupLocEdit"))
-            return redirect("/management")
+            return redirect("/")
 
         #Delete Supplier
         if request.form.get("selectSupplierDelete"):
             query= db.execute("DELETE FROM Suppliers WHERE SupplierName= :supname", supname=request.form.get("selectSupplierDelete"))
-            return redirect("/management")
+            return redirect("/")
 
         
         #Delete Supplier Location
@@ -329,7 +277,7 @@ def Management():
             suploc=text[1]
             supid = GetSupID(supname)
             query=db.execute("DELETE FROM Supplier_Location WHERE SupplierID= :supid and SupplierLocation= :suploc",supid=supid,suploc=suploc)
-            return redirect("/management")
+            return redirect("/")
 
         
         #Insert Product
@@ -346,7 +294,7 @@ def Management():
             catid = GetCatID(catname)
             quantity = 0
             query = db.execute("INSERT INTO Product (ProductName,ProductDescription,Price,Quantity,ImageURL,SupplierID,CategoryID) VALUES (:name,:desc,:price,:quantity,:url,:supid,:catid)",name=name,desc=desc,price=price,quantity=quantity,url=url,supid=supid,catid=catid)
-            return redirect("/management")
+            return redirect("/")
 
         #Edit Product 
         if request.form.get("SelectProdEdit"):
@@ -372,12 +320,12 @@ def Management():
                 query=db.execute("UPDATE Product SET CategoryID= :catid WHERE ProductName= :prodname", catid=catid, prodname=prodname)
             if request.form.get("ProdNameEdit"):
                 query=db.execute("UPDATE Product SET ProductName= :name WHERE ProductName= :prodname", name=request.form.get("ProdNameEdit"), prodname=prodname)
-            return redirect("/management")
+            return redirect("/")
 
         #Delete Product
         if request.form.get("SelectProdDelete"):
             query=db.execute("DELETE FROM Product WHERE ProductName= :name", name=request.form.get("SelectProdDelete"))
-            return redirect("/management")
+            return redirect("/")
 
         #ADD Import
         if request.form.get("ImportSupInsert") and request.form.get("ImportProdInsert") and request.form.get("ImportPriceInsert") and request.form.get("ImportQuanInsert") and request.form.get("ImportDateInsert"):
@@ -396,7 +344,7 @@ def Management():
             date = request.form.get("ImportDateInsert")
             query = db.execute("INSERT INTO Imports VALUES(:date, :supid, :prodid, :quantity, :price)",date=date,supid=supid,prodid=prodid,quantity=quantity,price=price)
             query = db.execute("UPDATE Product SET Quantity=Quantity+:quantity WHERE ProductID=:prodid",quantity=quantity,prodid=prodid)
-            return redirect("/management")
+            return redirect("/")
         
         #Delete Imports
         if request.form.get("ImportDelete"):
@@ -417,7 +365,7 @@ def Management():
                 return apology("You can't delete this Import, not enough products")
             query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
             query = db.execute("DELETE FROM Imports WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",supid=supid,prodid=prodid,date=date)
-            return redirect("/management")
+            return redirect("/")
 
         #Edit Import
         if request.form.get("ImportsEdit"):
@@ -442,7 +390,7 @@ def Management():
                     return apology("Quantity isn't valid, not enough products")
                 query = db.execute("UPDATE Product SET Quantity = :newquantity WHERE ProductID = :prodid", newquantity=newquantity, prodid=prodid)
                 query=db.execute("UPDATE Imports SET Quantity= :quan WHERE SupplierID= :supid and ProductID= :prodid and DateImported= :date",quan=addedquantity,supid=supid,prodid=prodid,date=date)
-            return redirect("/management")
+            return redirect("/")
 
         # Sale Insert
         if request.form.get("SaleProdInsert") and request.form.get("SalePercentInsert") and request.form.get("SaleDateInsert"):
@@ -452,7 +400,7 @@ def Management():
             if len(query) != 0:
                 return apology("This Product is already in Sale")
             query = db.execute("INSERT INTO In_Sale_Products VALUES(:percent,:date,:prodid)",percent=request.form.get("SalePercentInsert"),date=request.form.get("SaleDateInsert"),prodid=prodid)
-            return redirect("/management")
+            return redirect("/")
 
         #Sale Edit
         if request.form.get("SaleProdEdit"):
@@ -462,14 +410,14 @@ def Management():
                 query = db.execute("UPDATE In_Sale_Products SET SalePercentage=:percent WHERE ProductID= :prodid",percent=request.form.get("SalePercentEdit"),prodid=prodid)
             if request.form.get("SaleDateEdit"):
                 query = db.execute("UPDATE In_Sale_Products SET SaleEndDate=:date WHERE ProductID= :prodid",date=request.form.get("SaleDateEdit"),prodid=prodid)
-            return redirect("/management")
+            return redirect("/")
         
         #Sale Delete
         if request.form.get("SaleProdDelete"):
             prodname=request.form.get("SaleProdDelete")
             prodid = GetProdID(prodname)
             query=db.execute("DELETE FROM In_Sale_Products WHERE ProductID= :prodid",prodid=prodid)
-            return redirect("/management")
+            return redirect("/")
         
 
         #POST WAS UNSUCCESFUL    

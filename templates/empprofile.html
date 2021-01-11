@@ -1,0 +1,84 @@
+{% extends "emplayout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+<script>
+    function collapsetherest(elemid)
+    {
+        
+        if (elemid != "editname")
+        {
+            document.getElementById("editname").className="collapse hide";
+        }
+        if (elemid != "username")
+        {
+            document.getElementById("username").className="collapse hide";
+        }
+        if (elemid != "password")
+        {
+            document.getElementById("password").className="collapse hide";
+        }
+    }
+</script>
+<table class = "table table-striped">
+    <tr>
+        <td> <p style="font-weight: bold;">Name</p> </td>
+        <td> {{row.Name}}</td>
+        <td> <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editname" aria-expanded="false" aria-controls="editname" onclick=collapsetherest("editname")>Edit</button> </td>
+    </tr>
+    <tr>
+        <td> <p style="font-weight: bold;">Username</p> </td>
+        <td> {{row.Username}} </td>
+        <td> <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#username" aria-expanded="false" aria-controls="username" onclick=collapsetherest("username")>Edit</button> </td>
+    </tr>
+    <tr>
+        <td> <p style="font-weight: bold;">Password</p> </td>
+        <td> ****** </td>
+        <td> <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#password" aria-expanded="false" aria-controls="password" onclick=collapsetherest("password")>Edit</button> </td>
+    </tr>
+   
+ </table>
+ <div class="collapse multi-collapse" id="editname">
+    <form action="/edituserinfo" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="name" placeholder={{Name}} type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control" name="password" placeholder="Enter your Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Update your name</button>
+    </form>
+</div> 
+
+<div class="collapse multi-collapse" id="username">
+    <form action="/edituserinfo" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="uname" placeholder={{row.Username}} type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control" name="password" placeholder="Enter your Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Update your username</button>
+    </form>
+</div> 
+
+<div class="collapse multi-collapse" id="password">
+    <form action="/edituserinfo" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="password" placeholder="Old Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="newpassword" placeholder="New Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control" name="confirmpassword" placeholder="New Password Again" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Update your password</button>
+    </form>
+</div> 
+
+
+{% endblock %}

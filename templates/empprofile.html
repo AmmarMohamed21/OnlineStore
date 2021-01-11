@@ -42,9 +42,9 @@
    
  </table>
  <div class="collapse multi-collapse" id="editname">
-    <form action="/edituserinfo" method="post">
+    <form action="/Profile" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control" name="name" placeholder={{Name}} type="text">
+            <input autocomplete="off" autofocus class="form-control" name="name" placeholder="{{row.Name}}" type="text">
         </div>
         <div class="mb-3">
             <input class="form-control" name="password" placeholder="Enter your Password" type="password">
@@ -54,9 +54,9 @@
 </div> 
 
 <div class="collapse multi-collapse" id="username">
-    <form action="/edituserinfo" method="post">
+    <form action="/Profile" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control" name="uname" placeholder={{row.Username}} type="text">
+            <input autocomplete="off" autofocus class="form-control" name="uname" placeholder="{{row.Username}}" type="text">
         </div>
         <div class="mb-3">
             <input class="form-control" name="password" placeholder="Enter your Password" type="password">
@@ -66,7 +66,7 @@
 </div> 
 
 <div class="collapse multi-collapse" id="password">
-    <form action="/edituserinfo" method="post">
+    <form action="/Profile" method="post">
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control" name="password" placeholder="Old Password" type="password">
         </div>

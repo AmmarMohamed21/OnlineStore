@@ -146,12 +146,12 @@ def edituserinfo():
             if len(query) != 0:
                 return empapology("Username Already Exists")
             query = db.execute("UPDATE Employees SET Username= :username WHERE EmployeeID= :id",username=request.form.get("uname"), id=session["user_id"])
-            return redirect("/edituserinfo")
+            return redirect("/Profile")
 
         #Check if he is changing his name
         if request.form.get("name") and request.form.get("name"):
             query = db.execute("UPDATE Employees SET Name = :name WHERE EmployeeID= :id",name=request.form.get("name"), id=session["user_id"])
-            return redirect("/edituserinfo")
+            return redirect("/Profile")
 
         #Check if he is changing his password
         if request.form.get("newpassword") and request.form.get("confirmpassword"):
@@ -160,7 +160,7 @@ def edituserinfo():
             password = request.form.get("newpassword")
             hashed = generate_password_hash(password, method='sha256', salt_length=8)
             query = db.execute("UPDATE Employees SET Password= :password WHERE EmployeeID= :id",password=hashed, id=session["user_id"])
-            return redirect("/edituserinfo")
+            return redirect("/Profile")
         
         return empapology("Please fill the whole form")
 

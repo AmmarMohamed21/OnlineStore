@@ -611,7 +611,25 @@ def cart():
                 # update the transaction
                 db.execute("update Transactions set Price = :p where TransactionID = :id", p = totalPriceAfterSale, id = transactionId)
 
-    productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+        
+
+    
+            
+
+    
+
+    
+    productsCustomer = db.execute("select P.ProductID, P.ProductDescription, P.ImageURL, P.ProductName, C.Quantity, P.Price from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
+    # code to get the real total price of the products
+    total = 0
+    for i in productsCustomer:
+        perc = db.execute("select SalePercentage from In_Sale_Products where ProductID = :id", id = i["ProductID"])
+        if not perc:
+            total += int(i["Price"])
+        else:
+            perc = perc[0]["SalePercentage"] / 100
+            PafterSale = i["Price"] - i["Price"] * perc
+            total += PafterSale
     productsCount = db.execute("select count(ProductID) from Customer_Cart where CustomerID = :id", id=session["user_id"])
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
     count = totalPriceAfterSale

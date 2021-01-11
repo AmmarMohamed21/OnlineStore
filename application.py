@@ -288,7 +288,7 @@ def Transactions():
             ProQua = int(request.form.get("Product_Quantity"))
             ProID = int(request.form.get("ProductID"))
             TransID = int(request.form.get("TransactionID"))
-            ProPrice =  float(request.form.get("ProductPrice"))
+            ProPrice =  request.form.get("ProductPrice")
             Trans_Date = str(request.form.get("Transaction_Date"))
 
             Number = random.randint(1,100)
@@ -569,20 +569,7 @@ def cart():
                 # get the local date
                 today = date.today().strftime("%Y-%m-%d")
                 # check for voucher value
-                voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
-                voucher = voucher[0]["VoucherValue"]
-                # get the value of the check button
-                voucherButton = request.form.get("voucher")
-                # check if the voucher button is pressed
-                if voucherButton:
-                    if count >= voucher:
-                        count = count - voucher
-                        # delete the voucher value or make it zero in the data base
-                        db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
-                    else:
-                        voucher -= count
-                        count = 0
-                        db.execute("update Customer set VoucherValue = :v where CustomerID = :id", id = session['user_id'], v = voucher)
+               
                 # get the payment method
                 paymentMethod = request.form.get("btnradio")
                 # query to put the products within cart into transaction
@@ -606,6 +593,20 @@ def cart():
                     # delete the items in the cart
                 db.execute("delete from Customer_Cart where CustomerID = :id", id = session['user_id'])
                 # update the transaction after sale
+                voucher = db.execute("select VoucherValue from Customer where CustomerID = :id", id = session['user_id'])
+                voucher = voucher[0]["VoucherValue"]
+                # get the value of the check button
+                voucherButton = request.form.get("voucher")
+                # check if the voucher button is pressed
+                if voucherButton:
+                    if count >= voucher:
+                        count = count - voucher
+                        # delete the voucher value or make it zero in the data base
+                        db.execute("update Customer set VoucherValue = 0 where CustomerID = :id", id = session['user_id'])
+                    else:
+                        voucher -= count
+                        count = 0
+                        db.execute("update Customer set VoucherValue = :v where CustomerID = :id", id = session['user_id'], v = voucher)
                     # get the total price after sale from transaction contains products
                 totalPriceAfterSale = db.execute("select sum(BuyPrice*Quantity) from Transaction_Contains_Products where TransactionID = :id", id = transactionId)[0]["sum(BuyPrice*Quantity)"]
                 # update the transaction

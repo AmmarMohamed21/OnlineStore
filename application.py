@@ -639,7 +639,7 @@ def cart():
     totalPrice = db.execute("select sum(Price * C.Quantity) from Product as P, Customer_Cart as C where C.CustomerID = :id and P.ProductID = C.ProductID", id=session["user_id"])
     productsCount = productsCount[0]["count(ProductID)"]
 
-    return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = total,categories=categories)
+    return render_template("Cart.html", products = productsCustomer, count = productsCount, totalPrice = round(total,2),categories=categories)
 
 @app.route("/wishlist", methods = ["GET", "POST"])
 @login_required

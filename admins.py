@@ -197,7 +197,7 @@ def Management():
     deliveries = db.execute("SELECT D.DeliveryID, T.TransactionID, C.FirstName, C.LastName, C.Address, T.TransactionDate, T.Price FROM Deliveries as D, Transactions as T, Customer as C WHERE D.TransactionID = T.TransactionID and T.IsDelivered=0 and C.CustomerID = T.CustomerID order by T.TransactionDate LIMIT 5")
     transproducts=[]
     for delivery in deliveries:
-        transproducts.append(db.execute("SELECT T.TransactionID, P.ProductName, T.Quantity, P.Price FROM Product as P, Transaction_Contains_Products as T WHERE P.ProductID=T.ProductID and T.TransactionID = :tid",tid=delivery["TransactionID"]))
+        transproducts.append(db.execute("SELECT T.TransactionID, P.ProductName, T.Quantity, T.BuyPrice FROM Product as P, Transaction_Contains_Products as T WHERE P.ProductID=T.ProductID and T.TransactionID = :tid",tid=delivery["TransactionID"]))
     
     #Define Password
     ManagementPassword="123456"

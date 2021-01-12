@@ -655,7 +655,7 @@ def wishlist():
         elif "addToCart" in request.form:
             # add the item to cart
             productId = int(request.form.get("productId"))
-            quantity = db.execute("select Quantity from Customer_Cart where ProductID = :id and CustomerID = :cid", id = productId, cid = session['user_id'])[0]["Quantity"]
+            quantity = db.execute("select Quantity from Customer_Cart where ProductID = :id and CustomerID = :cid", id = productId, cid = session['user_id'])
             if quantity:
                 db.execute("update Customer_Cart set Quantity = Quantity + 1 where CustomerID = :cid and ProductID = :id", cid = session['user_id'], id = productId)
             else:
